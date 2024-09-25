@@ -1,0 +1,286 @@
+#root {
+  /* max-width: 1280px; */
+  margin: 0 auto;
+  /* padding: 2rem; */
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+ .ant-page-header-heading {
+  margin-top: 0;
+}
+ .ant-page-header-heading .ant-page-header-heading-title {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  margin-top: 40px;
+}
+ .ant-page-header-heading {
+  margin-top: 0;
+}
+ .ant-page-header-heading .ant-page-header-heading-title {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  margin-top: 4px;
+}
+ .header-control {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  margin-top: 2px;
+  /* justify-content: space-around; */
+}
+.Home {
+  position: relative;
+  background-image: url('https://images.pexels.com/photos/1343325/pexels-photo-1343325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2'); /* Replace with the actual image path */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh; /* Ensure the background covers the entire viewport height */
+  z-index: 0; /* Set a lower z-index for the background */
+}
+
+.Home::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Adjust the color and opacity as needed */
+  z-index: -10; /* Set a higher z-index for the overlay */
+}
+.criclebox {
+    box-shadow: 0px 20px 27px #0000000d;
+    border-radius: 12px;
+}
+.chart-vistior {
+    margin-top: 30px;
+}
+
+.chart-vistior h5 {
+    margin: 0px;
+    font-weight: 700;
+}
+
+.chart-visitor-count h4 {
+    margin: 0px;
+    font-weight: 300;
+}
+
+.chart-visitor-count span {
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: 200;
+}
+
+.card{
+    background-color: white;
+}
+.card-body{
+   color: #141414;
+}
+
+.sales ul {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+
+.sales ul li:first-child span.anticon {
+    color: #b37feb;
+}
+
+.sales ul li:last-child span.anticon {
+    color: #1890ff;
+}
+.sales ul li {
+    color: #8c8c8c;
+    margin-bottom: 3px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+.linechart h5 {
+    font-weight: 700;
+    margin: 0px;
+}
+.linechart {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.lastweek {
+    color: #8c8c8c;
+    font-weight: 300;
+    font-size: xx-small;
+}
+
+.bar-chart line.apexcharts-xaxis-tick {
+    stroke: transparent;
+}
+.bar-chart {
+    background: transparent
+    linear-gradient(62deg, #152033 0%, #3E5C76 53%, #7B8FA0 100%) 0% 0%
+    no-repeat padding-box;
+    box-shadow: 0px 4px 6px #0000001f;
+
+    border-radius: 8px;
+}
+.profile-nav-bg {
+    height: 300px;
+    margin-top: -22.8px;
+    border-radius: 12px;
+    box-shadow: 0 20px 27px rgb(0 0 0 / 5%);
+    background-size: cover;
+    background-position: 50%;
+    width: 100%;
+}
+.overlay-shadow {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Adjust the alpha value to control the darkness of the overlay */
+    z-index: 1; /* Ensure the overlay is above other content */
+}
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.profile-nav-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Adjust the color and opacity as needed */
+    z-index: -10; /* Set a higher z-index for the overlay */
+}
+.card-profile-head .ant-card-head {
+    border-bottom: 0px;
+    padding: 0px 16px;
+}
+
+.card-profile-head {
+    margin: -53px 0 24px;
+}
+
+.card-profile-head .ant-card-head .ant-avatar {
+    box-shadow: 0 5px 10px rgb(0 0 0 / 12%);
+    border-radius: 8px;
+    margin: 0;
+}
+
+.card-profile-head .ant-card-head .avatar-info {
+    margin-left: 16px;
+}
+
+.ant-card-head-title p {
+    font-weight: 600;
+    color: #8c8c8c;
+    margin-bottom: 0;
+}
+
+.card-profile-head .ant-card-head .avatar-info h4 {
+    font-size: 24px;
+}
+
+.card-profile-head .ant-card-head .avatar-info h4 {
+    font-size: 24px;
+}
+
+.card-profile-head .ant-radio-group .ant-radio-button-wrapper {
+    height: auto;
+    font-weight: 700;
+}
+
+.avatar-info h5 {
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 14px;
+    margin-bottom: 3px;
+}
+
+.avatar-info p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #8c8c8c;
+    margin: 0px;
+}
+.card-profile-information hr {
+    opacity: 0.2;
+}
+.invoice-list .ant-list-item,
+.transactions-list .ant-list-item {
+    padding: 11px 0;
+    border-bottom: 0;
+}
+.ant-invoice-card .ant-card-body {
+    padding-top: 0px;
+}
+.invoice-list .ant-list-item-meta-title,
+.transactions-list .ant-list-item-meta-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #141414;
+}
+
+.invoice-list .ant-list-item-meta-description,
+.transactions-list .ant-list-item-meta-description {
+    font-size: 12px;
+    font-weight: 600;
+    color: #8c8c8c;
+}
+
+.invoice-list .ant-list-item-action .ant-btn,
+.transactions-list .ant-list-item-action .ant-btn {
+    font-weight: 600;
+    color: #141414;
+    box-shadow: none;
+}
+
+.ant-btn > svg,
+.ant-btn > svg + span {
+    vertical-align: middle;
+}
+.invoice-list .amount,
+.transactions-list .amount {
+    font-size: 14px;
+    font-weight: 600;
+    color: #8c8c8c;
+}
+
