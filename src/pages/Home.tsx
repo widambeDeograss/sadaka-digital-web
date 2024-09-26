@@ -1,13 +1,10 @@
 import TopBar from "../components/TopBar.tsx";
 import {
   UsergroupAddOutlined,
-  DollarCircleOutlined,
-  PieChartOutlined,
-  TransactionOutlined,
-  UserOutlined,
-  HomeOutlined,
-  ShoppingOutlined
 } from '@ant-design/icons';
+import { PiHandsPrayingFill, PiHandshakeBold , PiBuildingApartmentBold, PiChurchBold } from "react-icons/pi";
+import { GiSwapBag, GiTakeMyMoney, GiPayMoney, GiChurch  } from "react-icons/gi";
+import { RiDashboardFill } from "react-icons/ri";
 import NavCard from "../components/NavCard.tsx";
 
 const NavCardData = [
@@ -15,13 +12,13 @@ const NavCardData = [
     id:1,
     name:"Dashboard",
     to:"/dashboard",
-    icon:<PieChartOutlined style={{ fontSize: '22px' }}/>
+    icon:<RiDashboardFill style={{ fontSize: '22px' }}/>
   },
   {
     id:2,
     name:"Profile",
     to:"/dashboard/profile",
-    icon:<UserOutlined style={{ fontSize: '22px' }}/>
+    icon:<PiChurchBold style={{ fontSize: '22px' }}/>
   },
   {
     id:3,
@@ -33,25 +30,25 @@ const NavCardData = [
     id:4,
     name:"Sadaka",
     to:"/dashboard/sadaka",
-    icon:<TransactionOutlined style={{ fontSize: '22px' }}/>
+    icon:<PiHandsPrayingFill style={{ fontSize: '22px' }}/>
   },
   {
     id:4,
     name:"Ujenzi",
     to:"/dashboard/michango",
-    icon:<HomeOutlined style={{ fontSize: '22px' }}/>
+    icon:<PiBuildingApartmentBold style={{ fontSize: '22px' }}/>
   },
   {
     id:4,
     name:"Zaka",
     to:"/dashboard/zaka",
-    icon:<DollarCircleOutlined style={{ fontSize: '22px' }}/>
+    icon:<GiSwapBag style={{ fontSize: '22px' }}/>
   },
   {
     id:4,
     name:"Michango",
     to:"/dashboard/michango",
-    icon:<ShoppingOutlined style={{ fontSize: '32px' }}/>
+    icon:<PiHandshakeBold style={{ fontSize: '32px' }}/>
   },
 ]
 

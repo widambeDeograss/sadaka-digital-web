@@ -1,27 +1,17 @@
 import React, { useState} from "react";
 import {
   UsergroupAddOutlined,
-  PieChartOutlined,
-  TransactionOutlined,
-  UserOutlined,
   HomeOutlined,
-    AlignLeftOutlined,
-    CloseOutlined,
-    MoneyCollectOutlined
 } from "@ant-design/icons";
 import {
   Menu,
   Layout,
-  Breadcrumb,
   Input,
-  Avatar,
-  Dropdown,
-  Space,
-  Col,
-  Row,
 } from "antd";
+import { PiHandsPrayingFill, PiHandshakeBold  } from "react-icons/pi";
+import { GiSwapBag, GiTakeMyMoney, GiPayMoney  } from "react-icons/gi";
+import { RiDashboardFill } from "react-icons/ri";
 // import Offer
-import { IconButton } from "@material-tailwind/react";
 import {NavLink, Outlet, useLocation, useNavigate} from "react-router-dom";
 import { Colors } from "../../Constants/Colors";
 import logo from "../../assets/church.png";
@@ -40,25 +30,25 @@ const menuItems = [
     {
         key: "dashboard",
         label: "Dashboard",
-        icon: <PieChartOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        icon: <RiDashboardFill style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/home",
     },
     {
         key: "sadaka",
         label: "Sadaka",
-        icon: <TransactionOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        icon: <PiHandsPrayingFill style={{  fontWeight: "bold"  ,fontSize: "14px",}} />,
         path: "/dashboard/sadaka"
     },
     {
         key: "zaka",
         label: "Zaka",
-        icon: <TransactionOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        icon: <GiSwapBag style={{ fontSize: "14px", fontWeight: "bold",  }} />,
         path: "/dashboard/zaka",
     },
     {
         key: "michango",
         label: "Michango",
-        icon: <TransactionOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        icon: <PiHandshakeBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
         children: [
             { key: "iliyopo", label: "Michango iliyopo", path: "/dashboard/michango/iliyopo" },
             { key: "ongeza", label: "Ongeza Michango", path: "/dashboard/michango/ongeza" },
@@ -77,13 +67,13 @@ const menuItems = [
     {
         key: "ahadi",
         label: "Ahadi",
-        icon: <UsergroupAddOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        icon: <GiPayMoney  style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/ahadi",
     },
     {
         key: "matumizi",
         label: "Matumizi",
-        icon: <MoneyCollectOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        icon: <GiTakeMyMoney style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/matumizi",
     },
 ];
