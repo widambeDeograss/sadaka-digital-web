@@ -144,7 +144,7 @@ const Main: React.FC = () => {
       </Sider>
      
       <Layout style={{ marginLeft: collapsed ? 80 : 240 }}>
-      <Header/>
+  <Header/>
         <Content
             className={collapsed ? "" : "  hidden lg:block md:block sm:hidden "}
           style={{
