@@ -48,7 +48,7 @@ const download = [
 const Dashboard = () => {
   return (
     <div>
-      <div className="grid grid-cols-1 mt-10 gap-10 xl:grid-cols-4  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">
+      <div className="grid grid-cols-1  gap-10 xl:grid-cols-4  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">
         <Card style={{ minHeight: "125px", minWidth: "83x" }}>
           <Row gutter={16} align="middle">
             <Col span={12}>
