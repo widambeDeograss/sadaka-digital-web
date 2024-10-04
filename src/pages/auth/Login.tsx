@@ -5,7 +5,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { Colors } from "../../Constants/Colors";
 import logo from "../../assets/church.png";
-
+import { ToastContainer } from "react-toastify";
+import { postLogin } from "../../helpers/ApiConnectors";
+import { addAlert } from "../../store/slices/alert/alertSlice";
+import { useMutation } from "@tanstack/react-query";
+import { loginSuccess, setUserInfo } from "../../store/slices/auth/authSlice";
 const { Content, Sider } = Layout;
 
 
@@ -13,11 +17,12 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigation = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
-      const leftSide = document.querySelector(".left-side");
+      const leftSide:any = document.querySelector(".left-side");
 
       if (screenWidth < 768) {
         leftSide.style.display = "none";
@@ -35,22 +40,66 @@ export default function LoginPage() {
     };
   }, []);
 
-  const onFinish = async (values) => {
-    localStorage.clear();
-    setIsLoading(true);
-    try {
-      // Your authentication logic here
+  const onFinish = async (values:any) => {
 
-    } catch (error) {
-      setErrorMsg(error.message);
-    }
-    setIsLoading(false);
+      const response:any = await postLogin(values);
+
+      console.log('====================================');
+      console.log(response);
+      console.log('====================================');
+      console.log(response);
+      
+      if (response?.success === false)
+         throw new Error("Failed on sign. Invalid username or password");
+  
+      return response;
+
   };
 
+  
+  const { mutate: signInMutation, isPending } = useMutation({
+    mutationFn: onFinish,
+    onSuccess: (data: any) => {
+       console.log(data);
+       
+      dispatch(
+        addAlert({
+          title: "Login Sucess",
+          message: "You have logged in sucessfly",
+          type: "success",
+        })
+      );
+      dispatch(
+        loginSuccess({accessToken:data?.access_token, refreshToken:data?.refresh_token})
+      );
+      dispatch(setUserInfo(data?.user));
+      if (data?.user?.is_top_admin) {
+        navigation("/dashboard"); 
+      }else{
+        navigation("/");
+      }
+    
+    },
+    onError: (error) => {
+      dispatch(
+        addAlert({
+          title: "Login error",
+          message: error.message,
+          type: "error",
+        })
+      );
+      //  enqueueSnackbar('Ops.. Error on sign in. Try again!', {
+      //    variant: 'error'
+      //  });
+    },
+  });
+
   return (
+    <div>    <ToastContainer/>
     <Layout className="min-h-screen"
     style={{backgroundColor:Colors.bgDarkAddon}}
     >
+  
       <Sider
         width={500}
         style={{
@@ -76,7 +125,7 @@ export default function LoginPage() {
           </Divider>
 
           <Form
-            onFinish={onFinish}
+            onFinish={signInMutation}
             layout="vertical"
             className="space-y-4"
           >
@@ -85,7 +134,7 @@ export default function LoginPage() {
             )}
             <Form.Item
               label="Email"
-              name="username"
+              name="email"
               className="text-xs"
               rules={[
                 {
@@ -116,7 +165,7 @@ export default function LoginPage() {
             </Form.Item>
 
             <Form.Item>
-              {isLoading ? (
+              {isPending ? (
                 <Button
                   className="w-full h-9 "
                   type="primary"
@@ -164,5 +213,6 @@ export default function LoginPage() {
         </div>
       </Content>
     </Layout>
+    </div>
   );
 }

@@ -8,7 +8,7 @@ import {
   Layout,
   Input,
 } from "antd";
-import { PiHandsPrayingFill, PiHandshakeBold  } from "react-icons/pi";
+import { PiChurchBold, PiHandsPrayingFill, PiHandshakeBold, PiUsersFourBold  } from "react-icons/pi";
 import { GiSwapBag, GiTakeMyMoney, GiPayMoney  } from "react-icons/gi";
 import { RiDashboardFill } from "react-icons/ri";
 // import Offer
@@ -16,6 +16,8 @@ import {NavLink, Outlet, useLocation, useNavigate} from "react-router-dom";
 import { Colors } from "../../Constants/Colors";
 import logo from "../../assets/church.png";
 import Header from "../../components/ui/Header";
+import { useAppSelector } from "../../store/store-hooks";
+import { GlobalMethod } from "../../helpers/GlobalMethods";
 
 const { Content, Footer, Sider } = Layout;
 const { Search } = Input;
@@ -26,61 +28,96 @@ const menuItems = [
         label: "Home",
         icon: <HomeOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/",
+        permissions:['MANAGE_CHURCH']
     },
     {
         key: "dashboard",
         label: "Dashboard",
         icon: <RiDashboardFill style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/home",
+        permissions:['MANAGE_SPS']
     },
     {
         key: "sadaka",
         label: "Sadaka",
         icon: <PiHandsPrayingFill style={{  fontWeight: "bold"  ,fontSize: "14px",}} />,
-        path: "/dashboard/sadaka"
+        path: "/dashboard/sadaka",
+        permissions:['VIEW_SADAKA']
     },
     {
         key: "zaka",
         label: "Zaka",
         icon: <GiSwapBag style={{ fontSize: "14px", fontWeight: "bold",  }} />,
         path: "/dashboard/zaka",
+        permissions:['VIEW_ZAKA']
     },
     {
         key: "michango",
         label: "Michango",
         icon: <PiHandshakeBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        permissions:['VIEW_MICHANGO'],
         children: [
-            { key: "iliyopo", label: "Michango iliyopo", path: "/dashboard/michango/iliyopo" },
-            { key: "ongeza", label: "Ongeza Michango", path: "/dashboard/michango/ongeza" },
+            { key: "iliyopo", label: "Michango iliyopo", path: "/dashboard/michango/iliyopo",  permissions:['VIEW_MICHANGO'], },
+            { key: "ongeza", label: "Ongeza Michango", path: "/dashboard/michango/ongeza",  permissions:['ADD_MICHANGO'], },
+        ],
+    },
+    {
+        key: "user",
+        label: "Users",
+        icon: <PiUsersFourBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        permissions:['MANAGE_USERS'],
+        children: [
+            { key: "list", label: "Users", path: "/dashboard/users/list",  permissions:['MANAGE_PERMISSIONS'], },
+            { key: "roles", label: "roles", path: "/dashboard/users/roles" ,  permissions:["MANAGE_ROLES"],},
+            { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions",  permissions:['MANAGE_USERS'], },
+        ],
+    },
+    {
+        key: "sps",
+        label: "Service providers",
+        icon: <PiChurchBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        permissions:["MANAGE_SPS"],
+        children: [
+            { key: "sps", label: "SpList", path: "/dashboard/sps",  permissions:["MANAGE_SPS"], },
+            // { key: "roles", label: "roles", path: "/dashboard/users/roles" },
+            // { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions" },
         ],
     },
     {
         key: "wahumini",
         label: "Wahumini",
         icon: <UsergroupAddOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
+        permissions:['VIEW_WAHUMINI'],
         children: [
-            { key: "waliopo", label: "Wahhumini waliopo", path: "/dashboard/wahumini/waliopo" },
-            { key: "ongeza", label: "Ongeza Muhumini", path: "/dashboard/wahumini/ongeza" },
+            { key: "waliopo", label: "Wahhumini waliopo", path: "/dashboard/wahumini/waliopo", permissions:['VIEW_WAHUMINI'], },
+            { key: "ongeza", label: "Ongeza Muhumini", path: "/dashboard/wahumini/ongeza", permissions:['VIEW_WAHUMINI'], },
         ],
 
     },
     {
         key: "ahadi",
         label: "Ahadi",
+        permissions:['VIEW_AHADI'],
         icon: <GiPayMoney  style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/ahadi",
     },
     {
         key: "matumizi",
         label: "Matumizi",
+        permissions:['VIEW_EXPENCES'],
         icon: <GiTakeMyMoney style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/matumizi",
     },
 ];
 const Main: React.FC = () => {
   const [collapsed, setCollapsed] = useState(window.innerWidth < 680);
+  const userPermissions = useAppSelector((state:any) => state?.user?.userInfo?.role.permissions)
   const { pathname } = useLocation();
     const navigate = useNavigate();
+
+
+    console.log(userPermissions);
+    
 
   return (
     <Layout className="">
@@ -107,40 +144,44 @@ const Main: React.FC = () => {
             </h3>
           )}
         </div>
-
-          <Menu
-              mode="vertical"
-              theme="dark"
-              selectedKeys={[pathname]}
-              onSelect={({ key }) => navigate(key)}
-              className="text-lg text-left "
-          >
-              {menuItems.map((item) => {
-                  if (item.children) {
-                      return (
-                          <Menu.SubMenu
-                              key={item.path}
-                              title={item.label}
-                              style={{fontSize:"small"}}
-                              icon={item.icon}
-                          >
-                              {item.children.map((child) => (
-                                  <Menu.Item key={child.path}>
-                                      <span  style={{fontSize:"small"}}>{child.label}</span>
-
-                                  </Menu.Item>
-                              ))}
-                          </Menu.SubMenu>
-                      );
-                  } else {
-                      return (
-                          <Menu.Item key={item.path} icon={item.icon}>
-                              <span style={{fontSize:"small"}}>{item.label}</span>
-                          </Menu.Item>
-                      );
-                  }
-              })}
-          </Menu>
+        <Menu
+          mode="vertical"
+          theme="dark"
+          selectedKeys={[pathname]}
+          className="text-base text-left"
+          onSelect={({ key }) => navigate(key)}
+        >
+          {menuItems.map((item) => {
+            if (  GlobalMethod.hasAnyPermission(
+              item.permissions,
+              GlobalMethod.getUserPermissionName(userPermissions)
+            )) {
+              if (item.children) {
+                return (
+                  <Menu.SubMenu key={item.path} title={item.label} icon={item.icon}>
+                    {item.children.map((child) => (
+                       GlobalMethod.hasAnyPermission(
+                        child.permissions,
+                        GlobalMethod.getUserPermissionName(userPermissions)
+                      ) && (
+                        <Menu.Item key={child.path}>
+                          {child.label}
+                        </Menu.Item>
+                      )
+                    ))}
+                  </Menu.SubMenu>
+                );
+              } else {
+                return (
+                  <Menu.Item key={item.path} icon={item.icon}>
+                    {item.label}
+                  </Menu.Item>
+                );
+              }
+            }
+            return null;
+          })}
+        </Menu>
       </Sider>
      
       <Layout style={{ marginLeft: collapsed ? 80 : 240 }}>

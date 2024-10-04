@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import  store  from "../store/Store";
+import  {store}  from "../store/Store";
 import { DataBaseUrl } from "../Constants/BaseUrl";
 import { REFRESH_TOKEN } from "../Constants/apiEndpoint";
 
@@ -38,7 +38,7 @@ axios.interceptors.request.use(
 
 // Function to set Authorization header
 const setAuthorization = (token: string) => {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 };
 
 // Intercepting to capture errors and handle token refresh

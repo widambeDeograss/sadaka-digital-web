@@ -15,9 +15,11 @@ import Wahumini from "../pages/wahumini/Wahumini.tsx";
 import Muhumini from "../pages/wahumini/Muhumini.tsx";
 import OngezaMuhumini from "../pages/wahumini/OngezaMuhumini.tsx";
 import Expenses from "../pages/Expenses/Expenses.tsx";
+import { useAppSelector } from '../store/store-hooks.ts';
 
 
 const AppRouter = () => {
+  const isAuthenticated = useAppSelector(state =>  state.user.isAuthenticated);
 
     <Router></Router>;
     const routes = useRoutes([
@@ -31,11 +33,13 @@ const AppRouter = () => {
           },
           {
             path: "/",
-            element: <Home />,
+            element:  isAuthenticated == true ? <Home /> : <Navigate to="/login" />,
+            // element: <Home />,
           },
         {
             path: "/dashboard/*",
-            element: <Main/>,
+            element:  isAuthenticated == true ? <Main /> : <Navigate to="/login" />,
+            // element: <Main/>,
             children: [
                 { element: <Navigate to="home" />,index:true},
                 {path:"home", element:<Dashboard />},
