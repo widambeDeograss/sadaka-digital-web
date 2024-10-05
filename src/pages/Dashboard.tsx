@@ -3,6 +3,10 @@ import {Colors} from "../Constants/Colors.ts";
 import {WalletOutlined} from "@ant-design/icons";
 import EChart from "../components/chart/bChart.tsx";
 import LineChart from "../components/chart/lineChart.tsx";
+import Widgets from "./HomeStatsWidgets.tsx";
+import { UsersIcon } from "lucide-react";
+import { BiCard, BiMoney } from "react-icons/bi";
+import { FaHandsBound } from "react-icons/fa6";
 
 const textColor = "black"; // Define the color for the StatNumber
 const data = [
@@ -48,13 +52,15 @@ const download = [
 const Dashboard = () => {
   return (
     <div>
+        {/* <Widgets/> */}
       <div className="grid grid-cols-1  gap-10 xl:grid-cols-4  lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1">
+        
         <Card style={{ minHeight: "125px", minWidth: "83x" }}>
           <Row gutter={16} align="middle">
             <Col span={12}>
               <Statistic
-                  title="Today's Money"
-                  value="$53,897"
+                  title="Jumla wahumini"
+                  value="3,897"
                   valueStyle={{
                     fontSize: "xx-small",
                     fontWeight: "bold",
@@ -79,7 +85,7 @@ const Dashboard = () => {
                   }}
                   className="min"
               >
-                <WalletOutlined className="text-white font-bold" />
+                <UsersIcon className="text-white font-bold" />
               </div>
             </Col>
           </Row>
@@ -102,8 +108,8 @@ const Dashboard = () => {
             <Row gutter={16} align="middle">
                 <Col span={12}>
                     <Statistic
-                        title="Today's Money"
-                        value="$53,897"
+                        title="Total card numbers"
+                        value="3,897"
                         valueStyle={{
                             fontSize: "smaller",
                             fontWeight: "bold",
@@ -128,7 +134,7 @@ const Dashboard = () => {
                         }}
                         className="min"
                     >
-                        <WalletOutlined className="text-white font-bold" />
+                        <BiCard className="text-white font-bold" />
                     </div>
                 </Col>
             </Row>
@@ -151,8 +157,8 @@ const Dashboard = () => {
             <Row gutter={16} align="middle">
                 <Col span={12}>
                     <Statistic
-                        title="Today's Money"
-                        value="$53,897"
+                        title="Total Revenue"
+                        value="53,897 TZs"
                         valueStyle={{
                             fontSize: "smaller",
                             fontWeight: "bold",
@@ -177,7 +183,7 @@ const Dashboard = () => {
                         }}
                         className="min"
                     >
-                        <WalletOutlined className="text-white font-bold" />
+                        <BiMoney className="text-white font-bold" />
                     </div>
                 </Col>
             </Row>
@@ -200,8 +206,8 @@ const Dashboard = () => {
             <Row gutter={16} align="middle">
                 <Col span={12}>
                     <Statistic
-                        title="Today's Money"
-                        value="$53,897"
+                        title="Sadaka leo"
+                        value="53,897 Tzs"
                         valueStyle={{
                             fontSize: "smaller",
                             fontWeight: "bold",
@@ -226,7 +232,7 @@ const Dashboard = () => {
                         }}
                         className="min"
                     >
-                        <WalletOutlined className="text-white font-bold" />
+                        <FaHandsBound className="text-white font-bold" />
                     </div>
                 </Col>
             </Row>

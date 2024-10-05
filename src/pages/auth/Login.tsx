@@ -6,10 +6,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { Colors } from "../../Constants/Colors";
 import logo from "../../assets/church.png";
 import { ToastContainer } from "react-toastify";
-import { postLogin } from "../../helpers/ApiConnectors";
+import { fetchSpByAdmin, postLogin } from "../../helpers/ApiConnectors";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 import { useMutation } from "@tanstack/react-query";
 import { loginSuccess, setUserInfo } from "../../store/slices/auth/authSlice";
+import { setCurrentSP } from "../../store/slices/sp/spSlice";
 const { Content, Sider } = Layout;
 
 
@@ -43,11 +44,6 @@ export default function LoginPage() {
   const onFinish = async (values:any) => {
 
       const response:any = await postLogin(values);
-
-      console.log('====================================');
-      console.log(response);
-      console.log('====================================');
-      console.log(response);
       
       if (response?.success === false)
          throw new Error("Failed on sign. Invalid username or password");
@@ -59,7 +55,7 @@ export default function LoginPage() {
   
   const { mutate: signInMutation, isPending } = useMutation({
     mutationFn: onFinish,
-    onSuccess: (data: any) => {
+    onSuccess: async (data: any) => {
        console.log(data);
        
       dispatch(
@@ -76,6 +72,12 @@ export default function LoginPage() {
       if (data?.user?.is_top_admin) {
         navigation("/dashboard"); 
       }else{
+        console.log(data);
+        
+        const spResponse = await fetchSpByAdmin(data?.user.id);
+        dispatch(setCurrentSP(spResponse));
+        console.log(spResponse);
+        
         navigation("/");
       }
     

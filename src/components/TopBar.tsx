@@ -8,9 +8,11 @@ import {
 import { Colors } from '../Constants/Colors';
 import type { MenuProps } from "antd";
 import logo from "../assets/church.png"
+import { useAppSelector } from '../store/store-hooks';
 
 const TopBar = () => {
     const [modal, contextHolder] = Modal.useModal();
+    const church = useAppSelector((state:any) =>  state.sp)
 
     const items: MenuProps["items"] = [
         {
@@ -79,7 +81,7 @@ const TopBar = () => {
          </div>
          <div>
          <h3 className='text-xs text-white font-bold text-center mt-1 px-1 lg:mt-4 md:mt-5'>
-         Parokia ya mtakatifu Joseph Mbezi
+        {church?.church_name}
               </h3>
 
           </div>

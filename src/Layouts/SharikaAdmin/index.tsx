@@ -18,6 +18,7 @@ import logo from "../../assets/church.png";
 import Header from "../../components/ui/Header";
 import { useAppSelector } from "../../store/store-hooks";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
+import { ToastContainer } from "react-toastify";
 
 const { Content, Footer, Sider } = Layout;
 const { Search } = Input;
@@ -121,6 +122,7 @@ const Main: React.FC = () => {
 
   return (
     <Layout className="">
+      <ToastContainer/>
       <Sider
         collapsible
         collapsed={collapsed}

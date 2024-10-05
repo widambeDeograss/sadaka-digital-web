@@ -5,17 +5,19 @@ import alertSlice from "./slices/alert/alertSlice.ts";
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import { combineReducers } from '@reduxjs/toolkit';
+import spSlice from "./slices/sp/spSlice.ts";
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['user'],
+    whitelist: ['user', 'sp'],
   };
 
   const rootReducer = combineReducers({
     app: AppStateReducer,
     alert: alertSlice,
-    user: authSlice
+    user: authSlice,
+    sp: spSlice
 });
   
   const persistedReducer = persistReducer(persistConfig, rootReducer);

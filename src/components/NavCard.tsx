@@ -20,7 +20,7 @@ function NavCard({id,name, icon, to}:NavCardProps) {
           navigate(to)
          }}
         >
-          <div className='flex flex-col justify-center items-center mt-5'>
+          <div className='flex flex-col justify-center items-center mt-5 text-white'>
             <div>{icon}</div>
             <h3 className='font-bold text-xs mt-3'>{name}</h3>
 

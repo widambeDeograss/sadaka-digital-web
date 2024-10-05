@@ -16,6 +16,9 @@ import Muhumini from "../pages/wahumini/Muhumini.tsx";
 import OngezaMuhumini from "../pages/wahumini/OngezaMuhumini.tsx";
 import Expenses from "../pages/Expenses/Expenses.tsx";
 import { useAppSelector } from '../store/store-hooks.ts';
+import UsersList from '../pages/users/UsersList.tsx';
+import RolesList from '../pages/roles/RolesList.tsx';
+import SpList from '../pages/service-providers/SpsList.tsx';
 
 
 const AppRouter = () => {
@@ -47,6 +50,9 @@ const AppRouter = () => {
                 {path:"michango/ongeza", element:<OngezaMchango />},
                 {path:"mchango/:id", element:<Mchango />},
                 {path:"zaka", element:<Zaka/>},
+                {path:"sps", element:<SpList/>},
+                {path:"users/list", element:<UsersList/>},
+                {path:"users/roles", element:<RolesList/>},
                 {path:"sadaka", element:<Sadaka/>},
                 {path:"profile", element:<Profile />},
                 {path:"ahadi", element:<Ahadi />},

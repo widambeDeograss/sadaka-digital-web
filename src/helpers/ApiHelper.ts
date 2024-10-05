@@ -13,15 +13,16 @@ interface AuthUser {
   refreshToken: string;
 }
 
-const authUser = localStorage.getItem("authUser");
-const token: string | null = authUser ? authUser : null;
+const state = store.getState();
+const accessToken = state.user.accessToken;
 
 // Intercepting requests to add the Authorization header
 axios.interceptors.request.use(
   (config: any) => {
     const state = store.getState();
     const accessToken = state.user.accessToken;
-
+    console.log(accessToken);
+    
     if (accessToken) {
       config.headers = {
         ...config.headers,
@@ -37,8 +38,8 @@ axios.interceptors.request.use(
 );
 
 // Function to set Authorization header
-const setAuthorization = (token: string) => {
-  // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+const setAuthorization = (accessToken: string) => {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 };
 
 // Intercepting to capture errors and handle token refresh
