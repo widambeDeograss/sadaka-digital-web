@@ -19,6 +19,7 @@ import Header from "../../components/ui/Header";
 import { useAppSelector } from "../../store/store-hooks";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { ToastContainer } from "react-toastify";
+import { FiSettings } from "react-icons/fi";
 
 const { Content, Footer, Sider } = Layout;
 const { Search } = Input;
@@ -68,9 +69,9 @@ const menuItems = [
         icon: <PiUsersFourBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
         permissions:['MANAGE_USERS'],
         children: [
-            { key: "list", label: "Users", path: "/dashboard/users/list",  permissions:['MANAGE_PERMISSIONS'], },
+            { key: "list", label: "Users", path: "/dashboard/users/list",  permissions:['MANAGE_USERS'], },
             { key: "roles", label: "roles", path: "/dashboard/users/roles" ,  permissions:["MANAGE_ROLES"],},
-            { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions",  permissions:['MANAGE_USERS'], },
+            { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions",  permissions:['MANAGE_PERMISSIONS'], },
         ],
     },
     {
@@ -92,6 +93,7 @@ const menuItems = [
         children: [
             { key: "waliopo", label: "Wahhumini waliopo", path: "/dashboard/wahumini/waliopo", permissions:['VIEW_WAHUMINI'], },
             { key: "ongeza", label: "Ongeza Muhumini", path: "/dashboard/wahumini/ongeza", permissions:['VIEW_WAHUMINI'], },
+            { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
         ],
 
     },
@@ -109,6 +111,18 @@ const menuItems = [
         icon: <GiTakeMyMoney style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/matumizi",
     },
+    {
+      key: "settings",
+      label: "Settings",
+      icon: <FiSettings style={{ fontSize: "14px", fontWeight: "bold" }} />,
+      permissions:['VIEW_WAHUMINI'],
+      children: [
+          { key: "payment", label: "Payment types", path: "/dashboard/settings/payment-type", permissions:['VIEW_WAHUMINI'], },
+          { key: "expenditure", label: "Expenditure Category", path: "/dashboard/settings/expenditure-category", permissions:['VIEW_WAHUMINI'], },
+          // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
+      ],
+
+  },
 ];
 const Main: React.FC = () => {
   const [collapsed, setCollapsed] = useState(window.innerWidth < 680);

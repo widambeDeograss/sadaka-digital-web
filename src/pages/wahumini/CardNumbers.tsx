@@ -3,38 +3,30 @@ import Column from "antd/es/table/Column";
 import Search from "antd/es/input/Search";
 import { useNavigate } from "react-router-dom";
 import Tabletop from "../../components/tables/TableTop";
-import { fetchWahumini } from "../../helpers/ApiConnectors";
+import { fetchBahasha, fetchWahumini } from "../../helpers/ApiConnectors";
 import { useQuery } from "@tanstack/react-query";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { useAppSelector } from "../../store/store-hooks";
 import { DownOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import CreateCardNumberModal from "./AddCardModal";
 
-const michango = [
-  {
-    id: 1,
-    name: "Widambe Deograss",
-    phone: "0716058802",
-    nambayakadi: "2343CD",
-    changio: 500000,
-    ahadi: 3400000,
-    dob: "1/11/2023",
-  },
-];
-const Wahumini = () => {
+const CardNumberList = () => {
   const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
 
   const {
-    data: wahumini,
+    data: bahasha,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["wahumini"],
+    queryKey: ["bahasha"],
     queryFn: async () => {
-      const response: any = await fetchWahumini(`?church_id=${church.id}`);
+      const response: any = await fetchBahasha(`?church_id=${church.id}`);
       console.log(response);
       return response;
     },
@@ -52,41 +44,40 @@ const Wahumini = () => {
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
-      title: "First Name",
+      title: "Card No",
 
-      dataIndex: "first_name",
+      dataIndex: "card_no",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
-      title: "Last Name",
+      title: "Name",
 
-      dataIndex: "last_name",
-      render: (text: any, record: any) => <div>{text}</div>,
+      dataIndex: "mhumini",
+      render: (text: any, record: any) => (
+        <div>
+          {record?.mhumini?.first_name} {record?.mhumini?.last_name}
+        </div>
+      ),
       // sorter: (a, b) => a.name.length - b.name.length,
     },
- 
+
     {
-      title: "Email",
-      dataIndex: "email",
+      title: "bahasha_type",
+      dataIndex: "bahasha_type",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.capacity.length - b.capacity.length,
+    },
+
+    {
+      title: "created_at",
+      dataIndex: "created_at",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
-      title: "Phone",
-      dataIndex: "phone_number",
-      render: (text: any, record: any) => <div>{text}</div>,
-      // sorter: (a, b) => a.capacity.length - b.capacity.length,
-    },
-    {
-        title: "Location",
-        dataIndex: "address",
-        render: (text: any, record: any) => <div>{text}</div>,
-        // sorter: (a, b) => a.capacity.length - b.capacity.length,
-      },
-    {
-      title: <strong>Has a login account</strong>,
-      dataIndex: "has_loin_account",
+      title: <strong>Card status</strong>,
+      dataIndex: "card_status",
       render: (text: any, record: any) => (
         <>
           {text === true && (
@@ -138,7 +129,7 @@ const Wahumini = () => {
                 ["MANAGE_USER", "EDIT_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
-                <Menu.Item >
+                <Menu.Item>
                   {record.status === "DISABLED"
                     ? "Activate User"
                     : "Deactivate User"}
@@ -150,11 +141,11 @@ const Wahumini = () => {
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
-                //   onClick={() => handleChangePassword(record)}
+                  //   onClick={() => handleChangePassword(record)}
                   data-bs-toggle="modal"
                   data-bs-target="#resetPassword"
                 >
-                  Change Password
+                  Change
                 </Menu.Item>
               )}
             </Menu>
@@ -170,14 +161,16 @@ const Wahumini = () => {
   return (
     <div>
       <Card
-        title={<h3 className="font-bold text-sm text-left">Wahumini</h3>}
+        title={
+          <h3 className="font-bold text-sm text-left">Namba za bahasha</h3>
+        }
         className=""
       >
         <div>
           <div className="flex justify-between mt-3">
             <div>
               <h3 className="text-left font-bold text-xs">
-                Jumla Wahumini: <span>{wahumini?.length}</span>
+                Jumla ya Bahasha: <span>{bahasha?.length}</span>
               </h3>
             </div>
             <div>
@@ -185,9 +178,9 @@ const Wahumini = () => {
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white text-xs"
-                  onClick={() => navigate("/dashboard/wahumini/ongeza")}
+                  onClick={() => setIsVisible(true)}
                 >
-                  Ongeza Muhumini
+                  Ongeza Bahasha
                 </Button>
                 {/* </Radio.Button> */}
               </Button.Group>
@@ -201,7 +194,7 @@ const Wahumini = () => {
           <Card
             bordered={false}
             //   className="criclebox tablespace mb-24"
-            title="Wahumini"
+            title="Bahasha"
           >
             <div className="table-responsive">
               <Tabletop
@@ -213,15 +206,19 @@ const Wahumini = () => {
 
               <Table
                 columns={columns}
-                dataSource={wahumini}
+                dataSource={bahasha}
                 loading={isLoading}
               />
             </div>
           </Card>
         </Col>
       </Row>
+      <CreateCardNumberModal
+        visible={isVisible}
+        onClose={() => setIsVisible(false)}
+      />
     </div>
   );
 };
 
-export default Wahumini;
+export default CardNumberList;

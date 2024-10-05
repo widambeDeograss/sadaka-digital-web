@@ -19,6 +19,8 @@ import { useAppSelector } from '../store/store-hooks.ts';
 import UsersList from '../pages/users/UsersList.tsx';
 import RolesList from '../pages/roles/RolesList.tsx';
 import SpList from '../pages/service-providers/SpsList.tsx';
+import CardNumberList from '../pages/wahumini/CardNumbers.tsx';
+import PaymentTypeList from '../pages/settings/payment/PaymentCategoryList.tsx';
 
 
 const AppRouter = () => {
@@ -58,7 +60,9 @@ const AppRouter = () => {
                 {path:"ahadi", element:<Ahadi />},
                 {path:"wahumini/waliopo", element:<Wahumini/>},
                 {path:"wahumini/ongeza", element:<OngezaMuhumini/>},
+                {path:"wahumini/bahasha", element:<CardNumberList/>},
                 {path:"muhumini/:id", element:<Muhumini />},
+                {path:"settings/payment-type", element:<PaymentTypeList />},
                 {path:"matumizi", element:<Expenses />},
 
             ],

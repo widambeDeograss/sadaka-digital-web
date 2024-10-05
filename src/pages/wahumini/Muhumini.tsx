@@ -55,9 +55,7 @@ const Muhumini = () => {
           <Card
               title="Matoleo ya Muhumini"
           >
-
               <h3 className="text-sm font-bold text-left" >JINA LA MUHUMINI:  <span className="text-gray-800">DEOGRASS WIDAMBE</span></h3>
-
 
               <div className="mt-5">
                   <LineChart />

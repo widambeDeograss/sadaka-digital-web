@@ -14,4 +14,7 @@ export const ALL_PERMISSIONS = `${DataBaseUrl}/permissions`;
 //SPS
 export const LIST_CREATE_SPS = `${DataBaseUrl}/service-providers/service-provider-list-create`;
 export const GET_SP_BY_ADMIN = `${DataBaseUrl}/service-providers/get-provider/admin/`;
+export const WAHUMINI_LIST_CREATE = `${DataBaseUrl}/service-providers/wahumini-list-create`;
+export const CARDS_LIST_CREATE = `${DataBaseUrl}/service-providers/cards-number-list-create`;
+export const PAYMENT_LIST_CREATE = `${DataBaseUrl}/service-providers/payment-type-list-create`;
 

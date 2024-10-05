@@ -94,21 +94,21 @@ function UsersList() {
   const columns = [
     {
       title: "s/No",
-      className: "text-center",
+     
       dataIndex: "sNo",
       render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a:any, b:any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "Name",
-      className: "text-center",
+   
       dataIndex: "firstname",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Name",
-      className: "text-center",
+
       dataIndex: "lastname",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
