@@ -88,7 +88,7 @@ const Sadaka = () => {
       title: "Name",
 
       dataIndex: "name",
-      render: (text: any, record: any) => <div>{record?.bahasha?.mhumini?.first_name} {record?.bahasha?.mhumini?.last_name}</div>,
+      render: (text: any, record: any) => <div>{record?.bahasha_details?.mhumini_details?.first_name} {record?.bahasha_details?.mhumini_details?.last_name}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -97,7 +97,7 @@ const Sadaka = () => {
         dataIndex: "",
         render: (text: any, record: any) => (
           <div>
-            {record?.bahasha?.card_no}
+            {record?.bahasha_details?.card_no}
           </div>
         ),
         // sorter: (a, b) => a.name.length - b.name.length,

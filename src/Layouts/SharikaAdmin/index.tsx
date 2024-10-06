@@ -37,7 +37,7 @@ const menuItems = [
         label: "Dashboard",
         icon: <RiDashboardFill style={{ fontSize: "14px", fontWeight: "bold" }} />,
         path: "/dashboard/home",
-        permissions:['MANAGE_SPS']
+        permissions:['MANAGE_CHURCH']
     },
     {
         key: "sadaka",

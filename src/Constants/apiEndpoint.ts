@@ -19,7 +19,9 @@ export const CARDS_LIST_CREATE = `${DataBaseUrl}/service-providers/cards-number-
 export const PAYMENT_LIST_CREATE = `${DataBaseUrl}/service-providers/payment-type-list-create`;
 
 
-//SP SADAKA
+//SP SADAKA and ZAKA
 export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-create`;
+export const ZAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/zaka-list-create`;
+export const BAHASHA_GET_NO = `${DataBaseUrl}/service-providers/cards-number-retrieve-by-card-no/`;
 
 

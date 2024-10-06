@@ -1,247 +1,392 @@
 import { useState } from "react";
-import {
-  Button,
-  Form,
-  Modal,
-  Input,
-  message,
-  Tabs,
-  Space,
-  Row,
-  Col,
-} from "antd";
-import TabPane from "antd/es/tabs/TabPane";
+import { Button, Modal, Tabs, message, Spin } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { fetchPayTypes, postZaka, resolveBahasha } from "../../helpers/ApiConnectors";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
+import { addAlert } from "../../store/slices/alert/alertSlice";
 
-type modalType = {
-  openMOdal: any;
-  handleCancel: any;
+const { TabPane } = Tabs;
+
+type ModalProps = {
+  openModal: boolean;
+  handleCancel: () => void;
 };
 
-const OngezaZaka = ({ openMOdal, handleCancel }: modalType) => {
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  // const [errorMsg, setErrorMsg] = useState<string>();
-  // Yup validation schema
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Customer name is required"),
-    phone: Yup.string().required("Customer phone is required"),
-    tin: Yup.string().required("Customer tin is required"),
+const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
+  const church = useAppSelector((state: any) => state.sp);
+  const user = useAppSelector((state: any) => state.user.userInfo);
+  const dispatch = useAppDispatch();
+
+  const [bahashaData, setBahashaData] = useState<any>(null);
+  const [verifyingBahasha, setVerifyingBahasha] = useState<boolean>(false);
+  const [bahashaError, setBahashaError] = useState<string | null>(null);
+
+  // Fetch Payment Types based on church ID
+  const { data: payTypes, isLoading: payTypesLoading } = useQuery({
+    queryKey: ["payTypes", church.id],
+    queryFn: async () => {
+      const response: any = await fetchPayTypes(`?church_id=${church.id}`);
+      return response;
+    },
   });
 
-  // useForm setup with yupResolver
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
+  // Base validation schema for common fields
+  const baseSchema = {
+    amount: Yup.number()
+      .typeError("Amount must be a number")
+      .required("Amount is required")
+      .positive("Amount must be positive"),
+    date: Yup.date()
+      .typeError("Date is invalid")
+      .required("Date is required"),
+    payment_type: Yup.number()
+      .typeError("Payment type must be a number")
+      .required("Payment type is required"),
+    remark: Yup.string().optional(),
+  };
+
+  // Validation schema for the "Muhumini" tab (with card number)
+  const validationSchemaWithCard = Yup.object().shape({
+    ...baseSchema,
+    cardNumber: Yup.string().required("Card number is required"),
   });
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
+  // Validation schema for the "Bila Namba ya Kadi" tab (without card number)
+  const validationSchemaWithoutCard = Yup.object().shape({
+    ...baseSchema,
+  });
+
+  // Initialize react-hook-form for both tabs
+  const formWithCard = useForm({
+    resolver: yupResolver(validationSchemaWithCard),
+  });
+
+  const formWithoutCard = useForm({
+    resolver: yupResolver(validationSchemaWithoutCard),
+  });
+
+  // Mutation for posting Zaka
+  const { mutate: postZakaMutation, isPending: posting } = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await postZaka(data);
+      return response;
+    },
+    onSuccess: () => {
+      dispatch(
+        addAlert({
+          title: "Success",
+          message: "Zaka added successfully!",
+          type: "success",
+        })
+      );
+      message.success("Zaka added successfully!");
+      handleCancel();
+      formWithCard.reset();
+      formWithoutCard.reset();
+      setBahashaData(null);
+      setBahashaError(null);
+    },
+    onError: (error: any) => {
+      dispatch(
+        addAlert({
+          title: "Error",
+          message: "Failed to add Zaka.",
+          type: "error",
+        })
+      );
+      message.error("Failed to add Zaka.");
+    },
+  });
+
+  // Handler to resolve Bahasha (card number)
+  const handleResolveBahasha = async (no: string) => {
+    if (!no) {
+      setBahashaError(null);
+      setBahashaData(null);
+      return;
+    }
+
+    try {
+      setVerifyingBahasha(true);
+      setBahashaError(null);
+      const response: any = await resolveBahasha(no);
+      if (response.bahasha_type === "sadaka") {
+        dispatch(
+          addAlert({
+            title: "Bahasha Yenye Namba Hii",
+            message: "Bahasha hii ni ya Sadaka.",
+            type: "warning",
+          })
+        );
+        setBahashaError("Bahasha hii ni ya Sadaka.");
+        setBahashaData(null);
+      } else {
+        setBahashaData(response);
+      }
+    } catch (error: any) {
+      setBahashaError("Hamna Bahasha yenye namba hii.");
+      dispatch(
+        addAlert({
+          title: "Error",
+          message: "Hamna Bahasha yenye namba hii.",
+          type: "error",
+        })
+      );
+      setBahashaData(null);
+    } finally {
+      setVerifyingBahasha(false);
+    }
+  };
+
+  // Unified submit handler
+  const onSubmit = (data: any, hasCard: boolean) => {
+    // Format date to YYYY-MM-DD
+    if (data.date) {
+      const formattedDate = new Date(data.date).toISOString().split("T")[0];
+      data.date = formattedDate;
+    }
+
+    // Prepare final data
+    const finalData = {
+      collected_by: data.remark,
+      zaka_amount: data.amount,
+      bahasha: hasCard ? (bahashaData ? bahashaData.id : null) : null,
+      church: church?.id,
+      payment_type: data.payment_type,
+      date: data.date,
+      inserted_by: user?.username,
+      updated_by: user?.username,
+    };
+
+    postZakaMutation(finalData);
   };
 
   return (
-    <div>
-      <Modal
-        title={"Ongeza Zaka"}
-        open={openMOdal}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-        footer={[<div></div>]}
-        className="w-full "
-      >
-        <Tabs defaultActiveKey="1" centered>
-          <TabPane tab="Muhumini" key="1">
-            <form action="">
-              <div className="grid grid-cols-2 gap-3">
-              <div className="">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Namba ya kadi
+    <Modal
+      title="Ongeza Zaka"
+      open={openModal}
+      onCancel={handleCancel}
+      footer={null}
+      width={700}
+    >
+      <Tabs defaultActiveKey="1" centered>
+        {/* Tab for "Muhumini" (with card number) */}
+        <TabPane tab="Muhumini" key="1">
+          <form onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Card Number */}
+              <div className="col-span-2">
+                <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
+                  Namba ya Kadi
                 </label>
                 <input
-                  id="name"
-                  // name="name"
+                  id="cardNumber"
                   type="text"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.name ? "border-red-500" : "border-gray-300"
+                    bahashaError ? "border-red-500" : "border-gray-300"
                   }`}
-                  {...register("name")}
+                  {...formWithCard.register("cardNumber")}
+                  onBlur={(e) => handleResolveBahasha(e.target.value)}
                 />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.name?.message}
+                {verifyingBahasha && (
+                  <div className="mt-1">
+                    <Spin size="small" /> Inakagua...
+                  </div>
+                )}
+                {bahashaError && (
+                  <p className="mt-1 text-sm text-red-600">{bahashaError}</p>
+                )}
+                {bahashaData && (
+                  <p className="mt-1 text-sm text-green-600">
+                    Bahasha imefanikiwa kupatikana.
                   </p>
                 )}
               </div>
 
-              <div className="">
-                <label
-                  htmlFor="tin"
-                  className="block text-sm font-medium text-gray-700"
-                >
+              {/* Amount */}
+              <div>
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
                   Amount
                 </label>
                 <input
-                  id="tin"
-                  // name="tin"
-                  type="text"
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.tin ? "border-red-500" : "border-gray-300"
-                  }`}
-                  {...register("tin")}
-                />
-                {errors.tin && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {errors.tin?.message}
-                  </p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Date
-                </label>
-                <input
-                  id="name"
-                  // name="name"
-                  type="text"
+                  id="amount"
+                  type="number"
+                  step="0.01"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.name ? "border-red-500" : "border-gray-300"
+                    formWithCard.formState.errors.amount ? "border-red-500" : "border-gray-300"
                   }`}
-                  {...register("name")}
+                  {...formWithCard.register("amount")}
                 />
-                {errors.name && (
+                {formWithCard.formState.errors.amount && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.name?.message}
+                    {formWithCard.formState.errors.amount.message}
                   </p>
                 )}
               </div>
 
-              <div className="mb-4">
-                <label
-                  htmlFor="tin"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Remark
+              {/* Payment Type */}
+              <div>
+                <label htmlFor="payment_type" className="block text-sm font-medium text-gray-700">
+                  Malipo
                 </label>
-                <input
-                  id="tin"
-                  // name="tin"
-                  type="text"
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.tin ? "border-red-500" : "border-gray-300"
+                <select
+                  id="payment_type"
+                  {...formWithCard.register("payment_type")}
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithCard.formState.errors.payment_type ? "border-red-500" : "border-gray-300"
                   }`}
-                  {...register("tin")}
-                />
-                {errors.tin && (
+                >
+                  <option value="">Chagua Aina ya Malipo</option>
+                  {payTypes?.map((py: any) => (
+                    <option key={py.id} value={py.id}>
+                      {py.name}
+                    </option>
+                  ))}
+                </select>
+                {formWithCard.formState.errors.payment_type && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.tin?.message}
+                    {formWithCard.formState.errors.payment_type.message}
                   </p>
                 )}
               </div>
+
+              {/* Date */}
+              <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                  Tarehe
+                </label>
+                <input
+                  id="date"
+                  type="date"
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithCard.formState.errors.date ? "border-red-500" : "border-gray-300"
+                  }`}
+                  {...formWithCard.register("date")}
+                />
+                {formWithCard.formState.errors.date && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {formWithCard.formState.errors.date.message}
+                  </p>
+                )}
               </div>
-              <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="font-bold bg-[#152033] text-white"
-                  style={{ width: "100%" }}
-                >
-                  Ongeza Zaka
-                </Button>
-            </form>
-          </TabPane>
-          <TabPane tab="Bila namba ya kadi" key="2">
-            <form action="">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700"
-                >
+
+              {/* Remark */}
+              <div className="col-span-2">
+                <label htmlFor="remark" className="block text-sm font-medium text-gray-700">
+                  Maelezo
+                </label>
+                <textarea
+                  id="remark"
+                  rows={3}
+                  className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  {...formWithCard.register("remark")}
+                />
+              </div>
+            </div>
+            <div className="mt-4">
+              <Button type="primary" htmlType="submit" loading={posting}>
+                Ongeza
+              </Button>
+            </div>
+          </form>
+        </TabPane>
+
+        {/* Tab for "Bila Namba ya Kadi" (without card number) */}
+        <TabPane tab="Bila Namba ya Kadi" key="2">
+          <form onSubmit={formWithoutCard.handleSubmit((data) => onSubmit(data, false))}>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Amount */}
+              <div>
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
                   Amount
                 </label>
                 <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none bg-blue-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.name ? "border-red-500" : "border-gray-300"
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithoutCard.formState.errors.amount ? "border-red-500" : "border-gray-300"
                   }`}
-                  {...register("name")}
+                  {...formWithoutCard.register("amount")}
                 />
-                {errors.name && (
+                {formWithoutCard.formState.errors.amount && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.name?.message}
+                    {formWithoutCard.formState.errors.amount.message}
                   </p>
                 )}
               </div>
 
-              <div className="">
-                <label
-                  htmlFor="tin"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Remark
+              {/* Payment Type */}
+              <div>
+                <label htmlFor="payment_type" className="block text-sm font-medium text-gray-700">
+                  Malipo
                 </label>
-                <input
-                  id="tin"
-                  name="tin"
-                  type="text"
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none bg-blue-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.tin ? "border-red-500" : "border-gray-300"
+                <select
+                  id="payment_type"
+                  {...formWithoutCard.register("payment_type")}
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithoutCard.formState.errors.payment_type ? "border-red-500" : "border-gray-300"
                   }`}
-                  {...register("tin")}
-                />
-                {errors.tin && (
+                >
+                  <option value="">Chagua Aina ya Malipo</option>
+                  {payTypes?.map((py: any) => (
+                    <option key={py.id} value={py.id}>
+                      {py.name}
+                    </option>
+                  ))}
+                </select>
+                {formWithoutCard.formState.errors.payment_type && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.tin?.message}
+                    {formWithoutCard.formState.errors.payment_type.message}
                   </p>
                 )}
               </div>
-              <div className="mb-4">
-                <label
-                  htmlFor="tin"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Date
+
+              {/* Date */}
+              <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                  Tarehe
                 </label>
                 <input
-                  id="tin"
-                  name="tin"
-                  type="text"
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none bg-blue-gray-50 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.tin ? "border-red-500" : "border-gray-300"
+                  id="date"
+                  type="date"
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithoutCard.formState.errors.date ? "border-red-500" : "border-gray-300"
                   }`}
-                  {...register("tin")}
+                  {...formWithoutCard.register("date")}
                 />
-                {errors.tin && (
+                {formWithoutCard.formState.errors.date && (
                   <p className="mt-1 text-sm text-red-600">
-                    {errors.tin?.message}
+                    {formWithoutCard.formState.errors.date.message}
                   </p>
                 )}
               </div>
+
+              {/* Remark */}
+              <div className="col-span-2">
+                <label htmlFor="remark" className="block text-sm font-medium text-gray-700">
+                  Maelezo
+                </label>
+                <textarea
+                  id="remark"
+                  rows={3}
+                  className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  {...formWithoutCard.register("remark")}
+                />
               </div>
-              <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="font-bold bg-[#152033] text-white"
-                  style={{ width: "100%" }}
-                >
-                  Ongeza Zaka
-                </Button>
-            </form>
-          </TabPane>
-        </Tabs>
-      </Modal>
-    </div>
+            </div>
+            <div className="mt-4">
+              <Button type="primary" htmlType="submit" loading={posting}>
+                Ongeza
+              </Button>
+            </div>
+          </form>
+        </TabPane>
+      </Tabs>
+    </Modal>
   );
 };
 

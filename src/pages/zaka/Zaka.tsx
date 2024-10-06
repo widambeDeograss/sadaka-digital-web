@@ -4,6 +4,9 @@ import OngezaZaka from "./OngezaZakaModal";
 import { useState } from "react";
 import Widgets from "./Stats";
 import Tabletop from "../../components/tables/TableTop";
+import { useAppSelector } from "../../store/store-hooks";
+import { useQuery } from "@tanstack/react-query";
+import { fetchZaka } from "../../helpers/ApiConnectors";
 
 const michango = [
     {
@@ -16,7 +19,66 @@ const michango = [
     }
 ]
 const Zaka = () => {
-    const [openMOdal, setopenMOdal] = useState(false);
+    const [reverse, setReverse] = useState(false);
+  const [openMOdal, setopenMOdal] = useState(false);
+
+  const church = useAppSelector((state: any) => state.sp);
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
+
+
+  const { data: zaka, isLoading: loadingzaka } = useQuery({
+    queryKey: ["zaka"],
+    queryFn: async () => {
+      const response: any = await fetchZaka(`?church_id=${church.id}`);
+      console.log(response);
+      return response;
+    },
+    // {
+    //   enabled: false,
+    // }
+  });
+
+  const columns = [
+    {
+      title: "s/No",
+
+      dataIndex: "sNo",
+      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
+    },
+    {
+        title: "Name",
+  
+        dataIndex: "name",
+        render: (text: any, record: any) => <div>{record?.bahasha_details?.mhumini_details?.first_name} {record?.bahasha_details?.mhumini_details?.last_name}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+      {
+          title: "Bahasha",
+    
+          dataIndex: "",
+          render: (text: any, record: any) => (
+            <div>
+              {record?.bahasha_details?.card_no}
+            </div>
+          ),
+          // sorter: (a, b) => a.name.length - b.name.length,
+        },
+    {
+        title: "Amount",
+        dataIndex: "zaka_amount",
+        render: (text: any, record: any) => <div>{text}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+    {
+      title: "date",
+      dataIndex: "date",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.capacity.length - b.capacity.length,
+    },
+  ];
 
   return(
       <div className="">
@@ -40,23 +102,13 @@ const Zaka = () => {
           <Card title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}
                 className="mt-5">
               <div className="">
-                <Tabletop/>
-                  <Table
-                      dataSource={michango}
-                      className="ant-border-space table-responsive"
-                  >
-                      <Column title="Jina la muhumini" dataIndex="name" key="name" />
-                      <Column title="Nambari ya simu" dataIndex="phone" key="phone" />
-
-                      <Column title="Zaka" dataIndex="changio" key="changio"
-
-                      />
-                      <Column title="Tarehe" dataIndex="tarehe" key="tarehe" />
-
-                  </Table>
+                <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
+                      throw new Error("Function not implemented.");
+                  } }/>
+                <Table columns={columns} dataSource={zaka} loading={loadingzaka} />
               </div>
           </Card>
-          <OngezaZaka openMOdal={openMOdal} handleCancel={()=> setopenMOdal(!openMOdal)}  />
+          <OngezaZaka openModal={openMOdal} handleCancel={() =>  setopenMOdal(false) }  />
       </div>
   )
 }

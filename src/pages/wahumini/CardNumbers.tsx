@@ -56,7 +56,18 @@ const CardNumberList = () => {
       dataIndex: "mhumini",
       render: (text: any, record: any) => (
         <div>
-          {record?.mhumini?.first_name} {record?.mhumini?.last_name}
+          {record?.mhumini_details?.first_name} {record?.mhumini_details?.last_name}
+        </div>
+      ),
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
+    {
+      title: "Phone",
+
+      dataIndex: "mhumini",
+      render: (text: any, record: any) => (
+        <div>
+          {record?.mhumini_details?.phone_number}
         </div>
       ),
       // sorter: (a, b) => a.name.length - b.name.length,
@@ -131,8 +142,8 @@ const CardNumberList = () => {
               ) && (
                 <Menu.Item>
                   {record.status === "DISABLED"
-                    ? "Activate User"
-                    : "Deactivate User"}
+                    ? "Activate "
+                    : "Deactivate "}
                 </Menu.Item>
               )}
 
