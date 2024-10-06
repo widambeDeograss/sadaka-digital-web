@@ -53,19 +53,17 @@ const Wahumini = () => {
     },
     {
       title: "First Name",
-
       dataIndex: "first_name",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Last Name",
-
       dataIndex: "last_name",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
- 
+
     {
       title: "Email",
       dataIndex: "email",
@@ -79,11 +77,11 @@ const Wahumini = () => {
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
-        title: "Location",
-        dataIndex: "address",
-        render: (text: any, record: any) => <div>{text}</div>,
-        // sorter: (a, b) => a.capacity.length - b.capacity.length,
-      },
+      title: "Location",
+      dataIndex: "address",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.capacity.length - b.capacity.length,
+    },
     {
       title: <strong>Has a login account</strong>,
       dataIndex: "has_loin_account",
@@ -138,7 +136,7 @@ const Wahumini = () => {
                 ["MANAGE_USER", "EDIT_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
-                <Menu.Item >
+                <Menu.Item>
                   {record.status === "DISABLED"
                     ? "Activate User"
                     : "Deactivate User"}
@@ -150,7 +148,7 @@ const Wahumini = () => {
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
-                //   onClick={() => handleChangePassword(record)}
+                  //   onClick={() => handleChangePassword(record)}
                   data-bs-toggle="modal"
                   data-bs-target="#resetPassword"
                 >

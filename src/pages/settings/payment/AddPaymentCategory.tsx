@@ -39,7 +39,7 @@ const PaymentTypeModal = ({ visible, onClose }: any) => {
         })
       );
       onClose();
-      reset(); // Reset form after submission
+      reset();
     },
     onError: (error) => {
       toast.error("Failed to add payment type. Please try again.");

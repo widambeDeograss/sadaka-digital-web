@@ -31,3 +31,7 @@ export const postBahasha = (data:any) =>  api.create(url.CARDS_LIST_CREATE, data
 export const postPayType = (data:any) =>  api.create(url.PAYMENT_LIST_CREATE, data);
 export const fetchBahasha = (id:any) =>  api.get(url.CARDS_LIST_CREATE + `${id}`);
 export const fetchPayTypes = (id:any) =>  api.get(url.PAYMENT_LIST_CREATE + `${id}`);
+
+//SADAKA ZAKA
+export const fetchSadaka = (id:any) =>  api.get(url.SADAKA_LIST_CREATE + `${id}`);
+export const postSadaka = (data:any) =>  api.create(url.SADAKA_LIST_CREATE, data);

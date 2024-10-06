@@ -18,3 +18,8 @@ export const WAHUMINI_LIST_CREATE = `${DataBaseUrl}/service-providers/wahumini-l
 export const CARDS_LIST_CREATE = `${DataBaseUrl}/service-providers/cards-number-list-create`;
 export const PAYMENT_LIST_CREATE = `${DataBaseUrl}/service-providers/payment-type-list-create`;
 
+
+//SP SADAKA
+export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-create`;
+
+
