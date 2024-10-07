@@ -39,7 +39,7 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
   } = useQuery({
     queryKey: ["wahumini"],
     queryFn: async () => {
-      const response: any = await fetchWahumini(`?query_type=sp_admins`);
+      const response: any =await fetchWahumini(`?church_id=${church.id}`);
       return response;
     },
   });

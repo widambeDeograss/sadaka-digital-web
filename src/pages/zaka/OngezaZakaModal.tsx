@@ -3,7 +3,7 @@ import { Button, Modal, Tabs, message, Spin } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPayTypes, postZaka, resolveBahasha } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
@@ -19,7 +19,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
   const dispatch = useAppDispatch();
-
+  const queryClient = useQueryClient();
   const [bahashaData, setBahashaData] = useState<any>(null);
   const [verifyingBahasha, setVerifyingBahasha] = useState<boolean>(false);
   const [bahashaError, setBahashaError] = useState<string | null>(null);
@@ -84,6 +84,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       );
       message.success("Zaka added successfully!");
       handleCancel();
+      queryClient.invalidateQueries(['zaka']);
       formWithCard.reset();
       formWithoutCard.reset();
       setBahashaData(null);

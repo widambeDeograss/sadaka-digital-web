@@ -88,10 +88,12 @@ const Zaka = () => {
           >
               <div className="text-xs">
                   <h3 className="text-left">Tarehe: <span>{new Date().toDateString()}</span></h3>
+                  <h3 className="text-left">Bahasha Zilizorudishwa Mwezi huu: <span>0</span></h3>
                   <div className="flex justify-between flex-wrap mt-3">
                       <div>
                           <Button.Group className="mt-5">
                               <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} >Ongeza zaka</Button>
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} ></Button>
                               {/* </Radio.Button> */}
                           </Button.Group>
                       </div>

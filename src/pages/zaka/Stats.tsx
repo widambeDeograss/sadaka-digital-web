@@ -32,7 +32,7 @@ const Widgets = () => {
                         <Table2Icon />
                     </div>
                     <h5 className="mt-4 mb-2 font-bold"><CountUp end={17150} className="counter-value" /></h5>
-                    <p className="text-slate-500 dark:text-zink-200">Jumla leo</p>
+                    <p className="text-slate-500 dark:text-zink-200">Jumla Mwezi huu</p>
                 </div>
             </div>
             <div className="">

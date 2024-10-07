@@ -3,7 +3,7 @@ import { Button, Modal, Tabs, message, Spin } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPayTypes, postSadaka, resolveBahasha } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
@@ -16,6 +16,7 @@ type ModalProps = {
 };
 
 const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
+  const queryClient = useQueryClient();
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
   const dispatch = useAppDispatch();
@@ -85,6 +86,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       );
       message.success("Sadaka added successfully!");
       handleCancel();
+      queryClient.invalidateQueries(['sadaka']);
       formWithCard.reset();
       formWithoutCard.reset();
       setBahashaData(null);
