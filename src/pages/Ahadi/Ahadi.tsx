@@ -1,45 +1,89 @@
-import {Button, Card, Col, Progress, Row, Select, Table, Typography} from "antd";
-import Search from "antd/es/input/Search";
+import {Button, Card, Select, Table, Typography} from "antd";
 import Column from "antd/es/table/Column";
 import OngezaAhadi from "./OngezaAhadi";
 import { useState } from "react";
-import {TransactionOutlined} from "@ant-design/icons";
 import Widgets from "./Stats";
 import Tabletop from "../../components/tables/TableTop";
+import { useAppSelector } from "../../store/store-hooks";
+import { useQuery } from "@tanstack/react-query";
+import { fetchAhadi } from "../../helpers/ApiConnectors";
 
-
-const ahadi = [
-    {
-        id:1,
-        name:'Michael Michael',
-        phone:"0716058802",
-        mchango:"Ujenzi",
-        ahadi:500000,
-        tarehe:"1/11/2023",
-        parcentage:0,
-        iliyolipwa:0,
-        anayodaiwa:50000
-    }
-]
 
 const Ahadi = () => {
+  const [openMOdal, setopenMOdal] = useState(false);
 
-    const [openMOdal, setopenMOdal] = useState(false);
+  const church = useAppSelector((state: any) => state.sp);
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
+
+
+  const { data: Ahadi, isLoading: loadingAhadi } = useQuery({
+    queryKey: ["Ahadi"],
+    queryFn: async () => {
+      const response: any = await fetchAhadi(`?church_id=${church.id}`);
+      console.log(response);
+      return response;
+    },
+    // {
+    //   enabled: false,
+    // }
+  });
+
+  const columns = [
+    {
+      title: "s/No",
+
+      dataIndex: "sNo",
+      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
+    },
+    {
+        title: "Name",
+  
+        dataIndex: "name",
+        render: (text: any, record: any) => <div>{record?.bahasha_details?.mhumini_details?.first_name} {record?.bahasha_details?.mhumini_details?.last_name}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+      {
+          title: "Bahasha",
+    
+          dataIndex: "",
+          render: (text: any, record: any) => (
+            <div>
+              {record?.bahasha_details?.card_no}
+            </div>
+          ),
+          // sorter: (a, b) => a.name.length - b.name.length,
+        },
+    {
+        title: "Amount",
+        dataIndex: "Ahadi_amount",
+        render: (text: any, record: any) => <div>{text}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+    {
+      title: "date",
+      dataIndex: "date",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.capacity.length - b.capacity.length,
+    },
+  ];
+
   return(
       <div className="">
         <Widgets/>
           <Card
-              title={<h3 className="font-bold text-sm text-left">Ahadi</h3>}
+              title={<h3 className="font-bold text-sm text-left ">Ahadi</h3>}
           >
-              <div>
-
-                  <div className="flex justify-between mt-3">
+              <div className="text-xs">
+                  <h3 className="text-left">Tarehe: <span>{new Date().toDateString()}</span></h3>
+                  <h3 className="text-left">Bahasha Zilizorudishwa Mwezi huu: <span>0</span></h3>
+                  <div className="flex justify-between flex-wrap mt-3">
                       <div>
-                          <h3 className="text-left font-bold text-xs">Tarehe: <span>{new Date().toDateString()}</span></h3></div>
-                      <div>
-                          <Button.Group>
-                      
-                              <Button type="primary" className="bg-[#152033] text-white"  onClick={() => {setopenMOdal(true)}}>Ongeza Ahadi</Button>
+                          <Button.Group className="mt-5">
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} >Ongeza Ahadi</Button>
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} ></Button>
                               {/* </Radio.Button> */}
                           </Button.Group>
                       </div>
@@ -47,40 +91,16 @@ const Ahadi = () => {
               </div>
 
           </Card>
-          <Card
-              title={<h3 className="text-sm font-bold text-left">Ahadi</h3>}
-              className="mt-5"
-           
-          >
+          <Card title={<h3 className="font-bold text-sm text-left ">Ahadi</h3>}
+                className="mt-5">
               <div className="">
-                <Tabletop/>
-                  <Table
-                      dataSource={ahadi}
-                      className="ant-border-space table-responsive"
-                  >
-                      <Column title="Jina la muhumini" dataIndex="name" key="name" />
-                      <Column title="Nambari ya simu" dataIndex="phone" key="phone" />
-
-                      <Column title="Mchango" dataIndex="mchango" key="mchango"
-
-                      />
-
-                      <Column title="Ahadi" dataIndex="ahadi" key="ahadi"
-
-                      />
-                      <Column title="kutimiza ahadi" dataIndex="parcentage" key="parcentage"
-                              render={(parcentage) => <Progress percent={parcentage} size="small" />}
-                      />
-                      <Column title="Tarehe" dataIndex="tarehe" key="tarehe" />
-
-
-                      <Column title="Iliyolipwa" dataIndex="iliyolipwa" key="iliyolipwa" />
-                      <Column title="Anayodaiwa" dataIndex="anayodaiwa" key="anayodaiwa" />
-                  </Table>
+                <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
+                      throw new Error("Function not implemented.");
+                  } }/>
+                <Table columns={columns} dataSource={Ahadi} loading={loadingAhadi} />
               </div>
           </Card>
-
-          <OngezaAhadi openMOdal={openMOdal} handleCancel={()=> setopenMOdal(!openMOdal)}  />
+          <OngezaAhadi openMOdal={openMOdal} handleCancel={() =>  setopenMOdal(false) }  />
       </div>
   )
 }

@@ -35,6 +35,7 @@ export const fetchPayTypes = (id:any) =>  api.get(url.PAYMENT_LIST_CREATE + `${i
 //SADAKA ZAKA
 export const fetchSadaka = (id:any) =>  api.get(url.SADAKA_LIST_CREATE + `${id}`);
 export const fetchZaka = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
+export const fetchAhadi = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 export const postSadaka = (data:any) =>  api.create(url.SADAKA_LIST_CREATE, data);
 export const postZaka = (data:any) =>  api.create(url.ZAKA_LIST_CREATE, data);
 export const resolveBahasha = (id:any) =>  api.get(url.BAHASHA_GET_NO + `${id}`);
