@@ -39,3 +39,11 @@ export const fetchAhadi = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 export const postSadaka = (data:any) =>  api.create(url.SADAKA_LIST_CREATE, data);
 export const postZaka = (data:any) =>  api.create(url.ZAKA_LIST_CREATE, data);
 export const resolveBahasha = (id:any) =>  api.get(url.BAHASHA_GET_NO + `${id}`);
+
+//MCHANGO
+export const fetchMichango = (id:any) =>  api.get(url.MICHANGO_LIST + `${id}`);
+export const postMichango = (data:any) =>  api.create(url.MICHANGO_LIST, data);
+export const retrieveMichango = (id:any) =>  api.get(url.MICHANGO_RETRIEVE_UPDATE + `${id}`);
+export const fetchMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENTS_LIST + `${id}`);
+export const postMichangoPayment = (data:any) =>  api.create(url.MICHANGO_PAYMENTS_LIST, data);
+export const retrieveMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENTS_UPDATE + `${id}`);

@@ -1,110 +1,106 @@
-import {
-  Row,
-  Col,
-  Card,
-  Table,
-  Typography, Button, Select, Progress,
-} from "antd";
-import {
-    DownloadOutlined, TransactionOutlined,
-} from '@ant-design/icons';
-import EChart from "../../components/chart/bChart.tsx";
-import Search from "antd/es/input/Search";
-import Column from "antd/es/table/Column";
-import {useNavigate} from "react-router-dom";
-import Widgets from "./Stats.tsx";
-import Tabletop from "../../components/tables/TableTop.tsx";
+import {Button, Card, Select, Table, Typography} from "antd";
+import { useState } from "react";
+import Widgets from "./Stats";
+import Tabletop from "../../components/tables/TableTop";
+import { useAppSelector } from "../../store/store-hooks";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMichango } from "../../helpers/ApiConnectors";
 
 
-const data = [
-  {
-    id:1,
-    name:'Ujenzi',
-    kadirio:200000000,
-    parcentage:50,
-    jumla:10000000,
+const MichangoList = () => {
+  const [openMOdal, setopenMOdal] = useState(false);
+
+  const church = useAppSelector((state: any) => state.sp);
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
 
 
-  }
-]
+  const { data: michango, isLoading: loadingmichango } = useQuery({
+    queryKey: ["michango"],
+    queryFn: async () => {
+      const response: any = await fetchMichango(`?church_id=${church.id}`);
+      console.log(response);
+      return response;
+    },
+    // {
+    //   enabled: false,
+    // }
+  });
 
-function Michango() {
-    const navigate = useNavigate();
-  return (
-      <div className="tabled ">
+  const columns = [
+    {
+      title: "s/No",
+
+      dataIndex: "sNo",
+      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
+    },
+    {
+        title: "Name",
+  
+        dataIndex: "name",
+        render: (text: any, record: any) => <div>{record?.bahasha_details?.mhumini_details?.first_name} {record?.bahasha_details?.mhumini_details?.last_name}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+      {
+          title: "Bahasha",
+    
+          dataIndex: "",
+          render: (text: any, record: any) => (
+            <div>
+              {record?.bahasha_details?.card_no}
+            </div>
+          ),
+          // sorter: (a, b) => a.name.length - b.name.length,
+        },
+    {
+        title: "Amount",
+        dataIndex: "michango_amount",
+        render: (text: any, record: any) => <div>{text}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+    {
+      title: "date",
+      dataIndex: "date",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.capacity.length - b.capacity.length,
+    },
+  ];
+
+  return(
+      <div className="">
         <Widgets/>
-        <Card
-        className="mt-5"
-              title={<h3 className="font-bold text-sm text-left ">Michango</h3>}
+          <Card
+              title={<h3 className="font-bold text-sm text-left mt-5">michango</h3>}
           >
-              <div>
-
-                  <div className="flex justify-between flex-wrap mt-5">
+              <div className="text-xs">
+                  <h3 className="text-left">Tarehe: <span>{new Date().toDateString()}</span></h3>
+                  {/* <h3 className="text-left">Bahasha Zilizorudishwa Mwezi huu: <span>0</span></h3> */}
+                  <div className="flex justify-between flex-wrap mt-3">
                       <div>
-                          <h3 className="text-left font-bold text-xs">Tarehe: <span>{new Date().toDateString()}</span></h3></div>
-                      <div>
-                      <Button type="primary" className="bg-[#152033] text-white text-xs">Ongeza Changizo</Button>
-
+                          <Button.Group className="mt-5">
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} >Ongeza michango</Button>
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} ></Button>
+                              {/* </Radio.Button> */}
+                          </Button.Group>
                       </div>
                   </div>
               </div>
 
           </Card>
-        <Row gutter={[24, 0]} className="mt-5">
-          <Col xs="24" xl={24}>
-            <Card
-                bordered={false}
-                className="criclebox tablespace mb-24"
-                title={<h3 className="font-bold text-sm text-left">Michango iliyopo</h3>}
-                extra={
-                  <>
-                    <Search placeholder={"jina la mchango.."} size="small"/>
-                  </>
-                }
-            >
-              <div className="table-responsive">
-                <Tabletop/>
-                <Table
-                    dataSource={data}
-                    className="ant-border-space"
-                >
-                  <Column title="Mchango" dataIndex="name" key="name" />
-                  <Column title="Lengo" dataIndex="kadirio" key="kadirio" />
-
-                  <Column title="kufikia lengo" dataIndex="parcentage" key="parcentage"
-                  render={(parcentage) => <Progress percent={parcentage} size="small" />}
-                  />
-                  <Column title="Jumla ya makusanyo" dataIndex="jumla" key="jumla" />
-                  <Column
-                      dataIndex="id"
-                      key="id"
-                      render={(id) =>
-                          <div>
-
-                            <Button
-                                onClick={ () => {
-                                 navigate(`/dashboard/mchango/${id}`)
-                                }}
-                                type="dashed" color="danger"
-                            >Edit</Button>
-                            <Button
-                                onClick={ () => {
-
-                                }}
-                                type="dashed" color="danger"
-                            >View</Button>
-                          </div>
-                      }
-                  />
-                </Table>
+          <Card title={<h3 className="font-bold text-sm text-left ">michango</h3>}
+                className="mt-5">
+              <div className="">
+                <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
+                      throw new Error("Function not implemented.");
+                  } }/>
+                <Table columns={columns} dataSource={michango} loading={loadingmichango} />
               </div>
-            </Card>
-
-
-          </Col>
-        </Row>
+          </Card>
+          {/* <OngezaAhadi openMOdal={openMOdal} handleCancel={() =>  setopenMOdal(false) }  /> */}
       </div>
   )
 }
 
-export default Michango
+export default MichangoList;

@@ -7,11 +7,10 @@ import { Card } from "antd";
 const schema = yup.object().shape({
   lengo: yup.string().required("Lengo is required"),
   name: yup.string().required("Jina la mchango is required"),
-  email: yup.string().email("Invalid email format").required("Email is required"),
-  phoneNumber: yup
-    .string()
-    .matches(/^[0-9]+$/, "Phone number must be numeric")
-    .required("Phone Number is required"),
+  amount: yup.string().required("Email is required"),
+  date: yup.date()
+  .typeError("Date is invalid")
+  .required("Date is required"),
   description: yup.string().required("Description is required"),
 });
 

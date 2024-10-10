@@ -24,4 +24,8 @@ export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-
 export const ZAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/zaka-list-create`;
 export const BAHASHA_GET_NO = `${DataBaseUrl}/service-providers/cards-number-retrieve-by-card-no/`;
 
-
+// MICHANGO
+export const MICHANGO_LIST = `${DataBaseUrl}/service-providers/mchango-list-create`;
+export const MICHANGO_RETRIEVE_UPDATE = `${DataBaseUrl}/service-providers/mchango-retrieve-update-destroy/`;
+export const MICHANGO_PAYMENTS_LIST = `${DataBaseUrl}/service-providers/mchango-payment-list-create`;
+export const MICHANGO_PAYMENTS_UPDATE= `${DataBaseUrl}/service-providers/mchango-payment-retrieve-update-destroy/`;
