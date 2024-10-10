@@ -80,38 +80,38 @@ const OngezaMchango = () => {
           <div className="flex flex-wrap -mx-4">
             <div className="w-full sm:w-1/2 px-4">
               <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                  Amount
                 </label>
                 <input
-                  id="email"
-                  type="email"
-                  {...register("email")}
+                  id="amount"
+                  type="amount"
+                  {...register("amount")}
                   className={`mt-1 block w-full px-3 py-2 border rounded-md  bg-blue-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                    errors.email ? "border-red-500" : "border-gray-300"
+                    errors.amount ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
+                {errors.amount && (
+                  <p className="text-sm text-red-600">{errors.amount.message}</p>
                 )}
               </div>
             </div>
 
             <div className="w-full sm:w-1/2 px-4">
               <div className="mb-4">
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
-                  Phone Number
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                Date
                 </label>
                 <input
-                  id="phoneNumber"
+                  id="date"
                   type="text"
-                  {...register("phoneNumber")}
+                  {...register("date")}
                   className={`mt-1 block w-full px-3 py-2 border rounded-md  bg-blue-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                    errors.phoneNumber ? "border-red-500" : "border-gray-300"
+                    errors.date ? "border-red-500" : "border-gray-300"
                   }`}
                 />
-                {errors.phoneNumber && (
-                  <p className="text-sm text-red-600">{errors.phoneNumber.message}</p>
+                {errors.date && (
+                  <p className="text-sm text-red-600">{errors.date.message}</p>
                 )}
               </div>
             </div>
