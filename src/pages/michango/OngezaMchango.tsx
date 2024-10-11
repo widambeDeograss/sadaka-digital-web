@@ -2,8 +2,11 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Card } from "antd";
+import { postMichango } from "../../helpers/ApiConnectors";
+import { addAlert } from "../../store/slices/alert/alertSlice";
+import { useMutation } from "@tanstack/react-query";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 
-// Define validation schema using Yup
 const schema = yup.object().shape({
   lengo: yup.string().required("Lengo is required"),
   name: yup.string().required("Jina la mchango is required"),
@@ -15,17 +18,63 @@ const schema = yup.object().shape({
 });
 
 const OngezaMchango = () => {
+  const dispatch = useAppDispatch();
+  const church = useAppSelector((state: any) => state.sp);
+  const user = useAppSelector((state: any) => state.user.userInfo);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  // Define the submit handler
+  const { mutate: postMchangoMutation, isPending: posting } = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await postMichango(data);
+      return response;
+    },
+    onSuccess: () => {
+      dispatch(
+        addAlert({
+          title: "Success",
+          message: "Contribution added successfully!",
+          type: "success",
+        })
+      );
+     reset();
+    },
+    onError: (error: any) => {
+      dispatch(
+        addAlert({
+          title: "Error",
+          message: "Failed to add Contribution.",
+          type: "error",
+        })
+      );
+    },
+  });
+
+
   const onSubmit = (data:any) => {
-    console.log("Form Submitted", data);
+    if (data.date) {
+      const formattedDate = new Date(data.date).toISOString().split("T")[0];
+      data.date = formattedDate;
+    }
+
+    const mchangoData = {
+      target_amount: data.lengo,
+      mchango_name: data.name,
+      mchango_amount: data.amount,
+      mchango_description: data.description,
+      date: data.date,
+      church: church?.id,
+      inserted_by: user?.username,
+      updated_by: user?.username,
+    };
+
+    postMchangoMutation(mchangoData);
   };
 
   return (
@@ -104,7 +153,7 @@ const OngezaMchango = () => {
                 </label>
                 <input
                   id="date"
-                  type="text"
+                  type="date"
                   {...register("date")}
                   className={`mt-1 block w-full px-3 py-2 border rounded-md  bg-blue-gray-50 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                     errors.date ? "border-red-500" : "border-gray-300"
@@ -137,6 +186,7 @@ const OngezaMchango = () => {
           <div className="mt-6">
             <button
               type="submit"
+              disabled={posting}
               className="px-6 py-2 bg-[#152033] text-white font-bold rounded-md   shadow-sm hover:bg-[#1b2a45] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Ongeza Mchango

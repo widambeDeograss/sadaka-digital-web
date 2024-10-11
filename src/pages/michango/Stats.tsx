@@ -1,8 +1,23 @@
 import React from 'react';
 import { TotalEmployeeChart } from '../../components/chart/MichangoChart';
 import CountUp from 'react-countup';
+import { useAppSelector } from '../../store/store-hooks';
+import { useQuery } from '@tanstack/react-query';
+import { fetchMichango } from '../../helpers/ApiConnectors';
 
 const Widgets = () => {
+    const church = useAppSelector((state: any) => state.sp);
+    const { data: michango, isLoading: loadingmichango } = useQuery({
+        queryKey: ["michango"],
+        queryFn: async () => {
+          const response: any = await fetchMichango(`?church_id=${church.id}`);
+          console.log(response);
+          return response;
+        },
+        // {
+        //   enabled: false,
+        // }
+      });
     return (
         <React.Fragment>
             <div className='grid grid-cols-1 lg:grid-cols-2 gap-3'>

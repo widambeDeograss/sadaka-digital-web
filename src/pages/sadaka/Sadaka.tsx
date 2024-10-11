@@ -8,10 +8,7 @@ import {
   Timeline,
   Typography,
 } from "antd";
-import { DownloadOutlined, TransactionOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import Search from "antd/es/input/Search";
-import Column from "antd/es/table/Column";
 import OngezaSadaka from "./OngezaSadaka.tsx";
 import Widgets from "./Stats.tsx";
 import Tabletop from "../../components/tables/TableTop.tsx";

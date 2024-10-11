@@ -1,15 +1,17 @@
-import {Button, Card, Select, Table, Typography} from "antd";
+import {Badge, Button, Card, Progress, Select, Table, Typography} from "antd";
 import { useState } from "react";
 import Widgets from "./Stats";
 import Tabletop from "../../components/tables/TableTop";
 import { useAppSelector } from "../../store/store-hooks";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMichango } from "../../helpers/ApiConnectors";
+import { useNavigate } from "react-router-dom";
+import OngezaChagizo from "./OngezaChangizo";
 
 
 const MichangoList = () => {
   const [openMOdal, setopenMOdal] = useState(false);
-
+  const navigate = useNavigate();
   const church = useAppSelector((state: any) => state.sp);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
@@ -38,26 +40,46 @@ const MichangoList = () => {
     },
     {
         title: "Name",
-  
-        dataIndex: "name",
-        render: (text: any, record: any) => <div>{record?.bahasha_details?.mhumini_details?.first_name} {record?.bahasha_details?.mhumini_details?.last_name}</div>,
+        dataIndex: "mchango_name",
+        render: (text: any, record: any) => <div>{text}</div>,
         // sorter: (a, b) => a.name.length - b.name.length,
       },
       {
-          title: "Bahasha",
-    
-          dataIndex: "",
+          title: "Amount",
+          dataIndex: "mchango_amount",
           render: (text: any, record: any) => (
             <div>
-              {record?.bahasha_details?.card_no}
+              {text}
             </div>
           ),
           // sorter: (a, b) => a.name.length - b.name.length,
         },
     {
-        title: "Amount",
-        dataIndex: "michango_amount",
+        title: "Collected Amount",
+        dataIndex: "collected_amount",
         render: (text: any, record: any) => <div>{text}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+    {
+        title: "Lengo",
+        dataIndex: "target_amount",
+        render: (text: any, record: any) => <div>{text}</div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+    {
+        title: "Lengo",
+        dataIndex: "status",
+        render: (text: any, record: any) => <div>
+          {text === true ? <Badge className="" color="green">Active</Badge>: <Badge color="yellow">Inactive</Badge>}
+        </div>,
+        // sorter: (a, b) => a.name.length - b.name.length,
+      },
+    {
+        title: "Progress",
+        dataIndex: "status",
+        render: (text: any, record: any) => <div>
+             <Progress percent={record.collected_amount/record.target_amount * 100} status="active" />
+        </div>,
         // sorter: (a, b) => a.name.length - b.name.length,
       },
     {
@@ -72,7 +94,8 @@ const MichangoList = () => {
       <div className="">
         <Widgets/>
           <Card
-              title={<h3 className="font-bold text-sm text-left mt-5">michango</h3>}
+          className="mt-4"
+              title={<h3 className="font-bold text-sm text-left ">michango</h3>}
           >
               <div className="text-xs">
                   <h3 className="text-left">Tarehe: <span>{new Date().toDateString()}</span></h3>
@@ -80,8 +103,8 @@ const MichangoList = () => {
                   <div className="flex justify-between flex-wrap mt-3">
                       <div>
                           <Button.Group className="mt-5">
-                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} >Ongeza michango</Button>
-                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} ></Button>
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => navigate("/dashboard/michango/ongeza")} >Ongeza michango</Button>
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} >Ongeza changizo</Button>
                               {/* </Radio.Button> */}
                           </Button.Group>
                       </div>
@@ -91,14 +114,14 @@ const MichangoList = () => {
           </Card>
           <Card title={<h3 className="font-bold text-sm text-left ">michango</h3>}
                 className="mt-5">
-              <div className="">
+              <div className="table-responsive">
                 <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
                       throw new Error("Function not implemented.");
                   } }/>
                 <Table columns={columns} dataSource={michango} loading={loadingmichango} />
               </div>
           </Card>
-          {/* <OngezaAhadi openMOdal={openMOdal} handleCancel={() =>  setopenMOdal(false) }  /> */}
+          <OngezaChagizo visible={openMOdal} onCancel={() =>  setopenMOdal(false) }  mchangoId={1} />
       </div>
   )
 }
