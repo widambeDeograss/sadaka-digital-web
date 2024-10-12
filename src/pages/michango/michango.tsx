@@ -78,7 +78,7 @@ const MichangoList = () => {
         title: "Progress",
         dataIndex: "status",
         render: (text: any, record: any) => <div>
-             <Progress percent={record.collected_amount/record.target_amount * 100} status="active" />
+             <Progress percent={Math.floor(record.collected_amount/record.target_amount * 100)} status="active" />
         </div>,
         // sorter: (a, b) => a.name.length - b.name.length,
       },
