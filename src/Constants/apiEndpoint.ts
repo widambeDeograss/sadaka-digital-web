@@ -29,3 +29,7 @@ export const MICHANGO_LIST = `${DataBaseUrl}/service-providers/mchango-list-crea
 export const MICHANGO_RETRIEVE_UPDATE = `${DataBaseUrl}/service-providers/mchango-retrieve-update-destroy/`;
 export const MICHANGO_PAYMENTS_LIST = `${DataBaseUrl}/service-providers/mchango-payment-list-create`;
 export const MICHANGO_PAYMENTS_UPDATE= `${DataBaseUrl}/service-providers/mchango-payment-retrieve-update-destroy/`;
+
+
+//AHADI
+export const AHADI_LIST = `${DataBaseUrl}/service-providers/ahadi-list-create`;

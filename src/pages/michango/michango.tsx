@@ -121,7 +121,7 @@ const MichangoList = () => {
                 <Table columns={columns} dataSource={michango} loading={loadingmichango} />
               </div>
           </Card>
-          <OngezaChagizo visible={openMOdal} onCancel={() =>  setopenMOdal(false) }  mchangoId={1} />
+          <OngezaChagizo visible={openMOdal} onCancel={() =>  setopenMOdal(false) }   />
       </div>
   )
 }

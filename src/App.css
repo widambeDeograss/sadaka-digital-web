@@ -284,3 +284,20 @@
     color: #8c8c8c;
 }
 
+/* src/components/ui/Header.css */
+
+/* Example: Customize the Avatar dropdown menu */
+.ant-dropdown-menu {
+    min-width: 150px;
+  }
+  
+  .ant-dropdown-menu-item {
+    padding: 8px 16px;
+  }
+  
+  /* Hover effect for dropdown items */
+  .ant-dropdown-menu-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  
+

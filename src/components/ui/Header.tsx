@@ -1,71 +1,61 @@
-import React from 'react';
-import { ChevronsLeft, ChevronsRight, Search } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import NotificationDropdown from './NotificationDropDown';
-import Profile from './Profile';
+import React from "react";
+import { ChevronsLeft, ChevronsRight, Search } from "lucide-react";
+import NotificationDropdown from "./NotificationDropDown";
+import Profile from "./Profile";
+import { FiSearch } from "react-icons/fi";
+import { Input } from "antd";
 
-function makeInitialsFromName(name: string) {
-    const initials = name.match(/\b\w/g) || [];
-    const result = initials.map((initial: string) => initial.toUpperCase()).join('');
-    return result;
+interface HeaderProps {
+  toggle: () => void;
+  collapsed: boolean;
 }
 
-const Header = () => {
-    const ProfileLabel = ({ sticky }: any) => {
-        return (
-            <span className="user-img avatar-letter">
-                <div className="avatar">
-                    <span className="status online online-dot" />
-                    {makeInitialsFromName(`Deo Widambe`)}
-                </div>
-            </span>
-        );
-    };
+const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
+  return (
+    <header
+      id="page-topbar"
+      className="py-3 text-white shadow-md "
+      style={{
+        background: "#fff",
+        position: "static",
+        width: "100%",
+        zIndex: 1000,
+        boxShadow: "0 2px 8px #f0f1f2",
+      }}
+    >
+      <div className="flex items-center justify-between bg-white w-full mx-auto">
+        {/* Hamburger Button */}
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={toggle}
+            className="inline-flex ml-2 justify-center items-center p-2 text-gray-300 transition-all duration-75 ease-linear bg-blue-gray-300 rounded-md hover:bg-blue-gray-300"
+          >
+            {collapsed ? (
+              <ChevronsRight className="w-5 h-5" />
+            ) : (
+              <ChevronsLeft className="w-5 h-5" />
+            )}
+          </button>
 
-   
+          {/* Search Bar */}
+          <Input
+            placeholder="Search..."
+            prefix={<FiSearch />}
+            style={{ width: 200, marginRight: 16 }}
+            allowClear
+            aria-label="Search"
+          />
+        </div>
 
-    return (
-        <React.Fragment>
-            <header id="page-topbar" className="py-3  text-white shadow-md">
-                <div className="layout-width mx-auto">
-                    <div className="flex items-center justify-between px-4 mx-auto">
-                        {/* Hamburger Button */}
-                        <button
-                            type="button"
-                            className="inline-flex relative justify-center items-center p-2 text-gray-300 transition-all duration-75 ease-linear bg-blue-gray-300 rounded-md hover:bg-blue-gray-300"
-                        >
-                            <ChevronsLeft className="w-5 h-5" />
-                            <ChevronsRight className="hidden w-5 h-5" />
-                        </button>
-
-                        {/* Search Bar */}
-                        <div className="relative">
-                            <input
-                                type="text"
-                                className="py-2 pr-4 text-sm text-gray-900 bg-white border rounded pl-8 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 min-w-[300px]"
-                                placeholder="Search for ..."
-                                autoComplete="off"
-                            />
-                            <Search className="absolute left-2.5 top-2.5 text-gray-400" size={17} />
-                        </div>
-
-                        {/* Right Section: Notifications and Profile */}
-                        <div className="flex items-center space-x-4">
-                            {/* Notification Dropdown */}
-                            <div >
-                                <NotificationDropdown />
-                            </div>
-
-                            {/* Profile Dropdown */}
-                            <div>
-                                <Profile />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-        </React.Fragment>
-    );
+        {/* Right Section: Notifications and Profile */}
+        <div className="flex items-center  space-x-4">
+          <NotificationDropdown />
+          <Profile />
+        </div>
+      </div>
+    </header>
+  );
 };
 
 export default Header;

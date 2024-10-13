@@ -36,10 +36,10 @@ const ProfileDropdown = () => {
   );
 
   return (
-    <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+    <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" className='relative'>
       <div className="flex items-center cursor-pointer text-gray-800">
         <Avatar size="default" icon={<UserOutlined />} />
-        <span className="ml-2">{userDtl?.username}</span>
+        <span className="ml-2 hidden sm:hidden lg:block md:hidden">{userDtl?.username}</span>
       </div>
     </Dropdown>
   );

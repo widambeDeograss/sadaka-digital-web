@@ -63,7 +63,7 @@ const NotificationDropdown = () => {
       overlay={notificationMenu}
       trigger={["click"]}
       placement="bottomRight"
-      className="cursor-pointer"
+      className="cursor-pointer relative"
     >
       <Badge count={notifications.length} overflowCount={9} offset={[-5, 5]}>
         <BellOutlined style={{ fontSize: "25px", color: "#595959" }} />

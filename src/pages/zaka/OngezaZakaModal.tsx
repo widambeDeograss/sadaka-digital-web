@@ -380,7 +380,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
               </div>
             </div>
             <div className="mt-4">
-              <Button type="primary" htmlType="submit" loading={posting}>
+              <Button type="primary" htmlType="submit" loading={posting} >
                 Ongeza
               </Button>
             </div>

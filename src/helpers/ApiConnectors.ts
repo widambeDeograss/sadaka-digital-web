@@ -35,7 +35,7 @@ export const fetchPayTypes = (id:any) =>  api.get(url.PAYMENT_LIST_CREATE + `${i
 //SADAKA ZAKA
 export const fetchSadaka = (id:any) =>  api.get(url.SADAKA_LIST_CREATE + `${id}`);
 export const fetchZaka = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
-export const fetchAhadi = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
+// export const fetchAhadi = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 export const postSadaka = (data:any) =>  api.create(url.SADAKA_LIST_CREATE, data);
 export const postZaka = (data:any) =>  api.create(url.ZAKA_LIST_CREATE, data);
 export const resolveBahasha = (id:any) =>  api.get(url.BAHASHA_GET_NO + `${id}`);
@@ -47,3 +47,7 @@ export const retrieveMichango = (id:any) =>  api.get(url.MICHANGO_RETRIEVE_UPDAT
 export const fetchMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENTS_LIST + `${id}`);
 export const postMichangoPayment = (data:any) =>  api.create(url.MICHANGO_PAYMENTS_LIST, data);
 export const retrieveMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENTS_UPDATE + `${id}`);
+
+//AHADI
+export const fetchAhadi = (id:any) =>  api.get(url.AHADI_LIST + `${id}`);
+export const postAhadi = (data:any) =>  api.create(url.AHADI_LIST, data);
