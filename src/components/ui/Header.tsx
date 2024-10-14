@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
         background: "#fff",
         position: "static",
         width: "100%",
-        zIndex: 1000,
+        zIndex: 900,
         boxShadow: "0 2px 8px #f0f1f2",
       }}
     >
@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
           <button
             type="button"
             onClick={toggle}
-            className="inline-flex ml-2 justify-center items-center p-2 text-gray-300 transition-all duration-75 ease-linear bg-blue-gray-300 rounded-md hover:bg-blue-gray-300"
+            className="inline-flex ml-4 justify-center items-center p-2 text-gray-300 transition-all duration-75 ease-linear bg-blue-gray-300 rounded-md hover:bg-blue-gray-300"
           >
             {collapsed ? (
               <ChevronsRight className="w-5 h-5" />

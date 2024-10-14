@@ -48,7 +48,7 @@ const menuItems:MenuItem[] = [
       label: "Dashboard",
       icon: <RiDashboardFill style={{ fontSize: "14px", fontWeight: "bold" }} />,
       path: "/dashboard/home",
-      permissions:['MANAGE_CHURCH']
+      permissions:['VIEW_DASHBOARD']
   },
   {
       key: "sadaka",
@@ -207,6 +207,7 @@ const Main: React.FC = () => {
           // height: "100vh",
           overflowY:"scroll",
           position: "fixed",
+          zIndex:1000,
           left: 0,
           top: 0,
           bottom: 0,
