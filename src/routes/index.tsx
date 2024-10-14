@@ -21,6 +21,7 @@ import RolesList from '../pages/roles/RolesList.tsx';
 import SpList from '../pages/service-providers/SpsList.tsx';
 import CardNumberList from '../pages/wahumini/CardNumbers.tsx';
 import PaymentTypeList from '../pages/settings/payment/PaymentCategoryList.tsx';
+import ExpenseCategoryList from '../pages/settings/expenditurecat/Expenditure.tsx';
 
 
 const AppRouter = () => {
@@ -63,6 +64,7 @@ const AppRouter = () => {
                 {path:"wahumini/bahasha", element:<CardNumberList/>},
                 {path:"muhumini/:id", element:<Muhumini />},
                 {path:"settings/payment-type", element:<PaymentTypeList />},
+                {path:"settings/expense-categories", element:<ExpenseCategoryList />},
                 {path:"matumizi", element:<Expenses />},
 
             ],

@@ -23,14 +23,20 @@ export const fetchPermissions = () => api.get(url.ALL_PERMISSIONS);
 export const postSpSetup = (data:any) =>  api.create(url.LIST_CREATE_SPS, data);
 export const fetchSps = () =>  api.get(url.LIST_CREATE_SPS);
 export const fetchSpByAdmin = (id:any) =>  api.get(url.GET_SP_BY_ADMIN + `${id}`);
+export const postPayType = (data:any) =>  api.create(url.PAYMENT_LIST_CREATE, data);
+export const fetchPayTypes = (id:any) =>  api.get(url.PAYMENT_LIST_CREATE + `${id}`);
+export const postExpCat = (data:any) =>  api.create(url.EXPENSE_CATEGORY_LIST_CREATE, data);
+export const fetchtExpCat = (id:any) =>  api.get(url.EXPENSE_CATEGORY_LIST_CREATE + `${id}`);
+export const fetchtExpenses = (id:any) =>  api.get(url.EXPENSE_LIST_CREATE + `${id}`);
+export const postExpenses = (data:any) =>  api.create(url.EXPENSE_LIST_CREATE, data);
+
+
 
 //WAHUMUNI
 export const fetchWahumini = (id:any) =>  api.get(url.WAHUMINI_LIST_CREATE + `${id}`);
 export const postWahumini = (data:any) =>  api.create(url.WAHUMINI_LIST_CREATE, data);
 export const postBahasha = (data:any) =>  api.create(url.CARDS_LIST_CREATE, data);
-export const postPayType = (data:any) =>  api.create(url.PAYMENT_LIST_CREATE, data);
 export const fetchBahasha = (id:any) =>  api.get(url.CARDS_LIST_CREATE + `${id}`);
-export const fetchPayTypes = (id:any) =>  api.get(url.PAYMENT_LIST_CREATE + `${id}`);
 
 //SADAKA ZAKA
 export const fetchSadaka = (id:any) =>  api.get(url.SADAKA_LIST_CREATE + `${id}`);

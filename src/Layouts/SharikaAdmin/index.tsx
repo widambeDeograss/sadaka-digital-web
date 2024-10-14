@@ -129,7 +129,7 @@ const menuItems:MenuItem[] = [
     permissions:['VIEW_WAHUMINI'],
     children: [
         { key: "payment", label: "Payment types", path: "/dashboard/settings/payment-type", permissions:['VIEW_WAHUMINI'], },
-        { key: "expenditure", label: "Expenditure Category", path: "/dashboard/settings/expenditure-category", permissions:['VIEW_WAHUMINI'], },
+        { key: "expenditure", label: "Expenditure Category", path: "/dashboard/settings/expense-categories", permissions:['VIEW_WAHUMINI'], },
         // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
     ],
 

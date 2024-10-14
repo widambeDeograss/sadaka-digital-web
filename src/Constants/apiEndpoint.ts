@@ -17,6 +17,8 @@ export const GET_SP_BY_ADMIN = `${DataBaseUrl}/service-providers/get-provider/ad
 export const WAHUMINI_LIST_CREATE = `${DataBaseUrl}/service-providers/wahumini-list-create`;
 export const CARDS_LIST_CREATE = `${DataBaseUrl}/service-providers/cards-number-list-create`;
 export const PAYMENT_LIST_CREATE = `${DataBaseUrl}/service-providers/payment-type-list-create`;
+export const EXPENSE_CATEGORY_LIST_CREATE = `${DataBaseUrl}/service-providers/expense-category-list-create`;
+export const EXPENSE_LIST_CREATE = `${DataBaseUrl}/service-providers/expense-list-create`;
 
 
 //SP SADAKA and ZAKA
