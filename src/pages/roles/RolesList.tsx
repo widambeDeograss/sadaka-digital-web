@@ -62,10 +62,11 @@ function RolesList() {
               </Button>
           }
         >
+            <div className="table-responsive">
           <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
                     throw new Error("Function not implemented.");
                 } }/>
-          <div className="table-responsive">
+        
             <Table columns={columns} dataSource={roles} loading={isLoading}/>
           </div>
         </Card>

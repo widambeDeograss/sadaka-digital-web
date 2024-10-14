@@ -84,7 +84,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       );
       message.success("Zaka added successfully!");
       handleCancel();
-      queryClient.invalidateQueries(['zaka']);
+      queryClient.invalidateQueries({queryKey:['zaka']});
       formWithCard.reset();
       formWithoutCard.reset();
       setBahashaData(null);

@@ -15,6 +15,7 @@ const { Title } = Typography;
 interface ExpenseCategoryDetails {
   id: number;
   category_name: string;
+  budget:number;
   inserted_by: string;
   inserted_at: string;
   updated_by: string;
@@ -75,6 +76,14 @@ const Expenses = () => {
       render: (text: string) => <div>{text}</div>,
     },
     {
+      title: "Category Budget",
+      dataIndex: ["category_details", "budget"],
+      key: "category",
+    //   sorter: (a: Expense, b: Expense) =>
+    //     a?.category_details?.budget?.localeCompare(b?.category_details?.category_name),
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
       title: "Spent By",
       dataIndex: "spent_by",
       key: "spent_by",
@@ -100,7 +109,7 @@ const Expenses = () => {
       title: "Progress",
       key: "progress",
       render: (_: any, record: Expense) => {
-        const budget = 5000000;
+        const budget = record?.category_details?.budget;
         const spent = parseFloat(record.amount);
         const percent = Math.min((spent / budget) * 100, 100);
 
@@ -150,7 +159,7 @@ const Expenses = () => {
       </Card>
 
       <Card title={<Title level={5}>Orodha ya Matumizi</Title>} className="mt-5">
-        <div className="">
+      <div className="table-responsive">
           <Tabletop
             inputfilter={false}
             togglefilter={() => {}}

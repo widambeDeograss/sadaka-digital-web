@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 // Yup validation schema
 const schema = yup.object().shape({
   name: yup.string().required("Expense Category name is required"),
-//   description: yup.string(),
+  budget: yup.number().required("Budget is required"),
 });
 
 const ExpenseCategoryModal = ({ visible, onClose }: any) => {
@@ -68,7 +68,7 @@ const ExpenseCategoryModal = ({ visible, onClose }: any) => {
   return (
     <Modal
       title="Add Expense Category"
-      visible={visible}
+      open={visible}
       onCancel={onClose}
       footer={null}
     >
@@ -94,29 +94,28 @@ const ExpenseCategoryModal = ({ visible, onClose }: any) => {
                     </p>
                   )}
                 </div>
-     
-                {/* <div className="">
+            <div className="">
                   <label
-                    htmlFor="description"
+                    htmlFor="budget"
                     className="block text-sm font-medium text-gray-700"
                   >
-                    description
+                    budget
                   </label>
                   <input
-                    id="description"
-                    type="text"
+                    id="budget"
+                    type="number"
                     className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      errors.description ? "border-red-500" : "border-gray-300"
+                      errors.budget ? "border-red-500" : "border-gray-300"
                     }`}
-                    {...register("description")}
+                    {...register("budget")}
                   />
-                  {errors.description && (
+                  {errors.budget && (
                     <p className="mt-1 text-sm text-red-600">
-                      {errors.description?.message}
+                      {errors.budget?.message}
                     </p>
                   )}
                 </div>
-     */}
+     
 
         {/* Submit Button */}
         <div className="form-group">

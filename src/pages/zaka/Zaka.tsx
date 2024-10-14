@@ -103,7 +103,7 @@ const Zaka = () => {
           </Card>
           <Card title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}
                 className="mt-5">
-              <div className="">
+                <div className="table-responsive">
                 <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
                       throw new Error("Function not implemented.");
                   } }/>

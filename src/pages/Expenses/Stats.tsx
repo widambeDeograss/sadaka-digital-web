@@ -5,7 +5,7 @@ import CountUp from 'react-countup';
 const Widgets = () => {
     return (
         <React.Fragment>
-             <div className="grid grid-cols-4 w-full gap-3 mb-3">
+             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-3 mb-3">
             <div className="">
                 <div className="text-center bg-white text-black py-4">
                     <div className="flex items-center justify-center mx-auto rounded-full w-12 h-12    bg-blue-500/10 text-blue-500 ">

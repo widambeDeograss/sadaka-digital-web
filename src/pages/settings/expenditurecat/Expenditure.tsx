@@ -45,6 +45,12 @@ const ExpenseCategoryList = () => {
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
+    {
+      title: "Budget",
+      dataIndex: "budget",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
 
     {
         title: "created_at",

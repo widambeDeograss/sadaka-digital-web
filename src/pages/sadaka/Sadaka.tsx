@@ -198,7 +198,7 @@ const Sadaka = () => {
         title={<h3 className=" text-sm text-left font-bold">Sadaka</h3>}
         className="mt-5"
       >
-        <div className="">
+        <div className="table-responsive">
           <Tabletop
             inputfilter={false}
             togglefilter={function (value: boolean): void {

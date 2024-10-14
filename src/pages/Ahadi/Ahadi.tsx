@@ -159,7 +159,7 @@ const Ahadi = () => {
         title={<Title level={5}>Orodha ya Ahadi</Title>}
         className="mt-5"
       >
-        <div className="">
+           <div className="table-responsive">
           <Tabletop
             inputfilter={false}
             togglefilter={() => {}}
