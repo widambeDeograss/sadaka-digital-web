@@ -97,6 +97,17 @@ const menuItems:MenuItem[] = [
       ],
   },
   {
+      key: "package",
+      label: "Packages",
+      icon: <PiChurchBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
+      permissions:["MANAGE_SPS"],
+      children: [
+          { key: "package", label: "Sp Package list", path: "/dashboard/sps",  permissions:["MANAGE_SPS"], },
+          // { key: "roles", label: "roles", path: "/dashboard/users/roles" },
+          // { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions" },
+      ],
+  },
+  {
       key: "wahumini",
       label: "Wahumini",
       icon: <UsergroupAddOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
@@ -130,6 +141,7 @@ const menuItems:MenuItem[] = [
     children: [
         { key: "payment", label: "Payment types", path: "/dashboard/settings/payment-type", permissions:['VIEW_WAHUMINI'], },
         { key: "expenditure", label: "Expenditure Category", path: "/dashboard/settings/expense-categories", permissions:['VIEW_WAHUMINI'], },
+        { key: "package", label: "Package list", path: "/dashboard/sps",  permissions:["MANAGE_SPS"], },
         // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
     ],
 
