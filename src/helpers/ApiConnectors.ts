@@ -18,6 +18,13 @@ export const fetchAllUsers = (params:any) => api.get(url.USERS + params);
 export const fetchRoles = () => api.get(url.ALL_ROLES);
 export const fetchPermissions = () => api.get(url.ALL_PERMISSIONS);
 
+//PACKAGES
+export const postSystemPackage = (data:any) =>  api.create(url.ALL_SYSTEM_PACKAGES, data);
+export const fetchSystemPackage = () =>  api.get(url.ALL_SYSTEM_PACKAGES);
+export const postSystemPackageOffer = (data:any) =>  api.create(url.SYSTEM_PACKAGES_OFFER, data);
+export const fetchSystemPackageOffer = () =>  api.get(url.SYSTEM_PACKAGES_OFFER);
+export const postSpPackage = (data:any) =>  api.create(url.ALL_SP_PACKAGES, data);
+export const fetchSpPackage = () =>  api.get(url.ALL_SP_PACKAGES);
 
 //SPS
 export const postSpSetup = (data:any) =>  api.create(url.LIST_CREATE_SPS, data);

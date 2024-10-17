@@ -137,11 +137,11 @@ const menuItems:MenuItem[] = [
     key: "settings",
     label: "Settings",
     icon: <FiSettings style={{ fontSize: "14px", fontWeight: "bold" }} />,
-    permissions:['VIEW_WAHUMINI'],
+    permissions:['MANAGE_SETTINGS'],
     children: [
         { key: "payment", label: "Payment types", path: "/dashboard/settings/payment-type", permissions:['VIEW_WAHUMINI'], },
         { key: "expenditure", label: "Expenditure Category", path: "/dashboard/settings/expense-categories", permissions:['VIEW_WAHUMINI'], },
-        { key: "package", label: "Package list", path: "/dashboard/sps",  permissions:["MANAGE_SPS"], },
+        { key: "package", label: "Package list", path: "/dashboard/sps",  permissions:["MANAGE_PACKAGE"], },
         // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
     ],
 
@@ -300,7 +300,7 @@ const Main: React.FC = () => {
         <Content
           className="content-wrapper"
           style={{
-            margin: "24px 16px",
+            margin: "2px ",
             padding: 24,
             background: Colors.bgDarkAddon,
             minHeight: 280,

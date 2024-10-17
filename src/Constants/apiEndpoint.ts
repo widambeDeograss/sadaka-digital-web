@@ -10,6 +10,11 @@ export const ALL_USERS = `${DataBaseUrl}/users`;
 export const ALL_ROLES = `${DataBaseUrl}/user-management/system-role-list-create`;
 export const ALL_PERMISSIONS = `${DataBaseUrl}/permissions`;
 
+// PACKAGE 
+export const ALL_SYSTEM_PACKAGES = `${DataBaseUrl}/service-providers/system-package-list-create`
+export const SYSTEM_PACKAGES_OFFER = `${DataBaseUrl}/service-providers/system-offer-list-create`
+export const ALL_SP_PACKAGES = `${DataBaseUrl}/service-providers/package-list-create`
+
 
 //SPS
 export const LIST_CREATE_SPS = `${DataBaseUrl}/service-providers/service-provider-list-create`;
