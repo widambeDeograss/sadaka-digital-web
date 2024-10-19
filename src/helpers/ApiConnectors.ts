@@ -36,7 +36,10 @@ export const postExpCat = (data:any) =>  api.create(url.EXPENSE_CATEGORY_LIST_CR
 export const fetchtExpCat = (id:any) =>  api.get(url.EXPENSE_CATEGORY_LIST_CREATE + `${id}`);
 export const fetchtExpenses = (id:any) =>  api.get(url.EXPENSE_LIST_CREATE + `${id}`);
 export const postExpenses = (data:any) =>  api.create(url.EXPENSE_LIST_CREATE, data);
-
+export const fetchtJumuiya = (id:any) =>  api.get(url.JUMUIYA_LIST_CREATE + `${id}`);
+export const postJumuiya = (data:any) =>  api.create(url.JUMUIYA_LIST_CREATE, data);
+export const fetchtKanda = (id:any) =>  api.get(url.KANDA_LIST_CREATE + `${id}`);
+export const postKanda = (data:any) =>  api.create(url.KANDA_LIST_CREATE, data);
 
 
 //WAHUMUNI

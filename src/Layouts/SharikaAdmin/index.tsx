@@ -22,6 +22,7 @@ import { useAppSelector } from "../../store/store-hooks";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { ToastContainer } from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";
+import NoActivePackageModal from "../Admin/NoActivePackage";
 // import "./Main.css"; 
 
 const { Content, Footer, Sider } = Layout;
@@ -154,8 +155,12 @@ const Main: React.FC = () => {
   const userPermissions = useAppSelector(
     (state: any) => state?.user?.userInfo?.role.permissions || []
   );
+  const activePackage =  useAppSelector((state:any) =>  state.sp.active_package)
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  console.log(activePackage);
+  
 
   // Update collapsed state based on window size
   useEffect(() => {
@@ -317,6 +322,12 @@ const Main: React.FC = () => {
           Sadaka Digital ©2023 Created by UED
         </Footer>
       </Layout>
+
+      {
+        !activePackage.is_active && (
+          <NoActivePackageModal/>
+        )
+      }
     </Layout>
   );
 };

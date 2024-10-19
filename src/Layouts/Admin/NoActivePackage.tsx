@@ -12,6 +12,8 @@ const NoActivePackageModal = () => {
 
   // Function to handle when the modal is closed
   const handleCancel = () => {
+    localStorage.clear();
+    window.location.reload();
     setIsModalVisible(false);
   };
 
@@ -28,18 +30,17 @@ const NoActivePackageModal = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={showModal}>
+      {/* <Button type="primary" onClick={showModal}>
         Check Active Packages
-      </Button>
+      </Button> */}
 
       <Modal
         title={
           <div style={{ display: "flex", alignItems: "center" }}>
-            <ExclamationCircleOutlined style={{ color: "#faad14", fontSize: "24px", marginRight: "8px" }} />
             <span>No Active Package</span>
           </div>
         }
-        visible={isModalVisible}
+        open={true}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>

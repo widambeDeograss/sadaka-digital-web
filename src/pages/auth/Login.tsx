@@ -10,7 +10,7 @@ import { fetchSpByAdmin, postLogin } from "../../helpers/ApiConnectors";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 import { useMutation } from "@tanstack/react-query";
 import { loginSuccess, setUserInfo } from "../../store/slices/auth/authSlice";
-import { setCurrentSP } from "../../store/slices/sp/spSlice";
+import { setActivePackage, setCurrentSP } from "../../store/slices/sp/spSlice";
 
 const { Content, Sider } = Layout;
 
@@ -69,13 +69,27 @@ export default function LoginPage() {
         loginSuccess({accessToken:data?.access_token, refreshToken:data?.refresh_token})
       );
       dispatch(setUserInfo(data?.user));
-      if (data?.user?.is_top_admin) {
+      const isAdmin = data?.user?.is_top_admin;
+
+      if (isAdmin) {
+        const defaultPackage = {
+          id: "1221144",
+          package_name: "Default Admin Package",
+          package_description: "This is the default active package for admin users.",
+          package_price: "0", 
+          package_duration: "Unlimited",
+          is_active: true,
+          payed_amount: 0,
+          package_start_date: new Date().toISOString(),
+          package_end_date: null 
+        };
+        dispatch(setCurrentSP({church_name:""}));
+        dispatch(setActivePackage(defaultPackage));
         navigation("/dashboard"); 
-      }else{
-        console.log(data);
-        
-        const spResponse = await fetchSpByAdmin(data?.user.id);
-        dispatch(setCurrentSP(spResponse));
+      } else {
+        const spResponse: any = await fetchSpByAdmin(data?.user.id);
+        dispatch(setCurrentSP(spResponse?.service_provider));
+        dispatch(setActivePackage(spResponse?.active_package || null)); 
         console.log(spResponse);
         
         navigation("/");

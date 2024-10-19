@@ -6,6 +6,8 @@ import { PiHandsPrayingFill, PiHandshakeBold , PiBuildingApartmentBold, PiChurch
 import { GiSwapBag, GiTakeMyMoney, GiPayMoney, GiChurch  } from "react-icons/gi";
 import { RiDashboardFill } from "react-icons/ri";
 import NavCard from "../components/NavCard.tsx";
+import { useAppSelector } from "../store/store-hooks.ts";
+import NoActivePackageModal from "../Layouts/Admin/NoActivePackage.tsx";
 
 const NavCardData = [
   {
@@ -54,7 +56,9 @@ const NavCardData = [
 
 
 const Home = () => {
-  // const isDarkMode = useAppSelector((state) => state.AppStateReducer.isDarkMode);
+const activePackage =  useAppSelector((state:any) =>  state.sp?.active_package?.is_active)
+
+  console.log(activePackage);
 
   return (
     <div className="Home p-10 border-white mb-2">
@@ -71,6 +75,12 @@ const Home = () => {
           ))}
         </div>
       </div>
+
+      {
+        !activePackage && (
+          <NoActivePackageModal/>
+        )
+      }
     </div>
   );
 };
