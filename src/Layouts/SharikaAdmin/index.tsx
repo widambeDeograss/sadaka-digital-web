@@ -102,7 +102,7 @@ const menuItems:MenuItem[] = [
       icon: <PiChurchBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
       permissions:["MANAGE_SPS"],
       children: [
-          { key: "package", label: "Sp Package list", path: "/dashboard/sps",  permissions:["MANAGE_SPS"], },
+          { key: "package", label: "Sp Package list", path: "/dashboard/packages",  permissions:["MANAGE_SPS"], },
           // { key: "roles", label: "roles", path: "/dashboard/users/roles" },
           // { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions" },
       ],
@@ -141,7 +141,7 @@ const menuItems:MenuItem[] = [
     children: [
         { key: "payment", label: "Payment types", path: "/dashboard/settings/payment-type", permissions:['VIEW_WAHUMINI'], },
         { key: "expenditure", label: "Expenditure Category", path: "/dashboard/settings/expense-categories", permissions:['VIEW_WAHUMINI'], },
-        { key: "package", label: "Package list", path: "/dashboard/sps",  permissions:["MANAGE_PACKAGE"], },
+        { key: "sytemPackage", label: "Package list", path: "/dashboard/settings/system-package",  permissions:["MANAGE_PACKAGE"], },
         // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
     ],
 
@@ -305,7 +305,7 @@ const Main: React.FC = () => {
             background: Colors.bgDarkAddon,
             minHeight: 280,
             overflowY: "auto",
-            marginTop: 64, // Height of the fixed header
+            marginTop: 24,
           }}
         >
           <Outlet />

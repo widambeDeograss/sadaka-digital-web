@@ -22,6 +22,8 @@ import SpList from '../pages/service-providers/SpsList.tsx';
 import CardNumberList from '../pages/wahumini/CardNumbers.tsx';
 import PaymentTypeList from '../pages/settings/payment/PaymentCategoryList.tsx';
 import ExpenseCategoryList from '../pages/settings/expenditurecat/Expenditure.tsx';
+import SystemPackagesList from '../pages/package/SytemPackageList.tsx';
+import SpPackages from '../pages/package/SpPackages.tsx';
 
 
 const AppRouter = () => {
@@ -54,6 +56,7 @@ const AppRouter = () => {
                 {path:"mchango/:id", element:<Mchango />},
                 {path:"zaka", element:<Zaka/>},
                 {path:"sps", element:<SpList/>},
+                {path:"packages", element:<SpPackages/>},
                 {path:"users/list", element:<UsersList/>},
                 {path:"users/roles", element:<RolesList/>},
                 {path:"sadaka", element:<Sadaka/>},
@@ -64,6 +67,7 @@ const AppRouter = () => {
                 {path:"wahumini/bahasha", element:<CardNumberList/>},
                 {path:"muhumini/:id", element:<Muhumini />},
                 {path:"settings/payment-type", element:<PaymentTypeList />},
+                {path:"settings/system-package", element:<SystemPackagesList />},
                 {path:"settings/expense-categories", element:<ExpenseCategoryList />},
                 {path:"matumizi", element:<Expenses />},
 

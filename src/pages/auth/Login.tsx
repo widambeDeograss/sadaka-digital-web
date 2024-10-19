@@ -11,14 +11,15 @@ import { addAlert } from "../../store/slices/alert/alertSlice";
 import { useMutation } from "@tanstack/react-query";
 import { loginSuccess, setUserInfo } from "../../store/slices/auth/authSlice";
 import { setCurrentSP } from "../../store/slices/sp/spSlice";
-const { Content, Sider } = Layout;
 
+const { Content, Sider } = Layout;
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigation = useNavigate();
   const dispatch = useDispatch();
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,7 +36,6 @@ export default function LoginPage() {
     handleResize();
     window.addEventListener("resize", handleResize);
 
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -109,7 +109,7 @@ export default function LoginPage() {
           color: "#fff",
           borderRadius:"0px 40% 50% 0px   / 30px"
         }}
-        className="left-side relative" // Add relative positioning
+        className="left-side relative"
       >
         <div className="flex flex-col items-center justify-center h-full p-8">
           <img src={logo} className='h-24 w-24'/>
@@ -197,6 +197,10 @@ export default function LoginPage() {
               </Link>
             </p>
           </Form>
+
+          <div>
+  
+    </div>
 
           <Divider plain>
             <span className="text-gray-400 text-sm">Sign in with</span>

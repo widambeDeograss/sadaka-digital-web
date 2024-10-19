@@ -16,7 +16,7 @@ export default function Register() {
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
-      const leftSide = document.querySelector(".left-side");
+      const leftSide:any = document.querySelector(".left-side");
 
       if (screenWidth < 768) {
         leftSide.style.display = "none";
