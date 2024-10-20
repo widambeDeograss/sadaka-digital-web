@@ -15,6 +15,7 @@ import Tabletop from "../../components/tables/TableTop.tsx";
 import { fetchSadaka } from "../../helpers/ApiConnectors.ts";
 import { useAppSelector } from "../../store/store-hooks.ts";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const timelineList = [
   {
@@ -37,7 +38,7 @@ const { Title, Paragraph, Text } = Typography;
 const Sadaka = () => {
   const [reverse, setReverse] = useState(false);
   const [openMOdal, setopenMOdal] = useState(false);
-
+  const navigate = useNavigate();
   const church = useAppSelector((state: any) => state.sp);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
@@ -135,6 +136,13 @@ const Sadaka = () => {
                 onClick={() => setopenMOdal(true)}
               >
                 Ongeza Sadaka
+              </Button>
+              <Button
+                type="primary"
+                className="bg-[#152033] text-white text-xs"
+                onClick={() => navigate('/dashboard/sadaka-monthly-report')}
+              >
+              Matoleo mwezi huu
               </Button>
             </div>
           </div>

@@ -24,6 +24,8 @@ import PaymentTypeList from '../pages/settings/payment/PaymentCategoryList.tsx';
 import ExpenseCategoryList from '../pages/settings/expenditurecat/Expenditure.tsx';
 import SystemPackagesList from '../pages/package/SytemPackageList.tsx';
 import SpPackages from '../pages/package/SpPackages.tsx';
+import ZakaReportTable from '../pages/zaka/ZakaTotals.tsx';
+import SadakaReportTable from '../pages/sadaka/SadakaMonthlyTotals.tsx';
 
 
 const AppRouter = () => {
@@ -55,11 +57,13 @@ const AppRouter = () => {
                 {path:"michango/ongeza", element:<OngezaMchango />},
                 {path:"mchango/:id", element:<Mchango />},
                 {path:"zaka", element:<Zaka/>},
+                {path:"zaka-monthly-report", element:<ZakaReportTable/>},
                 {path:"sps", element:<SpList/>},
                 {path:"packages", element:<SpPackages/>},
                 {path:"users/list", element:<UsersList/>},
                 {path:"users/roles", element:<RolesList/>},
                 {path:"sadaka", element:<Sadaka/>},
+                {path:"sadaka-monthly-report", element:<SadakaReportTable/>},
                 {path:"profile", element:<Profile />},
                 {path:"ahadi", element:<Ahadi />},
                 {path:"wahumini/waliopo", element:<Wahumini/>},

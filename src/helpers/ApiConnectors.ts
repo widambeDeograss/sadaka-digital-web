@@ -55,6 +55,8 @@ export const fetchZaka = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 export const postSadaka = (data:any) =>  api.create(url.SADAKA_LIST_CREATE, data);
 export const postZaka = (data:any) =>  api.create(url.ZAKA_LIST_CREATE, data);
 export const resolveBahasha = (id:any) =>  api.get(url.BAHASHA_GET_NO + `${id}`);
+export const resolveZakaTotals = (id:any) =>  api.get(url.ZAKA_MONTHLY_TOTOLS + `${id}`);
+export const resolveSadakaTotals = (id:any) =>  api.get(url.SADAKA_MONTHLY_TOTOLS + `${id}`);
 
 //MCHANGO
 export const fetchMichango = (id:any) =>  api.get(url.MICHANGO_LIST + `${id}`);

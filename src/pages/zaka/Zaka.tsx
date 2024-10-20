@@ -7,6 +7,7 @@ import Tabletop from "../../components/tables/TableTop";
 import { useAppSelector } from "../../store/store-hooks";
 import { useQuery } from "@tanstack/react-query";
 import { fetchZaka } from "../../helpers/ApiConnectors";
+import { useNavigate } from "react-router-dom";
 
 const michango = [
     {
@@ -21,6 +22,7 @@ const michango = [
 const Zaka = () => {
     const [reverse, setReverse] = useState(false);
   const [openMOdal, setopenMOdal] = useState(false);
+  const navigate = useNavigate();
 
   const church = useAppSelector((state: any) => state.sp);
   const userPermissions = useAppSelector(
@@ -93,7 +95,7 @@ const Zaka = () => {
                       <div>
                           <Button.Group className="mt-5">
                               <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} >Ongeza zaka</Button>
-                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} ></Button>
+                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => navigate('/dashboard/zaka-monthly-report')} >Fuatilia zaka</Button>
                               {/* </Radio.Button> */}
                           </Button.Group>
                       </div>

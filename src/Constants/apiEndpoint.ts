@@ -32,6 +32,7 @@ export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-
 export const ZAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/zaka-list-create`;
 export const BAHASHA_GET_NO = `${DataBaseUrl}/service-providers/cards-number-retrieve-by-card-no/`;
 export const ZAKA_MONTHLY_TOTOLS = `${DataBaseUrl}/service-providers/zaka/monthly-totals/`;
+export const SADAKA_MONTHLY_TOTOLS = `${DataBaseUrl}/service-providers/sadaka/monthly-totals/`;
 
 // MICHANGO
 export const MICHANGO_LIST = `${DataBaseUrl}/service-providers/mchango-list-create`;
