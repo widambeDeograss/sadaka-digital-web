@@ -168,6 +168,8 @@ const KandaJumuiya = () => {
           <div>
             <h3 className="text-left font-bold text-xs">
               Jumla Kanda: <span>{kanda?.length}</span>
+            </h3>
+            <h3 className="text-left font-bold text-xs mt-2">
               Jumla Jumuiya: <span>{jumuiya?.length}</span>
             </h3>
           </div>
