@@ -116,7 +116,7 @@ const menuItems:MenuItem[] = [
       children: [
           { key: "waliopo", label: "Wahumini waliopo", path: "/dashboard/wahumini/waliopo", permissions:['VIEW_WAHUMINI'], },
           { key: "kanda", label: "Jumuiya", path: "/dashboard/wahumini/kanda-jumuiya", permissions:['VIEW_WAHUMINI'], },
-          { key: "ongeza", label: "Ongeza Muhumini", path: "/dashboard/wahumini/ongeza", permissions:['VIEW_WAHUMINI'], },
+          { key: "ongezaWahumini", label: "Ongeza Muhumini", path: "/dashboard/wahumini/ongeza", permissions:['VIEW_WAHUMINI'], },
           { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
       ],
 
