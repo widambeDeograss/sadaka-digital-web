@@ -36,10 +36,6 @@ export const postExpCat = (data:any) =>  api.create(url.EXPENSE_CATEGORY_LIST_CR
 export const fetchtExpCat = (id:any) =>  api.get(url.EXPENSE_CATEGORY_LIST_CREATE + `${id}`);
 export const fetchtExpenses = (id:any) =>  api.get(url.EXPENSE_LIST_CREATE + `${id}`);
 export const postExpenses = (data:any) =>  api.create(url.EXPENSE_LIST_CREATE, data);
-export const fetchtJumuiya = (id:any) =>  api.get(url.JUMUIYA_LIST_CREATE + `${id}`);
-export const postJumuiya = (data:any) =>  api.create(url.JUMUIYA_LIST_CREATE, data);
-export const fetchtKanda = (id:any) =>  api.get(url.KANDA_LIST_CREATE + `${id}`);
-export const postKanda = (data:any) =>  api.create(url.KANDA_LIST_CREATE, data);
 
 
 //WAHUMUNI
@@ -47,6 +43,10 @@ export const fetchWahumini = (id:any) =>  api.get(url.WAHUMINI_LIST_CREATE + `${
 export const postWahumini = (data:any) =>  api.create(url.WAHUMINI_LIST_CREATE, data);
 export const postBahasha = (data:any) =>  api.create(url.CARDS_LIST_CREATE, data);
 export const fetchBahasha = (id:any) =>  api.get(url.CARDS_LIST_CREATE + `${id}`);
+export const fetchtJumuiya = (id:any) =>  api.get(url.JUMUIYA_LIST_CREATE + `${id}`);
+export const postJumuiya = (data:any) =>  api.create(url.JUMUIYA_LIST_CREATE, data);
+export const fetchtKanda = (id:any) =>  api.get(url.KANDA_LIST_CREATE + `${id}`);
+export const postKanda = (data:any) =>  api.create(url.KANDA_LIST_CREATE, data);
 
 //SADAKA ZAKA
 export const fetchSadaka = (id:any) =>  api.get(url.SADAKA_LIST_CREATE + `${id}`);

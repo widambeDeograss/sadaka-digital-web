@@ -26,6 +26,7 @@ import SystemPackagesList from '../pages/package/SytemPackageList.tsx';
 import SpPackages from '../pages/package/SpPackages.tsx';
 import ZakaReportTable from '../pages/zaka/ZakaTotals.tsx';
 import SadakaReportTable from '../pages/sadaka/SadakaMonthlyTotals.tsx';
+import KandaJumuiya from '../pages/wahumini/jumuiya/JumuiyaList.tsx';
 
 
 const AppRouter = () => {
@@ -69,6 +70,7 @@ const AppRouter = () => {
                 {path:"wahumini/waliopo", element:<Wahumini/>},
                 {path:"wahumini/ongeza", element:<OngezaMuhumini/>},
                 {path:"wahumini/bahasha", element:<CardNumberList/>},
+                {path:"wahumini/kanda-jumuiya", element:<KandaJumuiya/>},
                 {path:"muhumini/:id", element:<Muhumini />},
                 {path:"settings/payment-type", element:<PaymentTypeList />},
                 {path:"settings/system-package", element:<SystemPackagesList />},

@@ -63,7 +63,20 @@ const Wahumini = () => {
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
-
+    {
+      title: "Last Name",
+      dataIndex: "last_name",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
+    {
+      title: "Jumuiya",
+      dataIndex: ["jumuiya_details", "name"],
+      key: "category",
+    //   sorter: (a: Expense, b: Expense) =>
+    //     a?.category_details?.budget?.localeCompare(b?.category_details?.category_name),
+      render: (text: string) => <div>{text}</div>,
+    },
     {
       title: "Email",
       dataIndex: "email",
