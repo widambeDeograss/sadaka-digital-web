@@ -23,7 +23,6 @@ import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { ToastContainer } from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";
 import NoActivePackageModal from "../Admin/NoActivePackage";
-// import "./Main.css"; 
 
 const { Content, Footer, Sider } = Layout;
 

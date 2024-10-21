@@ -45,12 +45,10 @@ const AppRouter = () => {
           {
             path: "/",
             element:  isAuthenticated == true ? <Home /> : <Navigate to="/login" />,
-            // element: <Home />,
           },
         {
             path: "/dashboard/*",
             element:  isAuthenticated == true ? <Main /> : <Navigate to="/login" />,
-            // element: <Main/>,
             children: [
                 { element: <Navigate to="home" />,index:true},
                 {path:"home", element:<Dashboard />},
