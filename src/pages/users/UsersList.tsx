@@ -219,8 +219,10 @@ function UsersList() {
         }
       >
         <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
-                  throw new Error("Function not implemented.");
-              } }/>
+          throw new Error("Function not implemented.");
+        } } searchTerm={""} onSearch={function (value: string): void {
+          throw new Error("Function not implemented.");
+        } }/>
         <div className="table-responsive">
           <Table columns={columns} dataSource={users} loading={isLoading}/>
         </div>

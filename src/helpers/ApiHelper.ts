@@ -21,7 +21,6 @@ axios.interceptors.request.use(
   (config: any) => {
     const state = store.getState();
     const accessToken = state.user.accessToken;
-    console.log(accessToken);
     
     if (accessToken) {
       config.headers = {

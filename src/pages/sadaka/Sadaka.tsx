@@ -2,19 +2,32 @@ import {
   Button,
   Card,
   Col,
+  Dropdown,
+  Menu,
+  message,
   Row,
   Table,
   Timeline,
   Typography,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OngezaSadaka from "./OngezaSadaka.tsx";
 import Widgets from "./Stats.tsx";
 import Tabletop from "../../components/tables/TableTop.tsx";
-import { fetchSadaka } from "../../helpers/ApiConnectors.ts";
 import { useAppSelector } from "../../store/store-hooks.ts";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteSadakaById, fetchSadaka } from "../../helpers/ApiConnectors";
 import { useNavigate } from "react-router-dom";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import ViewModal from "./ViewSadaka.tsx";
+import UpdateSadaka from "./UpdateSadaka.tsx";
+import modal from "antd/es/modal";
 
 const timelineList = [
   {
@@ -37,11 +50,25 @@ const { Title, Paragraph, Text } = Typography;
 const Sadaka = () => {
   const [reverse, setReverse] = useState(false);
   const [openMOdal, setopenMOdal] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [SadakaData, setSadakaData] = useState([]);
+  const [yearFilter, setYearFilter] = useState<string | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const [updateSadakaModal, setupdateSadakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
+
+  const handleView = (record: any) => {
+    setSelectedData(record);
+    setModalVisible(true);
+  };
 
   const {
     data: sadakaToday,
@@ -64,13 +91,43 @@ const Sadaka = () => {
   const { data: sadaka, isLoading: loadingSadaka } = useQuery({
     queryKey: ["sadaka"],
     queryFn: async () => {
-      const response: any = await fetchSadaka(`?church_id=${church.id}`);
-      console.log(response);
+      let query = `?church_id=${church.id}`;
+      if (yearFilter) query += `&year=${yearFilter}`;
+      const response: any = await fetchSadaka(query);
+      setSadakaData(response);
+      setFilteredData(response);
       return response;
     },
     // {
     //   enabled: false,
     // }
+  });
+
+  const handleDelete = (SadakaId: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteSadakaMutation(SadakaId);
+      },
+    });
+  };
+
+  const { mutate: deleteSadakaMutation } = useMutation({
+    mutationFn: async (SadakaId: any) => {
+      await deleteSadakaById(SadakaId);
+    },
+    onSuccess: () => {
+      message.success("Sadaka deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
+    },
+    onError: () => {
+      message.error("Failed to delete Sadaka.");
+    },
   });
 
   const columns = [
@@ -85,28 +142,29 @@ const Sadaka = () => {
       title: "Name",
 
       dataIndex: "name",
-      render: (text: any, record: any) => <div>{record?.bahasha_details?.mhumini_details?.first_name} {record?.bahasha_details?.mhumini_details?.last_name}</div>,
+      render: (text: any, record: any) => (
+        <div>
+          {record?.bahasha_details?.mhumini_details?.first_name}{" "}
+          {record?.bahasha_details?.mhumini_details?.last_name}
+        </div>
+      ),
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
-        title: "Bahasha",
-  
-        dataIndex: "",
-        render: (text: any, record: any) => (
-          <div>
-            {record?.bahasha_details?.card_no}
-          </div>
-        ),
-        // sorter: (a, b) => a.name.length - b.name.length,
-      },
+      title: "Bahasha",
+
+      dataIndex: "",
+      render: (text: any, record: any) => (
+        <div>{record?.bahasha_details?.card_no}</div>
+      ),
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
     {
-        title: "Amount",
-        dataIndex: "sadaka_amount",
-        render: (text: any, record: any) => <div>{text}</div>,
-        // sorter: (a, b) => a.name.length - b.name.length,
-      },
- 
-   
+      title: "Amount",
+      dataIndex: "sadaka_amount",
+      render: (text: any, record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
 
     {
       title: "date",
@@ -114,7 +172,68 @@ const Sadaka = () => {
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
+    {
+      title: "",
+      render: (text: any, record: any) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item
+                key="1"
+                icon={<EyeOutlined />}
+                onClick={() => handleView(record)}
+              >
+                View
+              </Menu.Item>
+              <Menu.Item
+                key="2"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setSelectedData(record);
+                  setupdateSadakaModal(true);
+                }}
+              >
+                Edit
+              </Menu.Item>
+              <Menu.Item
+                key="3"
+                icon={<DeleteOutlined />}
+                danger
+                onClick={() => handleDelete(record?.id)}
+              >
+                Delete
+              </Menu.Item>
+            </Menu>
+          }
+          trigger={["click"]}
+        >
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Actions <DownOutlined />
+          </a>
+        </Dropdown>
+      ),
+    },
   ];
+
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = SadakaData.filter((item: any) => {
+        return (
+          item?.bahasha_details?.mhumini_details?.first_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.mhumini_details?.last_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(SadakaData);
+    }
+  }, [searchTerm, SadakaData]);
 
   return (
     <div>
@@ -129,20 +248,22 @@ const Sadaka = () => {
               </h3>
             </div>
             <div>
-              <Button
-                type="primary"
-                className="bg-[#152033] text-white text-xs"
-                onClick={() => setopenMOdal(true)}
-              >
-                Ongeza Sadaka
-              </Button>
-              <Button
-                type="primary"
-                className="bg-[#152033] text-white text-xs"
-                onClick={() => navigate('/dashboard/sadaka-monthly-report')}
-              >
-              Matoleo mwezi huu
-              </Button>
+              <Button.Group className="mt-5">
+                <Button
+                  type="primary"
+                  className="bg-[#152033] text-white text-xs"
+                  onClick={() => setopenMOdal(true)}
+                >
+                  Ongeza Sadaka
+                </Button>
+                <Button
+                  type="primary"
+                  className="bg-[#152033] text-white text-xs"
+                  onClick={() => navigate("/dashboard/sadaka-monthly-report")}
+                >
+                  Matoleo mwezi huu
+                </Button>
+              </Button.Group>
             </div>
           </div>
         </div>
@@ -155,11 +276,10 @@ const Sadaka = () => {
           >
             <div className="table-responsive">
               <Tabletop
-                showFilter={false}
                 inputfilter={false}
-                togglefilter={function (value: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
+                onSearch={(term: string) => setSearchTerm(term)}
+                togglefilter={(value: boolean) => setShowFilter(value)}
+                searchTerm={searchTerm}
               />
               <Table
                 columns={columns}
@@ -206,36 +326,53 @@ const Sadaka = () => {
         className="mt-5"
       >
         <div className="table-responsive">
-          <Tabletop
-            inputfilter={false}
-            togglefilter={function (value: boolean): void {
-              throw new Error("Function not implemented.");
-            }}
+        <Tabletop
+            inputfilter={showFilter}
+            onSearch={(term: string) => setSearchTerm(term)}
+            togglefilter={(value: boolean) => setShowFilter(value)}
+            searchTerm={searchTerm}
           />
-          <Table columns={columns} dataSource={sadaka} loading={isLoading} />
+          {showFilter && (
+            <div className="bg-gray-100 p-4 mt-4 rounded-lg">
+              <h4 className="font-bold mb-2">Filter Options</h4>
+              <label htmlFor="yearFilter" className="block text-sm mb-2">
+                Filter by Year:
+              </label>
+              <input
+                type="text"
+                id="yearFilter"
+                value={yearFilter || ""}
+                onChange={(e) => setYearFilter(e.target.value)}
+                className="p-2 border rounded-lg w-full"
+                placeholder="Enter year (e.g., 2023)"
+              />
+              <Button
+                type="primary"
+                className="mt-3 bg-[#152033] text-white"
+                onClick={() => {
+                  setShowFilter(false);
+                }}
+              >
+                Apply Filter
+              </Button>
+            </div>
+          )}
+          <Table columns={columns} dataSource={filteredData} loading={isLoading} />
         </div>
       </Card>
-      {/* <Card title={ <h3 className=" text-sm text-left font-bold">Sadaka za mwaka</h3>}
-                className="mt-5">
-              <div className="">
-                <Tabletop/>
-                  <Table
-                      dataSource={sadaka}
-                      className="ant-border-space table-responsive"
-                  >
-                      <Column title="Jina la muhumini" dataIndex="name" key="name" />
-                      <Column title="Nambari ya simu" dataIndex="phone" key="phone" />
-
-                      <Column title="Sadaka" dataIndex="changio" key="changio"
-
-                      />
-                      <Column title="Tarehe" dataIndex="tarehe" key="tarehe" />
-
-                  </Table>
-              </div>
-          </Card> */}
-      <OngezaSadaka openModal={openMOdal}     handleCancel={() => setopenMOdal(!openMOdal)}
-    
+      <OngezaSadaka
+        openModal={openMOdal}
+        handleCancel={() => setopenMOdal(!openMOdal)}
+      />
+            <UpdateSadaka
+        openModal={updateSadakaModal}
+        handleCancel={() => setupdateSadakaModal(false)}
+        sadakaData={selectedData}
+      />
+            <ViewModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        data={selectedData}
       />
     </div>
   );

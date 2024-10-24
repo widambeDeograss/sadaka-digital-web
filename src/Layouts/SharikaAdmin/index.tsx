@@ -159,9 +159,7 @@ const Main: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  console.log(activePackage);
   
-
   // Update collapsed state based on window size
   useEffect(() => {
     setCollapsed(size.width < 768);

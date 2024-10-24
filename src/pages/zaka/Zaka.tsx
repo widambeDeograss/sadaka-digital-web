@@ -1,120 +1,277 @@
-import {Button, Card, Select, Table, Typography} from "antd";
-import Column from "antd/es/table/Column";
-import OngezaZaka from "./OngezaZakaModal";
-import { useState } from "react";
-import Widgets from "./Stats";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Dropdown, Menu, message, Modal, Table } from "antd";
 import Tabletop from "../../components/tables/TableTop";
+import OngezaZaka from "./OngezaZakaModal";
 import { useAppSelector } from "../../store/store-hooks";
-import { useQuery } from "@tanstack/react-query";
-import { fetchZaka } from "../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteZakaById, fetchZaka } from "../../helpers/ApiConnectors";
 import { useNavigate } from "react-router-dom";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import ViewModal from "./ViewZaka";
+import EditZaka from "./EditZaka";
+import modal from "antd/es/modal";
 
-const michango = [
-    {
-        id:1,
-        name:'Widambe Deograss',
-        phone:"0716058802",
-        changio:500000,
-        tarehe:"1/11/2023",
-
-    }
-]
 const Zaka = () => {
-    const [reverse, setReverse] = useState(false);
-  const [openMOdal, setopenMOdal] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [zakaData, setZakaData] = useState([]);
+  const [yearFilter, setYearFilter] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const [updateZakaModal, setupdateZakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
-  const userPermissions = useAppSelector(
-    (state: any) => state.user.userInfo.role.permissions
-  );
 
+  const queryClient = useQueryClient();
+  // const [modal, contextHolder] = Modal.useModal();
 
-  const { data: zaka, isLoading: loadingzaka } = useQuery({
-    queryKey: ["zaka"],
+  const { data: zaka, isLoading: loadingZaka } = useQuery({
+    queryKey: ["zaka", yearFilter],
     queryFn: async () => {
-      const response: any = await fetchZaka(`?church_id=${church.id}`);
-      console.log(response);
+      let query = `?church_id=${church.id}`;
+      if (yearFilter) query += `&year=${yearFilter}`;
+      const response: any = await fetchZaka(query);
+      setZakaData(response);
+      setFilteredData(response);
       return response;
     },
-    // {
-    //   enabled: false,
-    // }
   });
 
+  const handleView = (record: any) => {
+    setSelectedData(record);
+    setModalVisible(true);
+  };
+
+  const { mutate: deleteZakaMutation } = useMutation({
+    mutationFn: async (zakaId: any) => {
+      await deleteZakaById(zakaId);
+    },
+    onSuccess: () => {
+      message.success("Zaka deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["zaka"] });
+    },
+    onError: () => {
+      message.error("Failed to delete Zaka.");
+    },
+  });
+
+
+
+  const handleDelete = (zakaId: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteZakaMutation(zakaId);
+      },
+    });
+  };
   const columns = [
     {
-      title: "s/No",
-
-      dataIndex: "sNo",
+      title: "S/No",
       render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
-      sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
-        title: "Name",
-  
-        dataIndex: "name",
-        render: (text: any, record: any) => <div>{record?.bahasha_details?.mhumini_details?.first_name} {record?.bahasha_details?.mhumini_details?.last_name}</div>,
-        // sorter: (a, b) => a.name.length - b.name.length,
-      },
-      {
-          title: "Bahasha",
-    
-          dataIndex: "",
-          render: (text: any, record: any) => (
-            <div>
-              {record?.bahasha_details?.card_no}
-            </div>
-          ),
-          // sorter: (a, b) => a.name.length - b.name.length,
-        },
+      title: "Name",
+      render: (text: any, record: any) => (
+        <div>
+          {record?.bahasha_details?.mhumini_details?.first_name}{" "}
+          {record?.bahasha_details?.mhumini_details?.last_name}
+        </div>
+      ),
+    },
     {
-        title: "Amount",
-        dataIndex: "zaka_amount",
-        render: (text: any, record: any) => <div>{text}</div>,
-        // sorter: (a, b) => a.name.length - b.name.length,
-      },
+      title: "Jumuiya",
+      render: (text: any, record: any) => (
+        <div>
+          {record?.bahasha_details?.mhumini_details?.jumuiya_details?.name}{" "}
+        </div>
+      ),
+    },
     {
-      title: "date",
+      title: "Bahasha",
+      render: (text: any, record: any) => (
+        <div>{record?.bahasha_details?.card_no}</div>
+      ),
+    },
+    {
+      title: "Amount",
+      dataIndex: "zaka_amount",
+      render: (text: any) => <div>{text}</div>,
+    },
+    {
+      title: "Date",
       dataIndex: "date",
-      render: (text: any, record: any) => <div>{text}</div>,
-      // sorter: (a, b) => a.capacity.length - b.capacity.length,
+      render: (text: any) => <div>{text}</div>,
+    },
+    {
+      title: "",
+      render: (text: any, record: any) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item
+                key="1"
+                icon={<EyeOutlined />}
+                onClick={() => handleView(record)}
+              >
+                View
+              </Menu.Item>
+              <Menu.Item
+                key="2"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setSelectedData(record);
+                  setupdateZakaModal(true);
+                }}
+              >
+                Edit
+              </Menu.Item>
+              <Menu.Item
+                key="3"
+                icon={<DeleteOutlined />}
+                danger
+                onClick={() => handleDelete(record?.id)}
+              >
+                Delete
+              </Menu.Item>
+            </Menu>
+          }
+          trigger={["click"]}
+        >
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Actions <DownOutlined />
+          </a>
+        </Dropdown>
+      ),
     },
   ];
 
-  return(
-      <div className="">
-        <Widgets/>
-          <Card
-              title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}
-          >
-              <div className="text-xs">
-                  <h3 className="text-left">Tarehe: <span>{new Date().toDateString()}</span></h3>
-                  <h3 className="text-left">Bahasha Zilizorudishwa Mwezi huu: <span>0</span></h3>
-                  <div className="flex justify-between flex-wrap mt-3">
-                      <div>
-                          <Button.Group className="mt-5">
-                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => setopenMOdal(true)} >Ongeza zaka</Button>
-                              <Button type="primary" className="bg-[#152033] text-white" onClick={() => navigate('/dashboard/zaka-monthly-report')} >Fuatilia zaka</Button>
-                              {/* </Radio.Button> */}
-                          </Button.Group>
-                      </div>
-                  </div>
-              </div>
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = zakaData.filter((item: any) => {
+        return (
+          item?.bahasha_details?.mhumini_details?.first_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.mhumini_details?.last_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(zakaData);
+    }
+  }, [searchTerm, zakaData]);
 
-          </Card>
-          <Card title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}
-                className="mt-5">
-                <div className="table-responsive">
-                <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
-                      throw new Error("Function not implemented.");
-                  } }/>
-                <Table columns={columns} dataSource={zaka} loading={loadingzaka} />
-              </div>
-          </Card>
-          <OngezaZaka openModal={openMOdal} handleCancel={() =>  setopenMOdal(false) }  />
-      </div>
-  )
-}
+  return (
+    <div className="">
+      <Card title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}>
+        <div className="text-xs">
+          <h3 className="text-left">
+            Tarehe: <span>{new Date().toDateString()}</span>
+          </h3>
+          <h3 className="text-left">
+            Bahasha Zilizorudishwa Mwezi huu: <span>0</span>
+          </h3>
+          <div className="flex justify-between flex-wrap mt-3">
+            <div>
+              <Button.Group className="mt-5">
+                <Button
+                  type="primary"
+                  className="bg-[#152033] text-white"
+                  onClick={() => setOpenModal(true)}
+                >
+                  Ongeza Zaka
+                </Button>
+                <Button
+                  type="primary"
+                  className="bg-[#152033] text-white"
+                  onClick={() => navigate("/dashboard/zaka-monthly-report")}
+                >
+                  Fuatilia Zaka
+                </Button>
+              </Button.Group>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <Card
+        title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}
+        className="mt-5"
+      >
+        <div className="table-responsive">
+          <Tabletop
+            inputfilter={showFilter}
+            onSearch={(term: string) => setSearchTerm(term)}
+            togglefilter={(value: boolean) => setShowFilter(value)}
+            searchTerm={searchTerm}
+          />
+          {showFilter && (
+            <div className="bg-gray-100 p-4 mt-4 rounded-lg">
+              <h4 className="font-bold mb-2">Filter Options</h4>
+              <label htmlFor="yearFilter" className="block text-sm mb-2">
+                Filter by Year:
+              </label>
+              <input
+                type="text"
+                id="yearFilter"
+                value={yearFilter || ""}
+                onChange={(e) => setYearFilter(e.target.value)}
+                className="p-2 border rounded-lg w-full"
+                placeholder="Enter year (e.g., 2023)"
+              />
+              <Button
+                type="primary"
+                className="mt-3 bg-[#152033] text-white"
+                onClick={() => {
+                  setShowFilter(false);
+                }}
+              >
+                Apply Filter
+              </Button>
+            </div>
+          )}
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            loading={loadingZaka}
+          />
+        </div>
+      </Card>
+
+      <OngezaZaka
+        openModal={openModal}
+        handleCancel={() => setOpenModal(false)}
+      />
+      <EditZaka
+        openModal={updateZakaModal}
+        handleCancel={() => setupdateZakaModal(false)}
+        zakaDetails={selectedData}
+      />
+      <ViewModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        data={selectedData}
+      />
+    </div>
+  );
+};
 
 export default Zaka;

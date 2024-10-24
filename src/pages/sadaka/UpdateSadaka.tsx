@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal, Tabs, message, Spin } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPayTypes, postSadaka, resolveBahasha } from "../../helpers/ApiConnectors";
+import { fetchPayTypes, updateSadaka, resolveBahasha } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
@@ -13,9 +13,10 @@ const { TabPane } = Tabs;
 type ModalProps = {
   openModal: boolean;
   handleCancel: () => void;
+  sadakaData?: any;  // Existing data to be updated
 };
 
-const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
+const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) => {
   const queryClient = useQueryClient();
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
@@ -25,7 +26,6 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   const [verifyingBahasha, setVerifyingBahasha] = useState<boolean>(false);
   const [bahashaError, setBahashaError] = useState<string | null>(null);
 
-  // Fetch Payment Types based on church ID
   const { data: payTypes, isLoading: payTypesLoading } = useQuery({
     queryKey: ["payTypes", church.id],
     queryFn: async () => {
@@ -34,7 +34,6 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
     },
   });
 
-  // Base validation schema for common fields
   const baseSchema = {
     amount: Yup.number()
       .typeError("Amount must be a number")
@@ -49,19 +48,15 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
     remark: Yup.string().optional(),
   };
 
-  // Validation schema for the "Muhumini" tab (with card number)
   const validationSchemaWithCard = Yup.object().shape({
     ...baseSchema,
     cardNumber: Yup.string().required("Card number is required"),
-
   });
 
-  // Validation schema for the "Bila Namba ya Kadi" tab (without card number)
   const validationSchemaWithoutCard = Yup.object().shape({
     ...baseSchema,
   });
 
-  // Initialize react-hook-form for both tabs
   const formWithCard = useForm({
     resolver: yupResolver(validationSchemaWithCard),
   });
@@ -70,21 +65,39 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
     resolver: yupResolver(validationSchemaWithoutCard),
   });
 
-  // Mutation for posting Sadaka
-  const { mutate: postSadakaMutation, isPending: posting } = useMutation({
+  // Prepopulate form with existing data
+  useEffect(() => {
+    if (sadakaData) {
+      const { amount, date, payment_type, bahasha, remark } = sadakaData;
+      if (bahasha) {
+        formWithCard.setValue("cardNumber", bahasha.card_no);
+        formWithCard.setValue("amount", amount);
+        formWithCard.setValue("date", date);
+        formWithCard.setValue("payment_type", payment_type);
+        formWithCard.setValue("remark", remark);
+      } else {
+        formWithoutCard.setValue("amount", amount);
+        formWithoutCard.setValue("date", date);
+        formWithoutCard.setValue("payment_type", payment_type);
+        formWithoutCard.setValue("remark", remark);
+      }
+    }
+  }, [sadakaData, formWithCard, formWithoutCard]);
+
+  const { mutate: updateSadakaMutation, isPending: updating } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await postSadaka(data);
+      const response = await updateSadaka(data, sadakaData?.id);
       return response;
     },
     onSuccess: () => {
       dispatch(
         addAlert({
           title: "Success",
-          message: "Sadaka added successfully!",
+          message: "Sadaka updated successfully!",
           type: "success",
         })
       );
-      message.success("Sadaka added successfully!");
+      message.success("Sadaka updated successfully!");
       handleCancel();
       queryClient.invalidateQueries({queryKey:['sadaka']});
       formWithCard.reset();
@@ -96,15 +109,14 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       dispatch(
         addAlert({
           title: "Error",
-          message: "Failed to add Sadaka.",
+          message: "Failed to update Sadaka.",
           type: "error",
         })
       );
-      message.error("Failed to add Sadaka.");
+      message.error("Failed to update Sadaka.");
     },
   });
 
-  // Handler to resolve Bahasha (card number)
   const handleResolveBahasha = async (no: string) => {
     if (!no) {
       setBahashaError(null);
@@ -144,15 +156,12 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
     }
   };
 
-  // Unified submit handler
   const onSubmit = (data: any, hasCard: boolean) => {
-    // Format date to YYYY-MM-DD
     if (data.date) {
       const formattedDate = new Date(data.date).toISOString().split("T")[0];
       data.date = formattedDate;
     }
 
-    // Prepare final data
     const finalData = {
       collected_by: data.remark,
       sadaka_amount: data.amount,
@@ -160,25 +169,23 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       church: church?.id,
       payment_type: data.payment_type,
       date: data.date,
-      inserted_by: user?.username,
       updated_by: user?.username,
     };
 
-    postSadakaMutation(finalData);
+    updateSadakaMutation(finalData);
   };
 
   return (
     <Modal
-      title="Ongeza Sadaka"
+      title="Update Sadaka"
       open={openModal}
       onCancel={handleCancel}
       footer={null}
       width={700}
     >
-      <Tabs defaultActiveKey="1" centered>
-        {/* Tab for "Muhumini" (with card number) */}
+      <Tabs defaultActiveKey={sadakaData?.bahasha ? "1" : "2"} centered>
         <TabPane tab="Muhumini" key="1">
-          <form onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}>
+        <form onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}>
             <div className="grid grid-cols-2 gap-4">
               {/* Card Number */}
               <div className="col-span-2">
@@ -301,16 +308,15 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
               htmlType="submit"
               className="font-bold bg-[#152033] text-white mt-4"
               style={{ width: "100%" }}
-              loading={posting}
+              loading={updating}
             >
-              Ongeza Sadaka
+              Update Sadaka
             </Button>
           </form>
         </TabPane>
 
-        {/* Tab for "Bila Namba ya Kadi" (without card number) */}
         <TabPane tab="Bila Namba ya Kadi" key="2">
-          <form onSubmit={formWithoutCard.handleSubmit((data) => onSubmit(data, false))}>
+        <form onSubmit={formWithoutCard.handleSubmit((data) => onSubmit(data, false))}>
             <div className="grid grid-cols-2 gap-4">
               {/* Amount */}
               <div>
@@ -406,9 +412,9 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
               htmlType="submit"
               className="font-bold bg-[#152033] text-white mt-4"
               style={{ width: "100%" }}
-              loading={posting}
+              loading={updating}
             >
-              Ongeza Sadaka
+              Update Sadaka
             </Button>
           </form>
         </TabPane>
@@ -417,4 +423,4 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   );
 };
 
-export default OngezaSadaka;
+export default UpdateSadakaModal;

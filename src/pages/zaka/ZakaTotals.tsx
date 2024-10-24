@@ -1,5 +1,5 @@
-import React from "react";
-import { Table, Card } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Card, Button } from "antd";
 import { useAppSelector } from "../../store/store-hooks";
 import { resolveZakaTotals } from "../../helpers/ApiConnectors";
 import Tabletop from "../../components/tables/TableTop";
@@ -22,13 +22,20 @@ const ZakaReportTable: React.FC = () => {
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
-
+  const [yearFilter, setYearFilter] = useState<string | null>(null);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [zakaData, setZakaData] = useState([]);
 
   const { data: zaka, isLoading: loadingzaka } = useQuery({
-    queryKey: ["zakaTotals"],
+    queryKey: ["zakaTotals", yearFilter],
     queryFn: async () => {
-      const response: any = await resolveZakaTotals(`?church_id=${church.id}`);
-      console.log(response);
+      let query = `?church_id=${church.id}`;
+      if (yearFilter) query += `&year=${yearFilter}`;
+      const response: any = await resolveZakaTotals(query);
+      setZakaData(response);
+      setFilteredData(response);
       return response;
     },
     // {
@@ -36,10 +43,36 @@ const ZakaReportTable: React.FC = () => {
     // }
   });
 
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = zakaData.filter((item: any) => {
+        return (
+          item?.jumuiya_name.toLowerCase().includes(lowercasedTerm) ||
+          item?.member_name.toLowerCase().includes(lowercasedTerm) ||
+          item?.card_no.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(zakaData);
+    }
+  }, [searchTerm, zakaData]);
+
   // Define months mapping to column names
   const monthColumns = [
-    "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", 
-    "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12"
+    `${yearFilter? yearFilter: new Date().getFullYear()}-01`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-02`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-03`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-04`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-05`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-06`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-07`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-08`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-09`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-10`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-11`,
+    `${yearFilter? yearFilter: new Date().getFullYear()}-12`,
   ];
 
   // Define table columns
@@ -54,6 +87,11 @@ const ZakaReportTable: React.FC = () => {
       dataIndex: "member_name",
       key: "member_name",
     },
+    {
+      title: "Jumuiya",
+      dataIndex: "jumuiya_name",
+      key: "jumuiya_name",
+    },
     ...monthColumns.map((month) => ({
       title: month,
       dataIndex: "months",
@@ -66,23 +104,52 @@ const ZakaReportTable: React.FC = () => {
   ];
 
   return (
-    <Card title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}
-    className="mt-5">
-    <div className="table-responsive">
-    <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
-          throw new Error("Function not implemented.");
-      } }/>
-     <Table
-        columns={columns}
-        dataSource={zaka}
-        loading={loadingzaka}
-        rowKey="card_no"
-        pagination={false}
-        bordered
-      />
-  </div>
-</Card>
-  
+    <Card
+      title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}
+      className="mt-5"
+    >
+      <div className="table-responsive">
+        <Tabletop
+          inputfilter={showFilter}
+          onSearch={(term: string) => setSearchTerm(term)}
+          togglefilter={(value: boolean) => setShowFilter(value)}
+          searchTerm={searchTerm}
+        />
+        {showFilter && (
+          <div className="bg-gray-100 p-4 mt-4 rounded-lg">
+            <h4 className="font-bold mb-2">Filter Options</h4>
+            <label htmlFor="yearFilter" className="block text-sm mb-2">
+              Filter by Year:
+            </label>
+            <input
+              type="text"
+              id="yearFilter"
+              value={yearFilter || ""}
+              onChange={(e) => setYearFilter(e.target.value)}
+              className="p-2 border rounded-lg w-full"
+              placeholder="Enter year (e.g., 2023)"
+            />
+            <Button
+              type="primary"
+              className="mt-3 bg-[#152033] text-white"
+              onClick={() => {
+                setShowFilter(false);
+              }}
+            >
+              Apply Filter
+            </Button>
+          </div>
+        )}
+        <Table
+          columns={columns}
+          dataSource={filteredData}
+          loading={loadingzaka}
+          rowKey="card_no"
+          pagination={false}
+          bordered
+        />
+      </div>
+    </Card>
   );
 };
 

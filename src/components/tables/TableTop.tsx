@@ -1,25 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  FilterIcon,
-  X,
-  SearchCheckIcon,
-  FileText,
-  FileSpreadsheet,
-  Printer,
-} from "lucide-react";
+import { FilterIcon, X, SearchCheckIcon, FileText, FileSpreadsheet, Printer } from "lucide-react";
+import { Input } from "antd"; // Import Ant Design Input
 
 // Define props for the Tabletop component
 interface TabletopProps {
   inputfilter: boolean;
   togglefilter: (value: boolean) => void;
   showFilter?: boolean;
+  searchTerm: string; // Prop for search term
+  onSearch: (value: string) => void; // Prop for search handler
 }
 
 const Tabletop: React.FC<TabletopProps> = ({
   inputfilter,
   togglefilter,
   showFilter = true,
+  searchTerm,
+  onSearch,
 }) => {
   return (
     <div className="flex justify-between items-center p-4 bg-white shadow-md">
@@ -43,11 +41,14 @@ const Tabletop: React.FC<TabletopProps> = ({
           </div>
         )}
 
+        {/* Search Input using Ant Design */}
         <div className="relative">
-          <input
-            className="p-2 border rounded-lg focus:outline-none bg-gray-200 text-gray-700 focus:ring-2 focus:ring-indigo-500 w-64"
+          <Input
+            className="w-64" 
             type="text"
             placeholder="Search..."
+            value={searchTerm} 
+            onChange={(e) => onSearch(e.target.value)} 
           />
           <Link to="#" className="absolute right-2 top-1/2 transform -translate-y-1/2">
             <SearchCheckIcon className="h-4 w-4 text-gray-600" />

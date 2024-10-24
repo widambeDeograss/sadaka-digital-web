@@ -30,6 +30,8 @@ export const KANDA_LIST_CREATE = `${DataBaseUrl}/service-providers/kanda-list-cr
 //SP SADAKA and ZAKA
 export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-create`;
 export const ZAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/zaka-list-create`;
+export const ZAKA_UPDATE = `${DataBaseUrl}/service-providers/zaka-retrieve-update-destroy/`;
+export const SADAKA_UPDATE = `${DataBaseUrl}/service-providers/sadaka-retrieve-update-destroy/`;
 export const BAHASHA_GET_NO = `${DataBaseUrl}/service-providers/cards-number-retrieve-by-card-no/`;
 export const ZAKA_MONTHLY_TOTOLS = `${DataBaseUrl}/service-providers/zaka/monthly-totals/`;
 export const SADAKA_MONTHLY_TOTOLS = `${DataBaseUrl}/service-providers/sadaka/monthly-totals/`;
