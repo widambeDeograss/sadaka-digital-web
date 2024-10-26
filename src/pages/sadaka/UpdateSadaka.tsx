@@ -34,6 +34,7 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
     },
   });
 
+
   const baseSchema = {
     amount: Yup.number()
       .typeError("Amount must be a number")
@@ -65,22 +66,25 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
     resolver: yupResolver(validationSchemaWithoutCard),
   });
 
+  console.log('====================================');
+  console.log(sadakaData);
+  console.log('====================================');
+
   // Prepopulate form with existing data
   useEffect(() => {
     if (sadakaData) {
-      const { amount, date, payment_type, bahasha, remark } = sadakaData;
-      if (bahasha) {
-        formWithCard.setValue("cardNumber", bahasha.card_no);
-        formWithCard.setValue("amount", amount);
-        formWithCard.setValue("date", date);
-        formWithCard.setValue("payment_type", payment_type);
-        formWithCard.setValue("remark", remark);
-      } else {
-        formWithoutCard.setValue("amount", amount);
-        formWithoutCard.setValue("date", date);
-        formWithoutCard.setValue("payment_type", payment_type);
-        formWithoutCard.setValue("remark", remark);
-      }
+      const { sadaka_amount, date, payment_type, bahasha,collected_by, } = sadakaData;
+      const formData = {
+        amount: sadaka_amount,
+        date: date,
+        payment_type: payment_type,
+        remark: collected_by,
+        cardNumber: bahasha ? bahasha.card_no : "",
+      };
+
+      formWithCard.reset(formData);
+      formWithoutCard.reset(formData);
+      setBahashaData(sadakaData.bahasha || null);
     }
   }, [sadakaData, formWithCard, formWithoutCard]);
 

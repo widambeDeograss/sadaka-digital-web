@@ -76,7 +76,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
         date: zakaDetails.date,
         payment_type: zakaDetails.payment_type,
         remark: zakaDetails.collected_by,
-        cardNumber: zakaDetails.bahasha ? zakaDetails.bahasha.cardNumber : "",
+        cardNumber: zakaDetails.bahasha ? zakaDetails.bahasha.card_no : "",
       };
 
       formWithCard.reset(formData);

@@ -89,7 +89,7 @@ const Sadaka = () => {
   });
 
   const { data: sadaka, isLoading: loadingSadaka } = useQuery({
-    queryKey: ["sadaka"],
+    queryKey: ["sadaka", yearFilter],
     queryFn: async () => {
       let query = `?church_id=${church.id}`;
       if (yearFilter) query += `&year=${yearFilter}`;
@@ -275,12 +275,12 @@ const Sadaka = () => {
             className="mt-5"
           >
             <div className="table-responsive">
-              <Tabletop
+              {/* <Tabletop
                 inputfilter={false}
                 onSearch={(term: string) => setSearchTerm(term)}
                 togglefilter={(value: boolean) => setShowFilter(value)}
                 searchTerm={searchTerm}
-              />
+              /> */}
               <Table
                 columns={columns}
                 dataSource={sadakaToday}
@@ -357,7 +357,7 @@ const Sadaka = () => {
               </Button>
             </div>
           )}
-          <Table columns={columns} dataSource={filteredData} loading={isLoading} />
+          <Table columns={columns} dataSource={filteredData} loading={loadingSadaka} />
         </div>
       </Card>
       <OngezaSadaka
