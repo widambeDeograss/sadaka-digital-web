@@ -36,6 +36,10 @@ export const postExpCat = (data:any) =>  api.create(url.EXPENSE_CATEGORY_LIST_CR
 export const fetchtExpCat = (id:any) =>  api.get(url.EXPENSE_CATEGORY_LIST_CREATE + `${id}`);
 export const fetchtExpenses = (id:any) =>  api.get(url.EXPENSE_LIST_CREATE + `${id}`);
 export const postExpenses = (data:any) =>  api.create(url.EXPENSE_LIST_CREATE, data);
+export const fetchtSpManagers = (id:any) =>  api.get(url.SP_MANAGERS + `${id}`);
+export const updateSpManager = (id:any, data:any) =>  api.put(url.SP_MANAGERS + `${id}`, data);
+export const deleteSpManager = (id:any) =>  api.delete(url.SP_MANAGERS + `${id}`);
+export const postSpManagers = (data:any) =>  api.create(url.SP_MANAGERS, data);
 
 
 //WAHUMUNI

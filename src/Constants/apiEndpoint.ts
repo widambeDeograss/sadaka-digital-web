@@ -26,6 +26,7 @@ export const EXPENSE_CATEGORY_LIST_CREATE = `${DataBaseUrl}/service-providers/ex
 export const EXPENSE_LIST_CREATE = `${DataBaseUrl}/service-providers/expense-list-create`;
 export const JUMUIYA_LIST_CREATE = `${DataBaseUrl}/service-providers/jumuiya-list-create`;
 export const KANDA_LIST_CREATE = `${DataBaseUrl}/service-providers/kanda-list-create`;
+export const SP_MANAGERS = `${DataBaseUrl}/service-providers/sp-managers/`;
 
 //SP SADAKA and ZAKA
 export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-create`;

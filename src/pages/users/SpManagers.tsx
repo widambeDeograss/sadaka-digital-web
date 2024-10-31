@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchRoles, postUserSetup } from "../../helpers/ApiConnectors";
-import { useAppDispatch } from "../../store/store-hooks";
+import { fetchRoles, postSpManagers, postUserSetup } from "../../helpers/ApiConnectors";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
 type modalType = {
@@ -15,6 +15,8 @@ type modalType = {
 };
 
 const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
+  const church = useAppSelector((state: any) => state.sp);
+  const user = useAppSelector((state: any) => state.user.userInfo);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -26,9 +28,8 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     lastname: Yup.string().required("Last name is required"),
     phone: Yup.string().required("Phone number is required"),
     password: Yup.string().required("Password is required"),
-    role: Yup.string(),
+    role: Yup.string().required("role is required"),
     // .required("Role is required"), // Role field validation
-    is_sp_admin: Yup.boolean(),
   });
 
   const {
@@ -55,23 +56,20 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = async (data: any) => {
-    const response:any = await postUserSetup(data);
-   
-    if (!response?.success) {
-       throw new Error("Failed to save user, Try again later")   
-    }
-    return response;
-  };
+  
 
   
   const { mutate: addUserMutation, isPending: loading } = useMutation({
-    mutationFn: onSubmit,
+    mutationFn: async( data: any) => {
+        return await postSpManagers(data);
+    },
     onSuccess: (data) => {
       console.log(data);
 
@@ -99,6 +97,19 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     },
   });
 
+  const onSubmit = async (data: any) => {
+    const finalData = {
+        sp_manager: {
+          ...data,
+          is_sp_manager: true,
+        },
+        church: church.id,
+        inserted_by: user?.username,
+    }
+   
+    addUserMutation(finalData);
+  };
+
   return (
     <div>
       <Modal
@@ -111,7 +122,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
       >
         <Tabs defaultActiveKey="1" centered>
           <TabPane tab="User Details" key="1">
-            <form onSubmit={handleSubmit(addUserMutation)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid grid-cols-2 gap-3">
                 {/* Username */}
                 <div className="">
@@ -251,8 +262,8 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
                   )}
                 </div>
 
-                 {/* Role Select */}
-                 <div className="">
+                {/* Role Select */}
+                <div className="">
                   <label htmlFor="role" className="block text-sm font-medium">
                     Role
                   </label>
@@ -277,29 +288,8 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
                     </p>
                   )}
                 </div>
-                {/* SP Admin Checkbox */}
-                <div className="col-span-2">
-                 
-               <div className="flex items-center gap-2">
-               <input
-                    id="is_sp_admin"
-                    type="checkbox"
-                    className=""
-                    {...register("is_sp_admin")}
-                  />
-                   <label
-                    htmlFor="is_sp_admin"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    SP Admin
-                  </label>
-               </div>
-                  {errors.is_sp_admin && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.is_sp_admin?.message}
-                    </p>
-                  )}
-                </div>
+
+            
               </div>
 
               <Button

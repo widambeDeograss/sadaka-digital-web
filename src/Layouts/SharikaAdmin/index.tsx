@@ -81,6 +81,7 @@ const menuItems:MenuItem[] = [
       permissions:['MANAGE_USERS'],
       children: [
           { key: "list", label: "Users", path: "/dashboard/users/list",  permissions:['MANAGE_USERS'], },
+          { key: "spList", label: "Users", path: "/dashboard/sp-users/list",  permissions:['VIEW_WAHUMINI'], },
           { key: "roles", label: "roles", path: "/dashboard/users/roles" ,  permissions:["MANAGE_ROLES"],},
           { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions",  permissions:['MANAGE_PERMISSIONS'], },
       ],

@@ -27,6 +27,7 @@ import SpPackages from '../pages/package/SpPackages.tsx';
 import ZakaReportTable from '../pages/zaka/ZakaTotals.tsx';
 import SadakaReportTable from '../pages/sadaka/SadakaMonthlyTotals.tsx';
 import KandaJumuiya from '../pages/wahumini/jumuiya/JumuiyaList.tsx';
+import SpManagerList from '../pages/users/SpManagerList.tsx';
 
 
 const AppRouter = () => {
@@ -60,6 +61,7 @@ const AppRouter = () => {
                 {path:"sps", element:<SpList/>},
                 {path:"packages", element:<SpPackages/>},
                 {path:"users/list", element:<UsersList/>},
+                {path:"sp-users/list", element:<SpManagerList/>},
                 {path:"users/roles", element:<RolesList/>},
                 {path:"sadaka", element:<Sadaka/>},
                 {path:"sadaka-monthly-report", element:<SadakaReportTable/>},
