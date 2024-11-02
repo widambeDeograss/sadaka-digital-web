@@ -1,32 +1,29 @@
-import { Button, Card, Col, Dropdown, Menu, Row, Table } from "antd";
-import Column from "antd/es/table/Column";
-import Search from "antd/es/input/Search";
+import { Button, Card, Col, Dropdown, Menu, message, Row, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import Tabletop from "../../components/tables/TableTop";
-import { fetchWahumini } from "../../helpers/ApiConnectors";
-import { useQuery } from "@tanstack/react-query";
+import { deleteMuhumini, fetchWahumini } from "../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { useAppSelector } from "../../store/store-hooks";
-import { DownOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import modal from "antd/es/modal";
+import { useEffect, useState } from "react";
 
-const michango = [
-  {
-    id: 1,
-    name: "Widambe Deograss",
-    phone: "0716058802",
-    nambayakadi: "2343CD",
-    changio: 500000,
-    ahadi: 3400000,
-    dob: "1/11/2023",
-  },
-];
 const Wahumini = () => {
   const navigate = useNavigate();
   const church = useAppSelector((state: any) => state.sp);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
-
+  const queryClient = useQueryClient();
   const {
     data: wahumini,
     isLoading,
@@ -43,6 +40,33 @@ const Wahumini = () => {
     // }
   });
 
+  const handleDelete = (id: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteMutation(id);
+      },
+    });
+  };
+
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: async (ID: any) => {
+      await deleteMuhumini(ID);
+    },
+    onSuccess: () => {
+      message.success("Muhumini deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
+    },
+    onError: () => {
+      message.error("Failed to delete muhumini.");
+    },
+  });
+
   const columns = [
     {
       title: "s/No",
@@ -54,12 +78,6 @@ const Wahumini = () => {
     {
       title: "First Name",
       dataIndex: "first_name",
-      render: (text: any, record: any) => <div>{text}</div>,
-      // sorter: (a, b) => a.name.length - b.name.length,
-    },
-    {
-      title: "Last Name",
-      dataIndex: "last_name",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
@@ -96,76 +114,68 @@ const Wahumini = () => {
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
-      title: <strong>Has a login account</strong>,
+      title: <strong>Active</strong>,
       dataIndex: "has_loin_account",
       render: (text: any, record: any) => (
         <>
           {text === true && (
-            <span className="bg-green-300 rounded-lg p-1 text-white">
-              Active
+            <span className="bg-red-300 rounded-lg p-1 text-white">
+              In active
             </span>
           )}
           {text === false && (
-            <span className="bg-red-300 rounded-lg p-1 text-white">
-              Disabled
+            <span className="bg-green-300  rounded-lg p-1 text-white">
+              Active
             </span>
           )}
         </>
       ),
     },
-
     {
-      title: "",
-      dataIndex: "is_main_branch",
+      title: "Actions",
+      dataIndex: "actions",
       render: (text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "VIEW_USER"],
+                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
+                icon={<EyeOutlined />}
                   onClick={() =>
-                    navigate("/usersManagement/viewUser", { state: { record } })
+                    navigate(`/dashboard/muhumini/${record.id}`,)
                   }
                 >
                   View
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "EDIT_USER"],
+                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
+                icon={<EditOutlined />}
                   onClick={() =>
-                    navigate("/usersManagement/editUser", { state: { record } })
+                    navigate("/dashboard/wahumini/update", { state: { record } })
                   }
                 >
                   Edit
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "EDIT_USER"],
-                GlobalMethod.getUserPermissionName(userPermissions)
-              ) && (
-                <Menu.Item>
-                  {record.status === "DISABLED"
-                    ? "Activate User"
-                    : "Deactivate User"}
-                </Menu.Item>
-              )}
-
-              {GlobalMethod.hasAnyPermission(
-                ["CHANGE_USER_PASSWORDS"],
+                ["DELETE_WAHUMINI", "VIEW_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
-                  //   onClick={() => handleChangePassword(record)}
+                  onClick={() => handleDelete(record?.id)}
                   data-bs-toggle="modal"
+                  icon={<DeleteOutlined />}
                   data-bs-target="#resetPassword"
+                  danger
                 >
-                  Change Password
+                  Delete Muhumini
                 </Menu.Item>
               )}
             </Menu>
@@ -177,7 +187,28 @@ const Wahumini = () => {
         </Dropdown>
       ),
     },
+   
   ];
+
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = wahumini.filter((item: any) => {
+        return (
+          item?.jumuiya_details?.name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.last_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.first_name.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(wahumini);
+    }
+  }, [searchTerm, wahumini]);
   return (
     <div>
       <Card
@@ -216,15 +247,16 @@ const Wahumini = () => {
           >
             <div className="table-responsive">
               <Tabletop
-                inputfilter={false}
-                togglefilter={function (value: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
+                 showFilter={false}
+                 inputfilter={false}
+                onSearch={(term: string) => setSearchTerm(term)}
+                togglefilter={() =>  {}}
+                searchTerm={searchTerm}
               />
 
               <Table
                 columns={columns}
-                dataSource={wahumini}
+                dataSource={filteredData}
                 loading={isLoading}
               />
             </div>

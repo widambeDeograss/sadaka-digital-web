@@ -20,13 +20,18 @@ export const ALL_SP_PACKAGES = `${DataBaseUrl}/service-providers/package-list-cr
 export const LIST_CREATE_SPS = `${DataBaseUrl}/service-providers/service-provider-list-create`;
 export const GET_SP_BY_ADMIN = `${DataBaseUrl}/service-providers/get-provider/admin/`;
 export const WAHUMINI_LIST_CREATE = `${DataBaseUrl}/service-providers/wahumini-list-create`;
+export const WAHUMINI_UPDATE_DISTROY = `${DataBaseUrl}/service-providers/wahumini-retrieve-update-destroy/`;
 export const CARDS_LIST_CREATE = `${DataBaseUrl}/service-providers/cards-number-list-create`;
+export const CARDS_UPDATE = `${DataBaseUrl}/service-providers/cards-number-retrieve-update-destroy/`;
 export const PAYMENT_LIST_CREATE = `${DataBaseUrl}/service-providers/payment-type-list-create`;
 export const EXPENSE_CATEGORY_LIST_CREATE = `${DataBaseUrl}/service-providers/expense-category-list-create`;
 export const EXPENSE_LIST_CREATE = `${DataBaseUrl}/service-providers/expense-list-create`;
 export const JUMUIYA_LIST_CREATE = `${DataBaseUrl}/service-providers/jumuiya-list-create`;
+export const JUMUIYA_UPDATE = `${DataBaseUrl}/service-providers/jumuiya-retrieve-update-destroy/`;
 export const KANDA_LIST_CREATE = `${DataBaseUrl}/service-providers/kanda-list-create`;
+export const KANDA_UPDATE = `${DataBaseUrl}/service-providers/kanda-retrieve-update-destroy/`;
 export const SP_MANAGERS = `${DataBaseUrl}/service-providers/sp-managers/`;
+export const SP_REVENUES = `${DataBaseUrl}/service-providers/revenue-list-create`
 
 //SP SADAKA and ZAKA
 export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-create`;

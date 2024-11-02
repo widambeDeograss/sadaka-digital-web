@@ -1,15 +1,26 @@
 import { Button, Card, Col, Row, Table, Dropdown, Menu } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tabletop from "../../../components/tables/TableTop.tsx";
 import { fetchtJumuiya, fetchtKanda } from "../../../helpers/ApiConnectors.ts";
 import { useAppSelector } from "../../../store/store-hooks.ts";
 import { useQuery } from "@tanstack/react-query";
 import KandaFormModal from "./AddEditKanda.tsx";
 import JumuiyaFormModal from "./AddEditJumuiya.tsx";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 
 const KandaJumuiya = () => {
   const [openKandaModal, setOpenKandaModal] = useState(false);
   const [openJumuiyaModal, setOpenJumuiyaModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTermJumuiya, setSearchTermJumuiya] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [filteredDataJumuiya, setFilteredDataJumuiya] = useState([]);
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [editData, setEditData] = useState<any | null>(null);
 
@@ -78,10 +89,24 @@ const KandaJumuiya = () => {
         <Dropdown
           overlay={
             <Menu>
-              <Menu.Item onClick={() => handleOpenKandaModal("edit", record)}>
+              <Menu.Item
+              icon={<EditOutlined />}
+              onClick={() => handleOpenKandaModal("edit", record)}>
                 Edit
               </Menu.Item>
-              {/* You can add more actions here */}
+              <Menu.Item
+              icon={<EyeOutlined />}
+              onClick={() => handleOpenKandaModal("edit", record)}>
+                View
+              </Menu.Item>
+              <Menu.Item
+              icon={<DeleteOutlined />}
+              danger
+              onClick={() => handleOpenKandaModal("edit", record)}
+              >
+                Delete
+              </Menu.Item>
+         
             </Menu>
           }
         >
@@ -140,22 +165,81 @@ const KandaJumuiya = () => {
               <Menu>
                 <Menu.Item
                   key="edit"
+                  icon={<EditOutlined />}
                   onClick={() => handleOpenJumuiyaModal("edit", record)}
                 >
                   Edit
                 </Menu.Item>
-                {/* <Menu.Item key="delete" onClick={() => handleDeleteJumuiya(record.id)}>
-                  Delete
-                </Menu.Item> */}
+
+  
+              <Menu.Item
+              icon={<EyeOutlined />}
+              onClick={() => handleOpenJumuiyaModal("edit", record)}>
+                View
+              </Menu.Item>
+              <Menu.Item
+              icon={<DeleteOutlined />}
+              danger
+              onClick={() => handleOpenKandaModal("edit", record)}
+              >
+                Delete
+              </Menu.Item>
+         
+       
               </Menu>
             }
           >
-            <Button>Actions</Button>
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Actions <DownOutlined />
+          </a>
           </Dropdown>
         </div>
       ),
     },
   ];
+
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = kanda.filter((item: any) => {
+        return (
+          item?.name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.jina_kiongozi
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.location.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(kanda);
+    }
+  }, [searchTerm, kanda]);
+
+  useEffect(() => {
+    if (searchTermJumuiya) {
+      const lowercasedTerm = searchTermJumuiya.toLowerCase();
+      const filtered = jumuiya.filter((item: any) => {
+        return (
+          item?.name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.kanda_details?.name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.jina_kiongozi
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.location.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredDataJumuiya(filtered);
+    } else {
+      setFilteredDataJumuiya(jumuiya);
+    }
+  }, [searchTermJumuiya, jumuiya]);
 
   return (
     <div>
@@ -202,16 +286,16 @@ const KandaJumuiya = () => {
           >
             <div className="table-responsive">
               <Tabletop
-                showFilter={false}
-                inputfilter={false}
-                togglefilter={function (value: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
+             showFilter={false}
+             inputfilter={false}
+            onSearch={(term: string) => setSearchTerm(term)}
+            togglefilter={() =>  {}}
+            searchTerm={searchTerm}
               />
 
               <Table
                 columns={kandaColumns}
-                dataSource={kanda}
+                dataSource={filteredData}
                 loading={loadingKanda}
               />
             </div>
@@ -227,15 +311,15 @@ const KandaJumuiya = () => {
           >
             <div className="table-responsive">
               <Tabletop
-                showFilter={false}
-                inputfilter={false}
-                togglefilter={function (value: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
+           showFilter={false}
+           inputfilter={false}
+          onSearch={(term: string) => setSearchTermJumuiya(term)}
+          togglefilter={() =>  {}}
+          searchTerm={searchTermJumuiya}
               />
               <Table
                 columns={jumuiyaColumns}
-                dataSource={jumuiya}
+                dataSource={filteredDataJumuiya}
                 loading={loadingJumuiya}
               />
             </div>

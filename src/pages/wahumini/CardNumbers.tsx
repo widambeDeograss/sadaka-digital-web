@@ -1,20 +1,31 @@
-import { Button, Card, Col, Dropdown, Menu, Row, Table } from "antd";
-import Column from "antd/es/table/Column";
-import Search from "antd/es/input/Search";
+import { Button, Card, Col, Dropdown, Menu, message, Row, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import Tabletop from "../../components/tables/TableTop";
-import { fetchBahasha, fetchWahumini } from "../../helpers/ApiConnectors";
-import { useQuery } from "@tanstack/react-query";
+import { deleteBahasha, fetchBahasha } from "../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { useAppSelector } from "../../store/store-hooks";
-import { DownOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateCardNumberModal from "./AddCardModal";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import modal from "antd/es/modal";
+import EditCardModal from "./EditBahasha";
 
 const CardNumberList = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
+  const [showEditModal, setshowEditModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const queryClient = useQueryClient();
+  const [selectedCard, setselectedCard] = useState(null);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
@@ -33,6 +44,38 @@ const CardNumberList = () => {
     // {
     //   enabled: false,
     // }
+  });
+
+  const handleDelete = (id: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteMutation(id);
+      },
+    });
+  };
+
+  const handleEdit = (record: any) => {
+    setselectedCard(record);
+    setshowEditModal(true);
+  };
+
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: async (ID: any) => {
+      await deleteBahasha(ID);
+    },
+    onSuccess: () => {
+      message.success("Muhumini deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["bahasha"] });
+    },
+    onError: () => {
+      message.error("Failed to delete muhumini.");
+    },
   });
 
   const columns = [
@@ -56,7 +99,8 @@ const CardNumberList = () => {
       dataIndex: "mhumini",
       render: (text: any, record: any) => (
         <div>
-          {record?.mhumini_details?.first_name} {record?.mhumini_details?.last_name}
+          {record?.mhumini_details?.first_name}{" "}
+          {record?.mhumini_details?.last_name}
         </div>
       ),
       // sorter: (a, b) => a.name.length - b.name.length,
@@ -66,9 +110,7 @@ const CardNumberList = () => {
 
       dataIndex: "mhumini",
       render: (text: any, record: any) => (
-        <div>
-          {record?.mhumini_details?.phone_number}
-        </div>
+        <div>{record?.mhumini_details?.phone_number}</div>
       ),
       // sorter: (a, b) => a.name.length - b.name.length,
     },
@@ -106,57 +148,48 @@ const CardNumberList = () => {
     },
 
     {
-      title: "",
-      dataIndex: "is_main_branch",
+      title: "Actions",
+      dataIndex: "actions",
       render: (text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "VIEW_USER"],
+                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
-                  onClick={() =>
-                    navigate("/usersManagement/viewUser", { state: { record } })
-                  }
+                  icon={<EyeOutlined />}
+                  onClick={() =>     handleEdit(record)}
                 >
                   View
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "EDIT_USER"],
+                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
+                  icon={<EditOutlined />}
                   onClick={() =>
-                    navigate("/usersManagement/editUser", { state: { record } })
+                   handleEdit(record)
                   }
                 >
                   Edit
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "EDIT_USER"],
-                GlobalMethod.getUserPermissionName(userPermissions)
-              ) && (
-                <Menu.Item>
-                  {record.status === "DISABLED"
-                    ? "Activate "
-                    : "Deactivate "}
-                </Menu.Item>
-              )}
-
-              {GlobalMethod.hasAnyPermission(
-                ["CHANGE_USER_PASSWORDS"],
+                ["DELETE_WAHUMINI", "VIEW_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
-                  //   onClick={() => handleChangePassword(record)}
+                  onClick={() => handleDelete(record?.id)}
                   data-bs-toggle="modal"
+                  icon={<DeleteOutlined />}
                   data-bs-target="#resetPassword"
+                  danger
                 >
-                  Change
+                  Delete Bahasha
                 </Menu.Item>
               )}
             </Menu>
@@ -169,6 +202,30 @@ const CardNumberList = () => {
       ),
     },
   ];
+
+
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = bahasha.filter((item: any) => {
+        return (
+          item?.mhumini_details?.jumuiya_details?.name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.card_no
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.mhumini_details?.first_name?.toLowerCase().includes(lowercasedTerm)||
+          item?.mhumini_details?.last_name?.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(bahasha);
+    }
+  }, [searchTerm, bahasha]);
+
+  
   return (
     <div>
       <Card
@@ -209,15 +266,16 @@ const CardNumberList = () => {
           >
             <div className="table-responsive">
               <Tabletop
-                inputfilter={false}
-                togglefilter={function (value: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
+             showFilter={false}
+             inputfilter={false}
+            onSearch={(term: string) => setSearchTerm(term)}
+            togglefilter={() =>  {}}
+            searchTerm={searchTerm}
               />
 
               <Table
                 columns={columns}
-                dataSource={bahasha}
+                dataSource={filteredData}
                 loading={isLoading}
               />
             </div>
@@ -227,6 +285,11 @@ const CardNumberList = () => {
       <CreateCardNumberModal
         visible={isVisible}
         onClose={() => setIsVisible(false)}
+      />
+      <EditCardModal
+        visible={showEditModal}
+        onClose={() => setshowEditModal(false)}
+        bahashaData={selectedCard}
       />
     </div>
   );

@@ -28,6 +28,8 @@ import ZakaReportTable from '../pages/zaka/ZakaTotals.tsx';
 import SadakaReportTable from '../pages/sadaka/SadakaMonthlyTotals.tsx';
 import KandaJumuiya from '../pages/wahumini/jumuiya/JumuiyaList.tsx';
 import SpManagerList from '../pages/users/SpManagerList.tsx';
+import UpdateMuhumini from '../pages/wahumini/EditMuhumini.tsx';
+import EditMchango from '../pages/michango/EditMchango.tsx';
 
 
 const AppRouter = () => {
@@ -55,6 +57,7 @@ const AppRouter = () => {
                 {path:"home", element:<Dashboard />},
                 {path:"michango/iliyopo", element:<Michango />},
                 {path:"michango/ongeza", element:<OngezaMchango />},
+                {path:"michango/update", element:<EditMchango />},
                 {path:"mchango/:id", element:<Mchango />},
                 {path:"zaka", element:<Zaka/>},
                 {path:"zaka-monthly-report", element:<ZakaReportTable/>},
@@ -69,6 +72,7 @@ const AppRouter = () => {
                 {path:"ahadi", element:<Ahadi />},
                 {path:"wahumini/waliopo", element:<Wahumini/>},
                 {path:"wahumini/ongeza", element:<OngezaMuhumini/>},
+                {path:"wahumini/update", element:<UpdateMuhumini/>},
                 {path:"wahumini/bahasha", element:<CardNumberList/>},
                 {path:"wahumini/kanda-jumuiya", element:<KandaJumuiya/>},
                 {path:"muhumini/:id", element:<Muhumini />},

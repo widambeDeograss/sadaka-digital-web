@@ -3,12 +3,18 @@ import {useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {  fetchtSpManagers } from "../../helpers/ApiConnectors.js";
 import { Button, Card, Dropdown, Menu } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import { Table } from "antd";
 import { useAppSelector } from "../../store/store-hooks.js";
 import { GlobalMethod } from "../../helpers/GlobalMethods.js";
 import Tabletop from "../../components/tables/TableTop.js";
 import CreateUserModal from "./SpManagers.js";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 
 function SpManagerList() {
   const navigate = useNavigate();
@@ -150,10 +156,11 @@ function SpManagerList() {
           overlay={
             <Menu>
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "VIEW_USER"],
+                ["VIEW_SP_ADMINS", "VIEW_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
+                icon={<EyeOutlined />}
                   onClick={() =>
                     navigate("/usersManagement/viewUser", { state: { record } })
                   }
@@ -162,10 +169,11 @@ function SpManagerList() {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "EDIT_USER"],
+                ["ADD_SP_MANAGERS", "EDIT_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
+                icon={<EditOutlined />}
                   onClick={() =>
                     navigate("/usersManagement/editUser", { state: { record } })
                   }
@@ -177,17 +185,20 @@ function SpManagerList() {
                 ["MANAGE_USER", "EDIT_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
-                <Menu.Item onClick={() => handleActivateDeactivate(record)}>
+                <Menu.Item onClick={() => handleActivateDeactivate(record)}
+                icon={<ExclamationCircleOutlined />}
+                >
                   {record.sp_manager.user_active ? "Deactivate User" : "Activate User"}
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["CHANGE_USER_PASSWORDS"],
+                ["ADD_SP_MANAGERS"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
                   onClick={() => handleChangePassword(record)}
                   data-bs-toggle="modal"
+                  icon={<ExclamationCircleOutlined />}
                   data-bs-target="#resetPassword"
                 >
                   Change Password

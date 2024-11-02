@@ -1,18 +1,28 @@
-import {Badge, Button, Card, Progress, Select, Table, Typography} from "antd";
+import {Badge, Button, Card, Dropdown, Menu, message, Progress, Select, Table, Typography} from "antd";
 import { useState } from "react";
 import Widgets from "./Stats";
 import Tabletop from "../../components/tables/TableTop";
 import { useAppSelector } from "../../store/store-hooks";
-import { useQuery } from "@tanstack/react-query";
-import { fetchMichango } from "../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteMichango, fetchMichango } from "../../helpers/ApiConnectors";
 import { useNavigate } from "react-router-dom";
 import OngezaChagizo from "./OngezaChangizo";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import modal from "antd/es/modal";
+import { GlobalMethod } from "../../helpers/GlobalMethods";
 
 
 const MichangoList = () => {
   const [openMOdal, setopenMOdal] = useState(false);
   const navigate = useNavigate();
   const church = useAppSelector((state: any) => state.sp);
+  const queryClient = useQueryClient()
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
@@ -28,6 +38,33 @@ const MichangoList = () => {
     // {
     //   enabled: false,
     // }
+  });
+  
+  const handleDelete = (id: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteMutation(id);
+      },
+    });
+  };
+
+  const { mutate: deleteMutation } = useMutation({
+    mutationFn: async (ID: any) => {
+      await deleteMichango(ID);
+    },
+    onSuccess: () => {
+      message.success("mchango deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["michango"] });
+    },
+    onError: () => {
+      message.error("Failed to delete mchango.");
+    },
   });
 
   const columns = [
@@ -87,6 +124,62 @@ const MichangoList = () => {
       dataIndex: "date",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      render: (text: any, record: any) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              {GlobalMethod.hasAnyPermission(
+                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
+                <Menu.Item
+                icon={<EyeOutlined />}
+                  onClick={() =>
+                    navigate(`/dashboard/mchango/${record.id}`,)
+                  }
+                >
+                  View
+                </Menu.Item>
+              )}
+              {GlobalMethod.hasAnyPermission(
+                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
+                <Menu.Item
+                icon={<EditOutlined />}
+                  onClick={() =>
+                    navigate("/dashboard/michango/update", { state: { record } })
+                  }
+                >
+                  Edit
+                </Menu.Item>
+              )}
+              {GlobalMethod.hasAnyPermission(
+                ["DELETE_WAHUMINI", "VIEW_WAHUMINI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
+                <Menu.Item
+                  onClick={() => handleDelete(record?.id)}
+                  data-bs-toggle="modal"
+                  icon={<DeleteOutlined />}
+                  data-bs-target="#resetPassword"
+                  danger
+                >
+                  Delete Mchango
+                </Menu.Item>
+              )}
+            </Menu>
+          }
+        >
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Actions <DownOutlined />
+          </a>
+        </Dropdown>
+      ),
     },
   ];
 

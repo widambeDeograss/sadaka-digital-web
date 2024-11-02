@@ -40,17 +40,26 @@ export const fetchtSpManagers = (id:any) =>  api.get(url.SP_MANAGERS + `${id}`);
 export const updateSpManager = (id:any, data:any) =>  api.put(url.SP_MANAGERS + `${id}`, data);
 export const deleteSpManager = (id:any) =>  api.delete(url.SP_MANAGERS + `${id}`);
 export const postSpManagers = (data:any) =>  api.create(url.SP_MANAGERS, data);
+export const postSpRevenue = (data:any) =>  api.create(url.SP_REVENUES, data);
 
 
 //WAHUMUNI
 export const fetchWahumini = (id:any) =>  api.get(url.WAHUMINI_LIST_CREATE + `${id}`);
 export const postWahumini = (data:any) =>  api.create(url.WAHUMINI_LIST_CREATE, data);
+export const updateMuhumini = (id:any, data:any) =>  api.put(url.WAHUMINI_UPDATE_DISTROY + id, data);
+export const deleteMuhumini = (id:any) =>  api.delete(url.WAHUMINI_UPDATE_DISTROY + id);
 export const postBahasha = (data:any) =>  api.create(url.CARDS_LIST_CREATE, data);
 export const fetchBahasha = (id:any) =>  api.get(url.CARDS_LIST_CREATE + `${id}`);
+export const updateBahasha = (id:any, data:any) =>  api.put(url.CARDS_UPDATE +  `${id}/`, data);
+export const deleteBahasha = (id:any) =>  api.delete(url.CARDS_UPDATE +  `${id}/`);
 export const fetchtJumuiya = (id:any) =>  api.get(url.JUMUIYA_LIST_CREATE + `${id}`);
 export const postJumuiya = (data:any) =>  api.create(url.JUMUIYA_LIST_CREATE, data);
+export const updateJumuiya = (id:any, data:any) =>  api.put(url.JUMUIYA_UPDATE + `${id}`, data);
+export const deleteJumuiya = (id:any) =>  api.delete(url.JUMUIYA_UPDATE + `${id}`);
 export const fetchtKanda = (id:any) =>  api.get(url.KANDA_LIST_CREATE + `${id}`);
 export const postKanda = (data:any) =>  api.create(url.KANDA_LIST_CREATE, data);
+export const updateKanda = (id:any, data:any) =>  api.put(url.KANDA_UPDATE + `${id}`, data);
+export const deleteKanda = (id:any) =>  api.delete(url.KANDA_UPDATE + `${id}`);
 
 //SADAKA ZAKA
 export const fetchSadaka = (id:any) =>  api.get(url.SADAKA_LIST_CREATE + `${id}`);
@@ -70,7 +79,8 @@ export const resolveSadakaTotals = (id:any) =>  api.get(url.SADAKA_MONTHLY_TOTOL
 //MCHANGO
 export const fetchMichango = (id:any) =>  api.get(url.MICHANGO_LIST + `${id}`);
 export const postMichango = (data:any) =>  api.create(url.MICHANGO_LIST, data);
-export const retrieveMichango = (id:any) =>  api.get(url.MICHANGO_RETRIEVE_UPDATE + `${id}`);
+export const deleteMichango = (id:any) =>  api.delete(url.MICHANGO_RETRIEVE_UPDATE + `${id}`);
+export const editMichango = (id:any, data:any) =>  api.put(url.MICHANGO_RETRIEVE_UPDATE + `${id}`, data);
 export const fetchMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENTS_LIST + `${id}`);
 export const postMichangoPayment = (data:any) =>  api.create(url.MICHANGO_PAYMENTS_LIST, data);
 export const retrieveMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENTS_UPDATE + `${id}`);
