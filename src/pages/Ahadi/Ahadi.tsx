@@ -1,21 +1,38 @@
-// src/components/Ahadi.tsx
-
-import React, { useState } from "react";
-import { Button, Card, Select, Table, Typography, Progress } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Select, Table, Typography, Progress, Dropdown, Menu, message } from "antd";
 import OngezaAhadi from "./OngezaAhadi";
 import Widgets from "./Stats";
 import Tabletop from "../../components/tables/TableTop";
 import { useAppSelector } from "../../store/store-hooks";
-import { useQuery } from "@tanstack/react-query";
-import { fetchAhadi } from "../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteAhadi, fetchAhadi } from "../../helpers/ApiConnectors";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+  PlusCircleFilled
+} from "@ant-design/icons";
+import modal from "antd/es/modal";
+import { useNavigate } from "react-router-dom";
+import EditCardModal from "../wahumini/EditBahasha";
+import EditAhadi from "./EditAhadi";
+import ViewModal from "./ViewAhadi";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const Ahadi = () => {
   const [openModal, setOpenModal] = useState(false);
-
+  const queryClient = useQueryClient();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const [updateAhadiModal, setupdateAhadiModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
@@ -31,6 +48,59 @@ const Ahadi = () => {
     //   enabled: false,
     // }
   });
+
+  const handleDelete = (AhadiId: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteAhadiMutation(AhadiId);
+      },
+    });
+  };
+
+  const { mutate: deleteAhadiMutation } = useMutation({
+    mutationFn: async (AhadiId: any) => {
+      await deleteAhadi(AhadiId);
+    },
+    onSuccess: () => {
+      message.success("Ahadi deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["Ahadi"] });
+    },
+    onError: () => {
+      message.error("Failed to delete Ahadi.");
+    },
+  });
+
+  const handleView = (record: any) => {
+    setSelectedData(record);
+    setModalVisible(true);
+  };
+
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = ahadiList.filter((item: any) => {
+        return (
+          item?.bahasha_details?.mhumini_details?.first_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.mhumini_details?.last_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(ahadiList);
+    }
+  }, [searchTerm, ahadiList]);
+
 
   // Define table columns
   const columns = [
@@ -126,6 +196,54 @@ const Ahadi = () => {
       key: "remark",
       render: (remark: string) => <div>{remark}</div>,
     },
+    {
+      title: "",
+      render: (text: any, record: any) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item
+                key="1"
+                icon={<EyeOutlined />}
+                onClick={() => handleView(record)}
+              >
+                View
+              </Menu.Item>
+              <Menu.Item
+                key="2"
+                icon={<PlusCircleFilled />}
+                onClick={() => {}}
+              >
+                Lipia Ahadi
+              </Menu.Item>
+              <Menu.Item
+                key="3"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setSelectedData(record);
+                  setupdateAhadiModal(true);
+                }}
+              >
+                Edit
+              </Menu.Item>
+              <Menu.Item
+                key="4"
+                icon={<DeleteOutlined />}
+                danger
+                onClick={() => handleDelete(record?.id)}
+              >
+                Delete
+              </Menu.Item>
+            </Menu>
+          }
+          trigger={["click"]}
+        >
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Actions <DownOutlined />
+          </a>
+        </Dropdown>
+      ),
+    },
   ];
 
   return (
@@ -161,12 +279,14 @@ const Ahadi = () => {
       >
            <div className="table-responsive">
           <Tabletop
-            inputfilter={false}
-            togglefilter={() => {}}
+            inputfilter={showFilter}
+            onSearch={(term: string) => setSearchTerm(term)}
+            togglefilter={(value: boolean) => setShowFilter(value)}
+            searchTerm={searchTerm}
           />
           <Table
             columns={columns}
-            dataSource={ahadiList}
+            dataSource={filteredData}
             loading={loadingAhadi}
             rowKey="id"
             pagination={{ pageSize: 10 }}
@@ -177,6 +297,8 @@ const Ahadi = () => {
         openModal={openModal}
         handleCancel={() => setOpenModal(false)}
       />
+      <ViewModal visible={modalVisible} onClose={ ()=> setModalVisible(false)} data={selectedData}/>
+      <EditAhadi openModal={updateAhadiModal} ahadiData={selectedData}  handleCancel={()=> setupdateAhadiModal(false) }/>
     </div>
   );
 };
