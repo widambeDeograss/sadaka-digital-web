@@ -1,14 +1,23 @@
 // src/components/Expenses.tsx
 
-import React, { useState } from "react";
-import { Button, Card, Table, Typography, Progress, Spin, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Table, Typography, Progress, Spin, message, Dropdown, Menu } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import AddExpenseModal from "./AddExpModal";
 import Tabletop from "../../components/tables/TableTop";
 import Widgets from "./Stats";
 import { useAppSelector } from "../../store/store-hooks";
-import { fetchtExpenses } from "../../helpers/ApiConnectors";
-import { useQuery } from "@tanstack/react-query";
+import { deleteExpence, fetchtExpenses } from "../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import modal from "antd/es/modal";
+import ViewModal from "./ViewExpence";
 
 const { Title } = Typography;
 
@@ -40,6 +49,13 @@ interface Expense {
 const Expenses = () => {
   const [openModal, setOpenModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
+  const [showFilter, setShowFilter] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
+  const [yearFilter, setYearFilter] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
@@ -58,6 +74,38 @@ const Expenses = () => {
     // {?
     //   enabled: false,
     // }
+  });
+
+  const handleView = (record: any) => {
+    setSelectedData(record);
+    setModalVisible(true);
+  };
+
+  const handleDelete = (SadakaId: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteSadakaMutation(SadakaId);
+      },
+    });
+  };
+
+  const { mutate: deleteSadakaMutation } = useMutation({
+    mutationFn: async (SadakaId: any) => {
+      await deleteExpence(SadakaId);
+    },
+    onSuccess: () => {
+      message.success("Sadaka deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
+    },
+    onError: () => {
+      message.error("Failed to delete Sadaka.");
+    },
   });
 
   // Define Table Columns
@@ -123,7 +171,68 @@ const Expenses = () => {
         );
       },
     },
+    {
+      title: "",
+      render: (text: any, record: any) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item
+                key="1"
+                icon={<EyeOutlined />}
+                onClick={() => handleView(record)}
+              >
+                View
+              </Menu.Item>
+              <Menu.Item
+                key="2"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setSelectedData(record);
+                  setOpenModal(true);
+                }}
+              >
+                Edit
+              </Menu.Item>
+              <Menu.Item
+                key="3"
+                icon={<DeleteOutlined />}
+                danger
+                onClick={() => handleDelete(record?.id)}
+              >
+                Delete
+              </Menu.Item>
+            </Menu>
+          }
+          trigger={["click"]}
+        >
+          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+            Actions <DownOutlined />
+          </a>
+        </Dropdown>
+      ),
+    },
   ];
+
+  useEffect(() => {
+    if (searchTerm) {
+      const lowercasedTerm = searchTerm.toLowerCase();
+      const filtered = expenses.filter((item: any) => {
+        return (
+          item?.bahasha_details?.mhumini_details?.first_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.mhumini_details?.last_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
+        );
+      });
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(expenses);
+    }
+  }, [searchTerm, expenses]);
 
   return (
     <div className="">
@@ -161,8 +270,10 @@ const Expenses = () => {
       <Card title={<Title level={5}>Orodha ya Matumizi</Title>} className="mt-5">
       <div className="table-responsive">
           <Tabletop
-            inputfilter={false}
-            togglefilter={() => {}}
+              inputfilter={showFilter}
+              onSearch={(term: string) => setSearchTerm(term)}
+              togglefilter={(value: boolean) => setShowFilter(value)}
+              searchTerm={searchTerm}
           />
 
      
@@ -180,7 +291,14 @@ const Expenses = () => {
 
       <AddExpenseModal
         openModal={openModal}
+        expense={selectedData}
         handleCancel={() => setOpenModal(false)}
+      />
+
+      <ViewModal
+      data={selectedData}
+      onClose={()=>  setModalVisible(false)}
+      visible={modalVisible}
       />
     </div>
   );

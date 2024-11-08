@@ -1,23 +1,31 @@
-import { Button, Card, Col, Dropdown, Menu, Row, Table } from "antd";
-import Column from "antd/es/table/Column";
-import Search from "antd/es/input/Search";
+import { Button, Card, Col, Dropdown, Menu, message, Row, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import Tabletop from "../..//../components/tables/TableTop";
-import { fetchPayTypes } from "../../../helpers/ApiConnectors";
-import { useQuery } from "@tanstack/react-query";
-import { GlobalMethod } from "../../../helpers/GlobalMethods";
+import { deletePayType, fetchPayTypes } from "../../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "../../../store/store-hooks";
-import { DownOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import PaymentTypeModal from "./AddPaymentCategory";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+  PlusCircleFilled
+} from "@ant-design/icons";
+import modal from "antd/es/modal";
 
 const PaymentTypeList = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false)
+  const queryClient = useQueryClient();
   const church = useAppSelector((state: any) => state.sp);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
 
   const {
     data: payTypes,
@@ -34,6 +42,38 @@ const PaymentTypeList = () => {
     //   enabled: false,
     // }
   });
+
+  const handleDelete = (payTypesId: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteAhadiMutation(payTypesId);
+      },
+    });
+  };
+
+  const { mutate: deleteAhadiMutation } = useMutation({
+    mutationFn: async (payTypesId: any) => {
+      await deletePayType(payTypesId);
+    },
+    onSuccess: () => {
+      message.success("payTypes deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["payTypes"] });
+    },
+    onError: () => {
+      message.error("Failed to delete payTypes.");
+    },
+  });
+
+  const handleView = (record: any) => {
+    setSelectedData(record);
+    setModalVisible(true);
+  };
 
   const columns = [
     {
@@ -65,6 +105,48 @@ const PaymentTypeList = () => {
         // sorter: (a, b) => a.capacity.length - b.capacity.length,
       },
 
+      {
+        title: "",
+        render: (text: any, record: any) => (
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item
+                  key="1"
+                  icon={<EyeOutlined />}
+                  onClick={() => handleView(record)}
+                >
+                  View
+                </Menu.Item>
+                <Menu.Item
+                  key="3"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setSelectedData(record);
+                    setIsVisible(true);
+                  }}
+                >
+                  Edit
+                </Menu.Item>
+                <Menu.Item
+                  key="4"
+                  icon={<DeleteOutlined />}
+                  danger
+                  onClick={() => handleDelete(record?.id)}
+                >
+                  Delete
+                </Menu.Item>
+              </Menu>
+            }
+            trigger={["click"]}
+          >
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+              Actions <DownOutlined />
+            </a>
+          </Dropdown>
+        ),
+      },
+
   ];
   return (
     <div>
@@ -84,7 +166,10 @@ const PaymentTypeList = () => {
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white text-xs"
-                  onClick={() => setIsVisible(true)}
+                  onClick={() => {
+                    setSelectedData(null);
+                    setIsVisible(true);
+                  }}
                 >
                   Add Payment type
                 </Button>
@@ -103,12 +188,6 @@ const PaymentTypeList = () => {
             title="Bahasha"
           >
             <div className="table-responsive">
-              <Tabletop
-                inputfilter={false}
-                togglefilter={function (value: boolean): void {
-                  throw new Error("Function not implemented.");
-                }}
-              />
 
               <Table
                 columns={columns}
@@ -119,7 +198,7 @@ const PaymentTypeList = () => {
           </Card>
         </Col>
       </Row>
-      <PaymentTypeModal visible={isVisible} onClose={() => setIsVisible(false)} />
+      <PaymentTypeModal visible={isVisible} onClose={() => setIsVisible(false)} paymentType={selectedData} isEditing={selectedData === null? false: true}/>
     </div>
   );
 };

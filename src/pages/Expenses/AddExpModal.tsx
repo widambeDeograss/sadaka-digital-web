@@ -6,7 +6,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import {  fetchtExpCat, postExpenses } from '../../helpers/ApiConnectors';
+import { fetchtExpCat, postExpenses, updateExpence } from '../../helpers/ApiConnectors';
 import { useAppDispatch, useAppSelector } from '../../store/store-hooks';
 import { addAlert } from '../../store/slices/alert/alertSlice';
 import moment from 'moment';
@@ -16,15 +16,15 @@ const { Option } = Select;
 interface AddExpenseModalProps {
   openModal: boolean;
   handleCancel: () => void;
+  expense?: Expense | null;
 }
 
 interface FormData {
   expenseCategory: number;
   spentBy: string;
   amount: number;
-  date: string;
+  date: Date;
 }
-
 
 const schema = yup.object().shape({
   expenseCategory: yup
@@ -44,81 +44,81 @@ const schema = yup.object().shape({
 });
 
 export interface Expense {
-    id: number;
-    church: number;
-    amount: string; 
-    date: string; 
-    spent_by: string;
-    expense_category: number;
-    inserted_by: string;
-    inserted_at: string; 
-    updated_by: string;
-    updated_at: string; 
-  }
+  id: number;
+  church: number;
+  amount: string;
+  date: string;
+  spent_by: string;
+  expense_category: number;
+  inserted_by: string;
+  inserted_at: string;
+  updated_by: string;
+  updated_at: string;
+}
 
-const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCancel }) => {
+const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCancel, expense }) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state: any) => state.user.userInfo);
-  const church = useAppSelector((state: any) => state.sp); 
+  const church = useAppSelector((state: any) => state.sp);
 
   const {
     data: expensecats,
-    isLoading:loadCategory,
+    isLoading: loadCategory,
     error,
   } = useQuery({
     queryKey: ["expensecats"],
     queryFn: async () => {
       const response: any = await fetchtExpCat(`?church_id=${church.id}`);
-      console.log(response);
       return response;
     },
-    // {
-    //   enabled: false,
-    // }
   });
 
-  const { mutate: postExpenseMutation, isPending: posting } = useMutation({
-    mutationFn: async (data:any) => {
-      const response = await postExpenses(data);
+  const { mutate: saveExpense, isPending: posting } = useMutation({
+    mutationFn: async (data: any) => {
+      const response = expense
+        ? await updateExpence(expense.id, data)
+        : await postExpenses(data);
       return response;
     },
     onSuccess: () => {
       dispatch(
-
-            addAlert({
-              title: 'Success',
-              message: 'Expense added successfully!',
-              type: 'success',
-            })
+        addAlert({
+          title: 'Success',
+          message: expense ? 'Expense updated successfully!' : 'Expense added successfully!',
+          type: 'success',
+        })
       );
       reset();
       handleCancel();
     },
-    onError: (error) => {
-    //   toast.error("Failed to add Expense Category. Please try again.");
-    dispatch(
+    onError: () => {
+      dispatch(
         addAlert({
           title: 'Error',
-          message:  'Failed to add expense. Please try again.',
+          message: expense ? 'Failed to update expense. Please try again.' : 'Failed to add expense. Please try again.',
           type: 'error',
         })
       );
     },
   });
 
-
-  // React Hook Form setup
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    //@ts-ignore
     resolver: yupResolver(schema),
+    defaultValues: expense
+      ? {
+          expenseCategory: expense.expense_category,
+          spentBy: expense.spent_by,
+          amount: parseFloat(expense.amount),
+          date: moment(expense.date, 'YYYY-MM-DD').toDate(),
+        }
+      : {},
   });
 
-  // Handle form submission
   const onSubmit = (data: FormData) => {
     const expenseData = {
       church: church.id,
@@ -126,22 +126,31 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
       spent_by: data.spentBy,
       amount: data.amount.toString(),
       date: moment(data.date).format('YYYY-MM-DD'),
-      inserted_by: user.username, 
+      inserted_by: user.username,
       updated_by: user.username,
     };
 
-    postExpenseMutation(expenseData);
+    saveExpense(expenseData);
   };
 
   useEffect(() => {
     if (!openModal) {
       reset();
+    } else if (expense) {
+      reset({
+        expenseCategory: expense.expense_category,
+        spentBy: expense.spent_by,
+        amount: parseFloat(expense.amount),
+        date: moment(expense.date, 'YYYY-MM-DD').toDate(),
+      });
+    } else {
+      reset();
     }
-  }, [openModal, reset]);
+  }, [openModal, expense, reset]);
 
   return (
     <Modal
-      title="Ongeza Matumizi"
+      title={expense ? "Edit Expense" : "Add Expense"}
       open={openModal}
       onCancel={handleCancel}
       footer={null}
@@ -149,7 +158,6 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
       width={600}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Expense Category Field */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Expense Category</label>
           {loadCategory ? (
@@ -158,20 +166,19 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
             <Controller
               name="expenseCategory"
               control={control}
-              defaultValue={undefined}
               render={({ field }) => (
                 <Select
                   {...field}
                   showSearch
                   placeholder="Select Expense Category"
-                  className='w-full'
+                  className="w-full"
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     option?.children.toLowerCase().includes(input.toLowerCase())
                   }
                   notFoundContent="No categories found"
                 >
-                  {expensecats?.map((category:any) => (
+                  {expensecats?.map((category: any) => (
                     <Option key={category.id} value={category.id}>
                       {category.category_name}
                     </Option>
@@ -185,8 +192,8 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
           )}
         </div>
 
-        {/* Spent By Field */}
-        <div className="mb-4">
+               {/* Spent By Field */}
+               <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Spent By</label>
           <Controller
             name="spentBy"
@@ -237,7 +244,6 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
           <Controller
             name="date"
             control={control}
-            defaultValue={""}
             render={({ field }:any) => (
               <DatePicker
                 {...field}
@@ -254,7 +260,6 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
           )}
         </div>
 
-        {/* Submit Button */}
         <Button
           type="primary"
           htmlType="submit"
@@ -262,7 +267,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
           block
           className="bg-[#152033] text-white font-bold rounded-md shadow-sm hover:bg-[#1b2a45] focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
-        Ongeza Matumizi
+          {expense ? "Update Expense" : "Add Expense"}
         </Button>
       </form>
     </Modal>

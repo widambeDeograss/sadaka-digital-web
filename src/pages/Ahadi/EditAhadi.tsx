@@ -93,7 +93,7 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
       dispatch(
         addAlert({
           title: "Mafanikio",
-          message: "Ahadi imehaririwa kwa mafanikio!",
+          message: "Ahadi update success!",
           type: "success",
         })
       );
@@ -105,7 +105,7 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
           title: "Hitilafu",
           message:
             error?.response?.data?.detail ||
-            "Imeshindikana kuhariri ahadi. Tafadhali jaribu tena.",
+            "Imeshindikana kubadili ahadi. Tafadhali jaribu tena.",
           type: "error",
         })
       );
@@ -158,7 +158,7 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
 
   return (
     <Modal
-      title="Hariri Ahadi"
+      title="Edit Ahadi"
       open={openModal}
       onCancel={handleCancel}
       footer={null}
@@ -318,8 +318,8 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
               )}
             </div>
 
-        <Button type="primary" htmlType="submit" loading={updating} block>
-          Hariri Ahadi
+        <Button type="primary" htmlType="submit"   className="bg-[#152033]" loading={updating} block>
+          Edit Ahadi
         </Button>
       </form>
     </Modal>

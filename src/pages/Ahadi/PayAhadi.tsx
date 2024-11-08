@@ -24,7 +24,7 @@ const { Option } = Select;
 interface PaymentAhadiProps {
   openModal: boolean;
   handleCancel: () => void;
-  ahadiId: number;
+  ahadiId: any;
 }
 
 interface PaymentFormData {
@@ -103,7 +103,7 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
   // Handle form submission
   const onSubmit = (data: PaymentFormData) => {
     const paymentData = {
-      ahadi_id: ahadiId,
+      ahadi: ahadiId?.id,
       payment_type: data.paymentType,
       amount: data.amount,
     };
@@ -142,10 +142,14 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
                 {...field}
                 placeholder="Chagua Aina ya Malipo"
                 className="w-full"
+                loading={payTypesLoading}
               >
-                <Option value="Cash">Fedha Taslimu</Option>
-                <Option value="Bank Transfer">Uhamisho wa Benki</Option>
-                <Option value="Mobile Money">Mpesa/TigoPesa/Airtel Money</Option>
+               {
+                payTypes?.map((py:any)=> {
+                <Option value={py.id}>{py.name}</Option>
+                return 
+                })
+               }
               </Select>
             )}
           />

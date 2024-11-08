@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import EditCardModal from "../wahumini/EditBahasha";
 import EditAhadi from "./EditAhadi";
 import ViewModal from "./ViewAhadi";
+import PaymentAhadi from "./PayAhadi";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -33,6 +34,7 @@ const Ahadi = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [payAhadiModal, setPayAhadiModal] = useState(false);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
@@ -212,7 +214,10 @@ const Ahadi = () => {
               <Menu.Item
                 key="2"
                 icon={<PlusCircleFilled />}
-                onClick={() => {}}
+                onClick={() => {
+                  setSelectedData(record);
+                  setPayAhadiModal(true)
+                }}
               >
                 Lipia Ahadi
               </Menu.Item>
@@ -299,6 +304,7 @@ const Ahadi = () => {
       />
       <ViewModal visible={modalVisible} onClose={ ()=> setModalVisible(false)} data={selectedData}/>
       <EditAhadi openModal={updateAhadiModal} ahadiData={selectedData}  handleCancel={()=> setupdateAhadiModal(false) }/>
+        <PaymentAhadi ahadiId={selectedData} handleCancel={()=>  setPayAhadiModal(false)} openModal={payAhadiModal}/>
     </div>
   );
 };
