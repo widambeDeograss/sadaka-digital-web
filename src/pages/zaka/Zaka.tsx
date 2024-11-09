@@ -16,6 +16,7 @@ import {
 import ViewModal from "./ViewZaka";
 import EditZaka from "./EditZaka";
 import modal from "antd/es/modal";
+import Widgets from "./Stats";
 
 const Zaka = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -181,6 +182,7 @@ const Zaka = () => {
 
   return (
     <div className="">
+      <Widgets/>
       <Card title={<h3 className="font-bold text-sm text-left ">Zaka</h3>}>
         <div className="text-xs">
           <h3 className="text-left">

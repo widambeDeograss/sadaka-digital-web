@@ -96,3 +96,9 @@ export const fetchAhadi = (id:any) =>  api.get(url.AHADI_LIST + `${id}`);
 export const postAhadi = (data:any) =>  api.create(url.AHADI_LIST, data);
 export const updateAhadi = (id:any, data:any) =>  api.put(url.AHADI_UPDATE + `${id}`, data);
 export const deleteAhadi = (id:any) =>  api.delete(url.AHADI_UPDATE + `${id}`);
+
+//STATS
+export const fetchAhadiStats = (id:any) =>  api.get(url.AHADI_STATS + `${id}`);
+export const fetchSadataZakaStats = (id:any) =>  api.get(url.SADAKA_ZAKA_STATS + `${id}`);
+export const fetchMatumiziStats = (id:any) =>  api.get(url.MATUMIZI_STATS + `${id}`);
+export const fetchMichangoStats = (id:any) =>  api.get(url.MICHANGO_STATS + `${id}`);

@@ -3,7 +3,7 @@ import { Modal, Button } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useMutation } from "@tanstack/react-query"; // React Query for handling API calls
+import { useMutation, useQueryClient } from "@tanstack/react-query"; // React Query for handling API calls
 import { postPayType, updatePayType } from "../../../helpers/ApiConnectors"; // API functions
 import { useAppDispatch, useAppSelector } from "../../../store/store-hooks";
 import { addAlert } from "../../../store/slices/alert/alertSlice";
@@ -19,7 +19,7 @@ const PaymentTypeModal = ({ visible, onClose, paymentType, isEditing }:any) => {
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({
     resolver: yupResolver(schema),
   });
-
+  const queryClient = useQueryClient();
   const church = useAppSelector((state:any) => state.sp);
   const user = useAppSelector((state:any) => state.user.userInfo);
   const dispatch = useAppDispatch();
@@ -49,6 +49,7 @@ const PaymentTypeModal = ({ visible, onClose, paymentType, isEditing }:any) => {
           type: "success",
         })
       );
+      queryClient.invalidateQueries({ queryKey: ["payTypes"] });
       onClose();
       reset();
     },

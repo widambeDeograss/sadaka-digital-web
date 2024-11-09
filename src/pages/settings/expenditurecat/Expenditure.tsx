@@ -1,11 +1,22 @@
-import { Button, Card, Col, Dropdown, Menu, Row, Table } from "antd";
+import { Button, Card, Col, Dropdown, Menu, message, Row, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import Tabletop from "../..//../components/tables/TableTop";
-import { fetchPayTypes, fetchtExpCat } from "../../../helpers/ApiConnectors";
-import { useQuery } from "@tanstack/react-query";
+import { deleteExpCat, fetchtExpCat } from "../../../helpers/ApiConnectors";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "../../../store/store-hooks";
 import { useState } from "react";
 import ExpenseCategoryModal from "./AddCategory";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+  PlusCircleFilled
+} from "@ant-design/icons";
+import modal from "antd/es/modal";
+import { GlobalMethod } from "../../../helpers/GlobalMethods";
+import ViewModal from "./ViewExpenditureCategory";
 
 const ExpenseCategoryList = () => {
   const navigate = useNavigate();
@@ -14,6 +25,9 @@ const ExpenseCategoryList = () => {
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const queryClient = useQueryClient();
 
   const {
     data: expensecats,
@@ -30,6 +44,38 @@ const ExpenseCategoryList = () => {
     //   enabled: false,
     // }
   });
+
+  const handleDelete = (expenceCategoryId: any) => {
+    modal.confirm({
+      title: "Confirm Deletion",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure you want to delete this record?",
+      okText: "OK",
+      okType: "danger",
+      cancelText: "cancel",
+      onOk: () => {
+        deleteAhadiMutation(expenceCategoryId);
+      },
+    });
+  };
+
+  const { mutate: deleteAhadiMutation } = useMutation({
+    mutationFn: async (expenceCategoryId: any) => {
+      await deleteExpCat(expenceCategoryId);
+    },
+    onSuccess: () => {
+      message.success(" Expence category deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["expensecats"] });
+    },
+    onError: () => {
+      message.error("Failed to delete expence category.");
+    },
+  });
+
+  const handleView = (record: any) => {
+    setSelectedData(record);
+    setModalVisible(true);
+  };
 
   const columns = [
     {
@@ -48,15 +94,62 @@ const ExpenseCategoryList = () => {
     {
       title: "Budget",
       dataIndex: "budget",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, record: any) => <div>{GlobalMethod.twoDecimalWithoutRounding(text)}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
 
     {
-        title: "created_at",
+        title: "created at",
         dataIndex: "inserted_at",
         render: (text: any, record: any) => <div>{text}</div>,
         // sorter: (a, b) => a.capacity.length - b.capacity.length,
+      },
+
+    
+      {
+        title: "",
+        render: (text: any, record: any) => (
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item
+                  key="1"
+                  icon={<EyeOutlined />}
+                  onClick={() => handleView(record)}
+                >
+                  View
+                </Menu.Item>
+                <Menu.Item
+                  key="3"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setSelectedData(record);
+                    setIsVisible(true);
+                  }}
+                >
+                  Edit
+                </Menu.Item>
+               {
+                record?.name !== "Cash" && (
+                  <Menu.Item
+                  key="4"
+                  icon={<DeleteOutlined />}
+                  danger
+                  onClick={() => handleDelete(record?.id)}
+                >
+                  Delete
+                </Menu.Item>
+                )
+               }
+              </Menu>
+            }
+            trigger={["click"]}
+          >
+            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+              Actions <DownOutlined />
+            </a>
+          </Dropdown>
+        ),
       },
 
   ];
@@ -94,15 +187,15 @@ const ExpenseCategoryList = () => {
           <Card
             bordered={false}
             //   className="criclebox tablespace mb-24"
-            title="Bahasha"
+            title=""
           >
             <div className="table-responsive">
-              <Tabletop
+              {/* <Tabletop
                 inputfilter={false}
                 togglefilter={function (value: boolean): void {
                   throw new Error("Function not implemented.");
                 }}
-              />
+              /> */}
 
               <Table
                 columns={columns}
@@ -113,7 +206,8 @@ const ExpenseCategoryList = () => {
           </Card>
         </Col>
       </Row>
-      <ExpenseCategoryModal visible={isVisible} onClose={() => setIsVisible(false)} />
+      <ExpenseCategoryModal visible={isVisible} onClose={() => setIsVisible(false)} expenseCategory={selectedData} isEditing={selectedData === null? false: true}/>
+        <ViewModal data={selectedData} onClose={() => setModalVisible(false)} visible={modalVisible}/>
     </div>
   );
 };

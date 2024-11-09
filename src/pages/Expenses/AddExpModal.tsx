@@ -5,7 +5,7 @@ import { Button, Modal, message, Input, InputNumber, DatePicker, Select, Spin } 
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchtExpCat, postExpenses, updateExpence } from '../../helpers/ApiConnectors';
 import { useAppDispatch, useAppSelector } from '../../store/store-hooks';
 import { addAlert } from '../../store/slices/alert/alertSlice';
@@ -60,7 +60,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
   const dispatch = useAppDispatch();
   const user = useAppSelector((state: any) => state.user.userInfo);
   const church = useAppSelector((state: any) => state.sp);
-
+  const queryClient = useQueryClient();
   const {
     data: expensecats,
     isLoading: loadCategory,
@@ -90,6 +90,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
       );
       reset();
       handleCancel();
+      queryClient.invalidateQueries({ queryKey: ["expenses", "expence_stats"] });
     },
     onError: () => {
       dispatch(

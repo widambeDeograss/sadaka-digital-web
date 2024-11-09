@@ -94,7 +94,7 @@ const PaymentTypeList = () => {
       title: "Description",
 
       dataIndex: "description",
-      render: (text: any, record: any) => <div>{record?.mhumini?.first_name} {record?.mhumini?.last_name}</div>,
+      render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
  
@@ -128,7 +128,9 @@ const PaymentTypeList = () => {
                 >
                   Edit
                 </Menu.Item>
-                <Menu.Item
+               {
+                record?.name !== "Cash" && (
+                  <Menu.Item
                   key="4"
                   icon={<DeleteOutlined />}
                   danger
@@ -136,6 +138,8 @@ const PaymentTypeList = () => {
                 >
                   Delete
                 </Menu.Item>
+                )
+               }
               </Menu>
             }
             trigger={["click"]}
@@ -185,7 +189,7 @@ const PaymentTypeList = () => {
           <Card
             bordered={false}
             //   className="criclebox tablespace mb-24"
-            title="Bahasha"
+            title="Payment Types"
           >
             <div className="table-responsive">
 

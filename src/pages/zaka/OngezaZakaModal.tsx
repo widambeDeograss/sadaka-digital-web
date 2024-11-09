@@ -288,7 +288,10 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
               </div>
             </div>
             <div className="mt-4">
-              <Button type="primary" htmlType="submit" loading={posting}>
+              <Button type="primary" htmlType="submit" loading={posting}
+                   className="font-bold bg-[#152033] text-white mt-4"
+                   style={{ width: "100%" }}
+              >
                 Ongeza
               </Button>
             </div>
@@ -380,7 +383,8 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
               </div>
             </div>
             <div className="mt-4">
-              <Button type="primary" htmlType="submit" loading={posting} >
+              <Button type="primary" htmlType="submit" loading={posting}      className="font-bold bg-[#152033] text-white mt-4"
+              style={{ width: "100%" }} >
                 Ongeza
               </Button>
             </div>

@@ -4,15 +4,91 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPayTypes, postSadaka, resolveBahasha } from "../../helpers/ApiConnectors";
+import {
+  fetchPayTypes,
+  postSadaka,
+  resolveBahasha,
+} from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
+import { UseFormRegister, FieldError, Path, FieldValues } from 'react-hook-form';
+
 
 const { TabPane } = Tabs;
 
 type ModalProps = {
   openModal: boolean;
   handleCancel: () => void;
+};
+interface DateInputProps<TFieldValues extends FieldValues> {
+  label?: string;
+  error?: FieldError;
+  register: UseFormRegister<TFieldValues>;
+  name: Path<TFieldValues>;
+  className?: string;
+}
+
+interface DebugInfo {
+  inputDate: string;
+  formattedDate: string;
+}
+
+const DateInput = <TFieldValues extends FieldValues>({
+  label = "Date",
+  error,
+  register,
+  name,
+  className = "",
+}: DateInputProps<TFieldValues>): JSX.Element => {
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
+
+  const formatDate = (date: string): string => {
+    if (!date) return '';
+
+    // Just return the YYYY-MM-DD string directly from the input
+    // This prevents any timezone conversion
+    const formattedDate = date;
+
+    // Update debug info
+    setDebugInfo({
+      inputDate: date,
+      formattedDate: formattedDate,
+    });
+
+    return formattedDate;
+  };
+
+  return (
+    <div className={className}>
+      <label 
+        htmlFor={name.toString()} 
+        className="block text-sm font-medium text-gray-700"
+      >
+        {label}
+      </label>
+      <input
+        id={name.toString()}
+        type="date"
+        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-gray-50 
+          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+          sm:text-sm ${error ? "border-red-500" : "border-gray-300"}`}
+        {...register(name, {
+          setValueAs: formatDate,
+        })}
+      />
+      {error && (
+        <p className="mt-1 text-sm text-red-600">
+          {error.message}
+        </p>
+      )}
+      {debugInfo && (
+        <pre className="mt-2 text-xs text-gray-500 whitespace-pre-wrap">
+          {`Input date: ${debugInfo.inputDate}
+Formatted date: ${debugInfo.formattedDate}`}
+        </pre>
+      )}
+    </div>
+  );
 };
 
 const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
@@ -40,9 +116,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       .typeError("Amount must be a number")
       .required("Amount is required")
       .positive("Amount must be positive"),
-    date: Yup.date()
-      .typeError("Date is invalid")
-      .required("Date is required"),
+    date: Yup.date().typeError("Date is invalid").required("Date is required"),
     payment_type: Yup.number()
       .typeError("Payment type must be a number")
       .required("Payment type is required"),
@@ -53,7 +127,6 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   const validationSchemaWithCard = Yup.object().shape({
     ...baseSchema,
     cardNumber: Yup.string().required("Card number is required"),
-
   });
 
   // Validation schema for the "Bila Namba ya Kadi" tab (without card number)
@@ -86,7 +159,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       );
       message.success("Sadaka added successfully!");
       handleCancel();
-      queryClient.invalidateQueries({queryKey:['sadaka']});
+      queryClient.invalidateQueries({ queryKey: ["sadaka", "sadaka_totals"] });
       formWithCard.reset();
       formWithoutCard.reset();
       setBahashaData(null);
@@ -146,9 +219,15 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
 
   // Unified submit handler
   const onSubmit = (data: any, hasCard: boolean) => {
+    console.log(data.date);
+    
     // Format date to YYYY-MM-DD
     if (data.date) {
-      const formattedDate = new Date(data.date).toISOString().split("T")[0];
+      const localDate = new Date(data.date);
+      localDate.setMinutes(
+        localDate.getMinutes() + localDate.getTimezoneOffset()
+      );
+      const formattedDate = localDate.toISOString().split("T")[0];
       data.date = formattedDate;
     }
 
@@ -163,6 +242,8 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       inserted_by: user?.username,
       updated_by: user?.username,
     };
+    console.log(data);
+
 
     postSadakaMutation(finalData);
   };
@@ -178,11 +259,16 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       <Tabs defaultActiveKey="1" centered>
         {/* Tab for "Muhumini" (with card number) */}
         <TabPane tab="Muhumini" key="1">
-          <form onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}>
+          <form
+            onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}
+          >
             <div className="grid grid-cols-2 gap-4">
               {/* Card Number */}
               <div className="col-span-2">
-                <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="cardNumber"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Namba ya Kadi
                 </label>
                 <input
@@ -211,7 +297,10 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
 
               {/* Amount */}
               <div>
-                <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="amount"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Amount
                 </label>
                 <input
@@ -219,7 +308,9 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                   type="number"
                   step="0.01"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithCard.formState.errors.amount ? "border-red-500" : "border-gray-300"
+                    formWithCard.formState.errors.amount
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   {...formWithCard.register("amount")}
                 />
@@ -232,14 +323,19 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
 
               {/* Payment Type */}
               <div>
-                <label htmlFor="payment_type" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="payment_type"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Malipo
                 </label>
                 <select
                   id="payment_type"
                   {...formWithCard.register("payment_type")}
                   className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithCard.formState.errors.payment_type ? "border-red-500" : "border-gray-300"
+                    formWithCard.formState.errors.payment_type
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 >
                   <option value="">Chagua Aina ya Malipo</option>
@@ -257,35 +353,27 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
               </div>
 
               {/* Date */}
-              <div>
-                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-                  Date
-                </label>
-                <input
-                  id="date"
-                  type="date"
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithCard.formState.errors.date ? "border-red-500" : "border-gray-300"
-                  }`}
-                  {...formWithCard.register("date")}
-                />
-                {formWithCard.formState.errors.date && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formWithCard.formState.errors.date.message}
-                  </p>
-                )}
-              </div>
+              <DateInput
+                register={formWithCard.register}
+                error={formWithCard.formState.errors.date}
+                name="date"
+              />
 
               {/* Remark */}
               <div className="col-span-2">
-                <label htmlFor="remark" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="remark"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Remark
                 </label>
                 <input
                   id="remark"
                   type="text"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithCard.formState.errors.remark ? "border-red-500" : "border-gray-300"
+                    formWithCard.formState.errors.remark
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   {...formWithCard.register("remark")}
                 />
@@ -310,11 +398,18 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
 
         {/* Tab for "Bila Namba ya Kadi" (without card number) */}
         <TabPane tab="Bila Namba ya Kadi" key="2">
-          <form onSubmit={formWithoutCard.handleSubmit((data) => onSubmit(data, false))}>
+          <form
+            onSubmit={formWithoutCard.handleSubmit((data) =>
+              onSubmit(data, false)
+            )}
+          >
             <div className="grid grid-cols-2 gap-4">
               {/* Amount */}
               <div>
-                <label htmlFor="amountWithoutCard" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="amountWithoutCard"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Amount
                 </label>
                 <input
@@ -322,7 +417,9 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                   type="number"
                   step="0.01"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithoutCard.formState.errors.amount ? "border-red-500" : "border-gray-300"
+                    formWithoutCard.formState.errors.amount
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   {...formWithoutCard.register("amount")}
                 />
@@ -335,14 +432,19 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
 
               {/* Date */}
               <div>
-                <label htmlFor="dateWithoutCard" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="dateWithoutCard"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Date
                 </label>
                 <input
                   id="dateWithoutCard"
                   type="date"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithoutCard.formState.errors.date ? "border-red-500" : "border-gray-300"
+                    formWithoutCard.formState.errors.date
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   {...formWithoutCard.register("date")}
                 />
@@ -353,16 +455,21 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 )}
               </div>
 
-                {/* Payment Type */}
-                <div>
-                <label htmlFor="payment_type" className="block text-sm font-medium text-gray-700">
+              {/* Payment Type */}
+              <div>
+                <label
+                  htmlFor="payment_type"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Malipo
                 </label>
                 <select
                   id="payment_type"
                   {...formWithoutCard.register("payment_type")}
                   className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithoutCard.formState.errors.payment_type ? "border-red-500" : "border-gray-300"
+                    formWithoutCard.formState.errors.payment_type
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 >
                   <option value="">Chagua Aina ya Malipo</option>
@@ -381,14 +488,19 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
 
               {/* Remark */}
               <div className="col-span-2">
-                <label htmlFor="remarkWithoutCard" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="remarkWithoutCard"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Remark
                 </label>
                 <input
                   id="remarkWithoutCard"
                   type="text"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithoutCard.formState.errors.remark ? "border-red-500" : "border-gray-300"
+                    formWithoutCard.formState.errors.remark
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   {...formWithoutCard.register("remark")}
                 />
@@ -398,8 +510,6 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                   </p>
                 )}
               </div>
-
-
             </div>
             <Button
               type="primary"

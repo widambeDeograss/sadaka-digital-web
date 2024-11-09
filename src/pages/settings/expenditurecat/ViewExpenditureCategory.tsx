@@ -8,15 +8,16 @@ interface ViewModalProps {
 }
 
 const ViewModal: React.FC<ViewModalProps> = ({ visible, onClose, data }) => {
+  console.log(data);
   
   return (
     <Modal
-      title="View Expence"
+      title="View Full Ahadi Details"
       visible={visible}
       onCancel={onClose}
       footer={null}
-      width={900}
-      bodyStyle={{ padding: '20px', overflowY: 'auto' }} // Increased height and made scrollable
+      width={900} // Increased width
+      bodyStyle={{ height: '600px', padding: '20px', overflowY: 'auto' }} // Increased height and made scrollable
     >
       {/* Add stripes with Tailwind CSS */}
       <div className="space-y-4">
@@ -26,7 +27,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ visible, onClose, data }) => {
             <Col span={12}>
               <h4 className="font-semibold text-sm text-gray-600">Expence category name</h4>
               <p className="text-gray-900">
-                {data?.category_details?.category_name}
+                {data?.category_details?.name}
               </p>
             </Col>
             <Col span={12}>
@@ -46,8 +47,8 @@ const ViewModal: React.FC<ViewModalProps> = ({ visible, onClose, data }) => {
               <p className="text-gray-900">{data?.amount}</p>
             </Col>
             <Col span={12}>
-              <h4 className="font-semibold text-sm text-gray-600">Date</h4>
-              <p className="text-gray-900">{data?.date}</p>
+              <h4 className="font-semibold text-sm text-gray-600">Email</h4>
+              <p className="text-gray-900">{data?.bahasha_details?.mhumini_details?.email}</p>
             </Col>
           </Row>
         </div>

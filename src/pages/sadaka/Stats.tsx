@@ -1,8 +1,54 @@
 import React from 'react';
 import { Package, PackageX, Truck, Wallet2,BanknoteIcon, Table2Icon, EqualIcon } from 'lucide-react';
 import CountUp from 'react-countup';
+import { useAppSelector } from '../../store/store-hooks';
+import { fetchSadataZakaStats } from '../../helpers/ApiConnectors';
+import { useQuery } from '@tanstack/react-query';
 
 const Widgets = () => {
+    const church = useAppSelector((state: any) => state.sp);
+
+    const {
+        data: sadaka_totals,
+        isLoading,
+        error,
+      } = useQuery({
+        queryKey: ["sadaka_totals"],
+        queryFn: async () => {
+          let query = `?church_id=${church.id}&&type=sadaka_totals`;
+          const response: any = await fetchSadataZakaStats(query);
+          return response;
+        },
+        // {?
+        //   enabled: false,
+        // }
+      });
+
+      console.log(sadaka_totals);
+      
+
+      
+      if (isLoading) {
+        return (
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-3 mb-3">
+                {Array.from({ length: 4 }).map((_, index) => (
+                    <div className="animate-pulse" key={index}>
+                        <div className="text-center bg-white text-black py-4">
+                            <div className="flex items-center justify-center mx-auto rounded-full w-12 h-12 bg-blue-500/10 text-blue-500">
+                                <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+                            </div>
+                            <h5 className="mt-4 mb-2 font-bold">
+                                <div className="w-24 h-6 bg-gray-300 mx-auto"></div>
+                            </h5>
+                            <p className="text-slate-500">
+                                <div className="w-16 h-4 bg-gray-300 mx-auto"></div>
+                            </p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
     return (
         <React.Fragment>
              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-3 mb-3">
@@ -12,7 +58,7 @@ const Widgets = () => {
                         <Wallet2 />
                     </div>
                     <h5 className="mt-4 mb-2 font-bold">
-                        <CountUp end={236000.18} decimals={2} className="counter-value" />Tzs
+                        <CountUp end={sadaka_totals?.total_cash} decimals={2} className="counter-value" />
                         </h5>
                     <p className="text-slate-500 ">Cash</p>
                 </div>
@@ -22,8 +68,8 @@ const Widgets = () => {
                     <div className="flex items-center justify-center mx-auto text-purple-500 bg-purple-100 rounded-full  w-12 h-12  dark:bg-purple-500/20">
                         <BanknoteIcon />
                     </div>
-                    <h5 className="mt-4 mb-2 font-bold"><CountUp end={3000000} className="counter-value" /></h5>
-                    <p className="text-slate-500 dark:text-zink-200">Bank</p>
+                    <h5 className="mt-4 mb-2 font-bold"><CountUp end={sadaka_totals?.total_other} decimals={2} className="counter-value" /></h5>
+                    <p className="text-slate-500 dark:text-zink-200">Others payment types</p>
                 </div>
             </div>
             <div className="">
@@ -31,7 +77,7 @@ const Widgets = () => {
                     <div className="flex items-center justify-center mx-auto text-green-500 bg-green-100 rounded-full  w-12 h-12  dark:bg-green-500/20">
                         <Table2Icon />
                     </div>
-                    <h5 className="mt-4 mb-2 font-bold"><CountUp end={17150} className="counter-value" /></h5>
+                    <h5 className="mt-4 mb-2 font-bold"><CountUp end={sadaka_totals?.total_today} decimals={2} className="counter-value" /></h5>
                     <p className="text-slate-500 dark:text-zink-200">Jumla leo</p>
                 </div>
             </div>
@@ -40,7 +86,7 @@ const Widgets = () => {
                     <div className="flex items-center justify-center mx-auto text-red-500 bg-red-100 rounded-full  w-12 h-12  dark:bg-red-500/20">
                         <EqualIcon />
                     </div>
-                    <h5 className="mt-4 mb-2  font-bold"><CountUp end={3519} className="counter-value" /></h5>
+                    <h5 className="mt-4 mb-2  font-bold"><CountUp end={sadaka_totals?.total_year} decimals={2} className="counter-value" /></h5>
                     <p className="text-slate-500 dark:text-zink-200">Jumla</p>
                 </div>
             </div>

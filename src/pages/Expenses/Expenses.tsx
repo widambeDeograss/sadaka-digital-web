@@ -65,10 +65,12 @@ const Expenses = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["expenses"],
+    queryKey: ["expenses", yearFilter],
     queryFn: async () => {
-      const response: any = await fetchtExpenses(`?church_id=${church.id}`);
-      console.log(response);
+      let query = `?church_id=${church.id}`;
+      if (yearFilter) query += `&year=${yearFilter}`;
+      const response: any = await fetchtExpenses(query);
+      setFilteredData(response);
       return response;
     },
     // {?
@@ -100,11 +102,11 @@ const Expenses = () => {
       await deleteExpence(SadakaId);
     },
     onSuccess: () => {
-      message.success("Sadaka deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
+      message.success("expenses deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
     },
     onError: () => {
-      message.error("Failed to delete Sadaka.");
+      message.error("Failed to delete expenses.");
     },
   });
 
@@ -219,13 +221,13 @@ const Expenses = () => {
       const lowercasedTerm = searchTerm.toLowerCase();
       const filtered = expenses.filter((item: any) => {
         return (
-          item?.bahasha_details?.mhumini_details?.first_name
+          item?.category_details?.category_name
             .toLowerCase()
             .includes(lowercasedTerm) ||
-          item?.bahasha_details?.mhumini_details?.last_name
+          item?.spent_by
             .toLowerCase()
             .includes(lowercasedTerm) ||
-          item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
+          item?.date.toLowerCase().includes(lowercasedTerm)
         );
       });
       setFilteredData(filtered);
@@ -243,14 +245,6 @@ const Expenses = () => {
             Tarehe: <span>{new Date().toDateString()}</span>
           </h3>
           <div className="flex justify-between flex-wrap mt-3">
-            <div>
-              <h3 className="text-left">
-                Matumizi za mwezi: <span>Tsh 2,000,000/=</span>
-              </h3>
-              <h3 className="text-left">
-                Matumizi mwaka huu: <span>Tsh 30,000,000/=</span>
-              </h3>
-            </div>
             <div>
               <Button.Group className="mt-5">
                 <Button
@@ -275,11 +269,34 @@ const Expenses = () => {
               togglefilter={(value: boolean) => setShowFilter(value)}
               searchTerm={searchTerm}
           />
-
-     
+             {showFilter && (
+            <div className="bg-gray-100 p-4 mt-4 rounded-lg">
+              <h4 className="font-bold mb-2">Filter Options</h4>
+              <label htmlFor="yearFilter" className="block text-sm mb-2">
+                Filter by Year:
+              </label>
+              <input
+                type="text"
+                id="yearFilter"
+                value={yearFilter || ""}
+                onChange={(e) => setYearFilter(e.target.value)}
+                className="p-2 border rounded-lg w-full"
+                placeholder="Enter year (e.g., 2023)"
+              />
+              <Button
+                type="primary"
+                className="mt-3 bg-[#152033] text-white"
+                onClick={() => {
+                  setShowFilter(false);
+                }}
+              >
+                Apply Filter
+              </Button>
+            </div>
+          )}
             <Table
               columns={columns}
-              dataSource={expenses}
+              dataSource={filteredData}
               loading={isLoading}
               rowKey="id"
               pagination={{ pageSize: 10 }}
