@@ -17,7 +17,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 // import { makePayment } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
-import { fetchPayTypes } from "../../helpers/ApiConnectors";
+import { fetchPayTypes, postAhadiPayment, postSpRevenue } from "../../helpers/ApiConnectors";
 
 const { Option } = Select;
 
@@ -31,6 +31,17 @@ interface PaymentFormData {
   paymentType: string;
   amount: number;
 }
+
+type RevenuePostRequest = {
+  amount: string;
+  church: number; 
+  payment_type: number; 
+  revenue_type: string;
+  revenue_type_record: string;
+  date_received: string;
+  created_by: string;
+  updated_by: string;
+};
 
 const paymentSchema = yup.object().shape({
   paymentType: yup
@@ -50,6 +61,7 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const church = useAppSelector((state: any) => state.sp);
+  const user = useAppSelector((state: any) => state.user.userInfo);
 
     // Fetch Payment Types based on church ID
     const { data: payTypes, isLoading: payTypesLoading } = useQuery({
@@ -73,8 +85,21 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
   // Mutation for processing payment
   const { mutate: payAhadi, isPending:isLoading } = useMutation({
     mutationFn: async (data: any) => {
-    //   const response = await makePayment(data);
-    //   return response;
+      const response:any = await postAhadiPayment(data);
+      const localDate = new Date();
+      const formattedDate = localDate.toLocaleDateString("en-CA"); 
+      const revenueData:RevenuePostRequest = {
+        amount: data.amount,
+        church: church?.id,
+        payment_type: data.payment_type,
+        revenue_type_record: response?.id,
+        date_received: formattedDate,
+        created_by: user?.username,
+        updated_by: user?.username,
+        revenue_type: "Ahadi payment"
+      }
+      const revenueResponse = await postSpRevenue(revenueData);
+      return revenueResponse;
     },
     onSuccess: () => {
       dispatch(
@@ -105,7 +130,10 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
     const paymentData = {
       ahadi: ahadiId?.id,
       payment_type: data.paymentType,
+      mhumini:ahadiId?.mhumini_details?.id,
       amount: data.amount,
+      inserted_by: user?.username,
+      updated_by: user?.username,
     };
 
     payAhadi(paymentData);
@@ -133,26 +161,37 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
           <label className="block text-sm font-medium text-gray-700">
             Aina ya Malipo
           </label>
-          <Controller
-            name="paymentType"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <Select
-                {...field}
-                placeholder="Chagua Aina ya Malipo"
-                className="w-full"
-                loading={payTypesLoading}
-              >
-               {
-                payTypes?.map((py:any)=> {
-                <Option value={py.id}>{py.name}</Option>
-                return 
-                })
-               }
-              </Select>
-            )}
-          />
+          {payTypesLoading ? (
+                <Spin />
+              ) : (
+                <Controller
+                  name="paymentType"
+                  control={control}
+                  defaultValue={undefined}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      showSearch
+                      placeholder="Chagua aina ya malipo"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option?.children
+                          .toString()
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                      className="w-full"
+                      notFoundContent="Haijapatikana"
+                    >
+                      {payTypes?.map((py: any) => (
+                        <Option key={py.id} value={py.id}>
+                      {py.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              )}
           {errors.paymentType && (
             <p className="text-sm text-red-600">{errors.paymentType.message}</p>
           )}

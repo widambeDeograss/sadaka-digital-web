@@ -55,6 +55,8 @@ export const MICHANGO_PAYMENTS_UPDATE= `${DataBaseUrl}/service-providers/mchango
 
 //AHADI
 export const AHADI_LIST = `${DataBaseUrl}/service-providers/ahadi-list-create`;
+export const AHADI_PAYMENTS = `${DataBaseUrl}/service-providers/ahadi-payments`;
+export const AHADI_PAYMENTS_UPDATE = `${DataBaseUrl}/service-providers/ahadi-payments-update`;
 export const AHADI_UPDATE = `${DataBaseUrl}/service-providers/ahadi-retrieve-update-destroy/`;
 
 

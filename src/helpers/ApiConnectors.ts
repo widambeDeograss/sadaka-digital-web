@@ -95,6 +95,7 @@ export const retrieveMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENT
 //AHADI
 export const fetchAhadi = (id:any) =>  api.get(url.AHADI_LIST + `${id}`);
 export const postAhadi = (data:any) =>  api.create(url.AHADI_LIST, data);
+export const postAhadiPayment = (data:any) =>  api.create(url.AHADI_PAYMENTS, data);
 export const updateAhadi = (id:any, data:any) =>  api.put(url.AHADI_UPDATE + `${id}`, data);
 export const deleteAhadi = (id:any) =>  api.delete(url.AHADI_UPDATE + `${id}`);
 
