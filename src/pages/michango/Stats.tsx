@@ -1,102 +1,96 @@
-import React from 'react';
-import { TotalEmployeeChart } from '../../components/chart/MichangoChart';
-import CountUp from 'react-countup';
-import { useAppSelector } from '../../store/store-hooks';
-import { useQuery } from '@tanstack/react-query';
-import { fetchMichango } from '../../helpers/ApiConnectors';
+import React from "react";
+import { TotalEmployeeChart } from "../../components/chart/MichangoChart";
+import CountUp from "react-countup";
+import { useAppSelector } from "../../store/store-hooks";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMichangoStats } from "../../helpers/ApiConnectors";
 
 const Widgets = () => {
-    const church = useAppSelector((state: any) => state.sp);
-    const { data: michango, isLoading: loadingmichango } = useQuery({
-        queryKey: ["michango"],
-        queryFn: async () => {
-          const response: any = await fetchMichango(`?church_id=${church.id}`);
-          console.log(response);
-          return response;
-        },
-        // {
-        //   enabled: false,
-        // }
-      });
+  const church = useAppSelector((state: any) => state.sp);
+
+  const {
+    data: mchango_totals,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["mchango_totals"],
+    queryFn: async () => {
+      let query = `?church_id=${church.id}&&type=mchango_totals`;
+      const response: any = await fetchMichangoStats(query);
+      return response;
+    },
+  });
+
+  console.log('====================================');
+  console.log(mchango_totals);
+  console.log('====================================');
+
+  if (isLoading) {
     return (
-        <React.Fragment>
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-3'>
-            <div className=" card">
-                <div className="card-body">
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-8 md:col-span-9">
-                            <p className="text-slate-500 font-bold ">Total Ujenzi</p>
-                            <h5 className="mt-3 mb-4">
-                                <CountUp end={615} className="counter-value" />
-                            </h5>
-                        </div>
-                        <div className="col-span-4 md:col-span-3">
-                            <TotalEmployeeChart chartId="totalEmployee" dataChartColor='["bg-custom-500"]' series={[10]} />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 mt-3">
-                        <p className="text-slate-500 font-bold  grow"><span className="font-medium text-green-500">15%</span> Increase</p>
-                        <p className="text-slate-500 font-bold ">Mwezi huu</p>
-                    </div>
-                </div>
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-3 mb-3">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div className="animate-pulse" key={index}>
+            <div className="text-center bg-white text-black py-4">
+              <div className="flex items-center justify-center mx-auto rounded-full w-12 h-12 bg-blue-500/10 text-blue-500">
+                <div className="w-6 h-6 bg-gray-300 rounded-full"></div>
+              </div>
+              <h5 className="mt-4 mb-2 font-bold">
+                <div className="w-24 h-6 bg-gray-300 mx-auto"></div>
+              </h5>
+              <p className="text-slate-500">
+                <div className="w-16 h-4 bg-gray-300 mx-auto"></div>
+              </p>
             </div>
-            <div className=" card">
-                <div className="card-body">
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-8 md:col-span-9">
-                            <p className="text-slate-500 font-bold ">Jumla Kwaya</p>
-                            <h5 className="mt-3 mb-4">  <CountUp end={174} className="counter-value" /></h5>
-                        </div>
-                        <div className="col-span-4 md:col-span-3">
-                            <TotalEmployeeChart chartId="totalApplication" dataChartColor='["bg-purple-500"]' series={[60]} />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 mt-3">
-                        <p className="text-slate-500 font-bold  grow"><span className="font-medium text-green-500">26%</span> Increase</p>
-                        <p className="text-slate-500 font-bold ">This Month</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* <ApplicationReceived /> */}
-
-            <div className=" card">
-                <div className="card-body">
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-8 md:col-span-9">
-                            <p className="text-slate-500 font-bold ">Jumla vyombo vya muziki</p>
-                            <h5 className="mt-3 mb-4"> <CountUp end={64} className="counter-value" /></h5>
-                        </div>
-                        <div className="col-span-4 md:col-span-3">
-                            <TotalEmployeeChart chartId="hiredCandidates" dataChartColor='["bg-green-500"]' series={[25]} />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 mt-3">
-                        <p className="text-slate-500 font-bold  grow"><span className="font-medium text-red-500">05%</span> Increase</p>
-                        <p className="text-slate-500 font-bold ">Mwezi huu</p>
-                    </div>
-                </div>
-            </div>
-            <div className=" card">
-                <div className="card-body">
-                    <div className="grid grid-cols-12">
-                        <div className="col-span-8 md:col-span-9">
-                            <p className="text-slate-500 font-bold ">Kusaidia wasio jiweza</p>
-                            <h5 className="mt-3 mb-4"><CountUp end={110} className="counter-value" /></h5>
-                        </div>
-                        <div className="col-span-4 md:col-span-3">
-                            <TotalEmployeeChart chartId="rejectedCandidates" dataChartColor='["bg-red-500"]' series={[75]} />
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 mt-3">
-                        <p className="text-slate-500 font-bold  grow"><span className="font-medium text-red-500">16%</span> Increase</p>
-                        <p className="text-slate-500 font-bold ">This Month</p>
-                    </div>
-                </div>
-            </div>
-            </div>
-        </React.Fragment>
+          </div>
+        ))}
+      </div>
     );
+  }
+
+  return (
+    <React.Fragment>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {mchango_totals?.map((mchango: any, index: number) => (
+          <div className="card" key={index}>
+            <div className="card-body">
+              <div className="grid grid-cols-12">
+                <div className="col-span-8 md:col-span-9">
+                  <p className="text-slate-500 font-bold ">
+                    {mchango.mchango_name}
+                  </p>
+                  <h5 className="mt-3 mb-4">
+                    <CountUp
+                      end={parseFloat(mchango.collected_amount)}
+                      className="counter-value"
+                    />
+                  </h5>
+                </div>
+                <div className="col-span-4 md:col-span-3">
+                  <TotalEmployeeChart
+                    chartId="rejectedCandidates"
+                    dataChartColor='["bg-custom-500"]'
+                    series={[
+                     mchango?.percentage_collected
+                    ]}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-3 mt-3">
+                <p className="text-slate-500 font-bold grow">
+                  <span className="font-medium text-green-500">
+                    { mchango?.percentage_collected}
+                    %
+                  </span>{" "}
+                  Collected
+                </p>
+                <p className="text-slate-500 font-bold ">Mwezi huu</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </React.Fragment>
+  );
 };
 
 export default Widgets;

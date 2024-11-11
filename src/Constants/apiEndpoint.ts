@@ -35,6 +35,7 @@ export const KANDA_LIST_CREATE = `${DataBaseUrl}/service-providers/kanda-list-cr
 export const KANDA_UPDATE = `${DataBaseUrl}/service-providers/kanda-retrieve-update-destroy/`;
 export const SP_MANAGERS = `${DataBaseUrl}/service-providers/sp-managers/`;
 export const SP_REVENUES = `${DataBaseUrl}/service-providers/revenue-list-create`
+export const SP_REVENUES_UPDATE = `${DataBaseUrl}/service-providers/revenue/update/`
 
 //SP SADAKA and ZAKA
 export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-create`;

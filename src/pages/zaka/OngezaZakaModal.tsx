@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPayTypes, postZaka, resolveBahasha } from "../../helpers/ApiConnectors";
+import { fetchPayTypes, postSpRevenue, postZaka, resolveBahasha } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
@@ -14,6 +14,18 @@ type ModalProps = {
   openModal: boolean;
   handleCancel: () => void;
 };
+
+type RevenuePostRequest = {
+  amount: string;
+  church: number; 
+  payment_type: number; 
+  revenue_type: string;
+  revenue_type_record: string;
+  date_received: string;
+  created_by: string;
+  updated_by: string;
+};
+
 
 const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
   const church = useAppSelector((state: any) => state.sp);
@@ -71,8 +83,19 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
   // Mutation for posting Zaka
   const { mutate: postZakaMutation, isPending: posting } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await postZaka(data);
-      return response;
+      const response:any = await postZaka(data);
+      const revenueData:RevenuePostRequest = {
+        amount: data.zaka_amount,
+        church: church?.id,
+        payment_type: data.payment_type,
+        revenue_type_record: response?.id,
+        date_received: data.date,
+        created_by: user?.username,
+        updated_by: user?.username,
+        revenue_type: "Zaka"
+      }
+      const revenueResponse = await postSpRevenue(revenueData);
+      return revenueResponse;
     },
     onSuccess: () => {
       dispatch(
@@ -146,7 +169,8 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
   const onSubmit = (data: any, hasCard: boolean) => {
     // Format date to YYYY-MM-DD
     if (data.date) {
-      const formattedDate = new Date(data.date).toISOString().split("T")[0];
+      const localDate = new Date(data.date);
+      const formattedDate = localDate.toLocaleDateString("en-CA"); 
       data.date = formattedDate;
     }
 

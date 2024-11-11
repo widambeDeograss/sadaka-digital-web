@@ -47,6 +47,7 @@ export const updateSpManager = (id:any, data:any) =>  api.put(url.SP_MANAGERS + 
 export const deleteSpManager = (id:any) =>  api.delete(url.SP_MANAGERS + `${id}`);
 export const postSpManagers = (data:any) =>  api.create(url.SP_MANAGERS, data);
 export const postSpRevenue = (data:any) =>  api.create(url.SP_REVENUES, data);
+export const postSpRevenueUpdate = (data:any) =>  api.put(url.SP_REVENUES_UPDATE, data);
 
 
 //WAHUMUNI
@@ -77,7 +78,7 @@ export const updateZaka = (id:any, data:any) =>  api.put(url.ZAKA_UPDATE + id, d
 export const updateSadaka = (id:any, data:any) =>  api.put(url.SADAKA_UPDATE + id, data);
 export const fetchZakaById = (id:any) =>  api.get(url.ZAKA_UPDATE + id);
 export const deleteZakaById = (id:any) =>  api.delete(url.ZAKA_UPDATE + id);
-export const deleteSadakaById = (id:any) =>  api.delete(url.ZAKA_UPDATE + id);
+export const deleteSadakaById = (id:any) =>  api.delete(url.SADAKA_UPDATE + id);
 export const resolveBahasha = (id:any) =>  api.get(url.BAHASHA_GET_NO + `${id}`);
 export const resolveZakaTotals = (id:any) =>  api.get(url.ZAKA_MONTHLY_TOTOLS + `${id}`);
 export const resolveSadakaTotals = (id:any) =>  api.get(url.SADAKA_MONTHLY_TOTOLS + `${id}`);

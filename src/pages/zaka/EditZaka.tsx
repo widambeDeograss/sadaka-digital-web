@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPayTypes, fetchZakaById, updateZaka, resolveBahasha } from "../../helpers/ApiConnectors";
+import { fetchPayTypes, fetchZakaById, updateZaka, resolveBahasha, postSpRevenueUpdate } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
@@ -14,6 +14,17 @@ type ModalProps = {
   openModal: boolean;
   handleCancel: () => void;
   zakaDetails: any | null; // Add zakaId prop to identify the Zaka being edited
+};
+
+type RevenuePostRequest = {
+  amount: string;
+  church: number; 
+  payment_type: number; 
+  revenue_type: string;
+  revenue_type_record: string;
+  date_received: string;
+  created_by: string;
+  updated_by: string;
 };
 
 const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
@@ -76,7 +87,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
         date: zakaDetails.date,
         payment_type: zakaDetails.payment_type,
         remark: zakaDetails.collected_by,
-        cardNumber: zakaDetails.bahasha ? zakaDetails.bahasha.card_no : "",
+        cardNumber: zakaDetails.bahasha.card_no,
       };
 
       formWithCard.reset(formData);
@@ -88,6 +99,19 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
   // Mutation for updating Zaka
   const { mutate: updateZakaMutation, isPending: updating } = useMutation({
     mutationFn: async (data: any) => {
+      const revenueData:RevenuePostRequest = {
+        amount: data.zaka_amount,
+        church: church?.id,
+        payment_type: data.payment_type,
+        revenue_type_record: zakaDetails?.id,
+        date_received: data.date,
+        created_by: user?.username,
+        updated_by: user?.username,
+        revenue_type: "Zaka"
+      }
+      const revenueResponse = await postSpRevenueUpdate(revenueData);
+      console.log(revenueResponse);
+      
       const response = await updateZaka(`${zakaDetails?.id}`, data);
       return response;
     },
@@ -162,8 +186,9 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
   // Unified submit handler for updating Zaka
   const onSubmit = (data: any, hasCard: boolean) => {
     if (data.date) {
-        const formattedDate = new Date(data.date).toISOString().split("T")[0];
-        data.date = formattedDate;
+      const localDate = new Date(data.date);
+      const formattedDate = localDate.toLocaleDateString("en-CA"); 
+      data.date = formattedDate;
       }
     const finalData = {
       collected_by: data.remark,

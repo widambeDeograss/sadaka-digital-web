@@ -24,8 +24,6 @@ const Widgets = () => {
         //   enabled: false,
         // }
       });
-
-      console.log(zaka_totals);
       
 
       

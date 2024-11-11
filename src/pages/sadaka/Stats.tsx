@@ -19,6 +19,8 @@ const Widgets = () => {
           const response: any = await fetchSadataZakaStats(query);
           return response;
         },
+
+        enabled: true
         // {?
         //   enabled: false,
         // }

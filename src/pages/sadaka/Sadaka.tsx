@@ -81,8 +81,9 @@ const Sadaka = () => {
         `?church_id=${church.id}&filter=today`
       );
       console.log(response);
-      return response;
+      return response?.reverse();
     },
+    enabled: true
     // {
     //   enabled: false,
     // }
@@ -302,10 +303,10 @@ const Sadaka = () => {
                 className="timelinelist lastweek text-xs "
                 reverse={reverse}
               >
-                {timelineList.map((t, index) => (
-                  <Timeline.Item color={t.color} key={index}>
-                    <h3 className=" text-xs text-center ">{t.title}</h3>
-                    <Text>{t.time}</Text>
+                {sadakaToday?.slice(0,4).map((t:any, index:number) => (
+                  <Timeline.Item color="green" key={index}>
+                    <h3 className=" text-xs text-center ">{t?.bahasha_details?.mhumini_details?.first_name}-TZS{t?.sadaka_amount} </h3>
+                    <Text>Card No: {t?.bahasha_details?.card_no}</Text>
                   </Timeline.Item>
                 ))}
               </Timeline>

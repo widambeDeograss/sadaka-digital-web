@@ -7,12 +7,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchPayTypes,
   postSadaka,
+  postSpRevenue,
   resolveBahasha,
 } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
-import { UseFormRegister, FieldError, Path, FieldValues } from 'react-hook-form';
-
 
 const { TabPane } = Tabs;
 
@@ -20,76 +19,19 @@ type ModalProps = {
   openModal: boolean;
   handleCancel: () => void;
 };
-interface DateInputProps<TFieldValues extends FieldValues> {
-  label?: string;
-  error?: FieldError;
-  register: UseFormRegister<TFieldValues>;
-  name: Path<TFieldValues>;
-  className?: string;
-}
 
-interface DebugInfo {
-  inputDate: string;
-  formattedDate: string;
-}
 
-const DateInput = <TFieldValues extends FieldValues>({
-  label = "Date",
-  error,
-  register,
-  name,
-  className = "",
-}: DateInputProps<TFieldValues>): JSX.Element => {
-  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null);
-
-  const formatDate = (date: string): string => {
-    if (!date) return '';
-
-    // Just return the YYYY-MM-DD string directly from the input
-    // This prevents any timezone conversion
-    const formattedDate = date;
-
-    // Update debug info
-    setDebugInfo({
-      inputDate: date,
-      formattedDate: formattedDate,
-    });
-
-    return formattedDate;
-  };
-
-  return (
-    <div className={className}>
-      <label 
-        htmlFor={name.toString()} 
-        className="block text-sm font-medium text-gray-700"
-      >
-        {label}
-      </label>
-      <input
-        id={name.toString()}
-        type="date"
-        className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-gray-50 
-          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
-          sm:text-sm ${error ? "border-red-500" : "border-gray-300"}`}
-        {...register(name, {
-          setValueAs: formatDate,
-        })}
-      />
-      {error && (
-        <p className="mt-1 text-sm text-red-600">
-          {error.message}
-        </p>
-      )}
-      {debugInfo && (
-        <pre className="mt-2 text-xs text-gray-500 whitespace-pre-wrap">
-          {`Input date: ${debugInfo.inputDate}
-Formatted date: ${debugInfo.formattedDate}`}
-        </pre>
-      )}
-    </div>
-  );
+type RevenuePostRequest = {
+  amount: string;
+  church: number; 
+  payment_type: number; 
+  revenue_type: string;
+  revenue_type_record: string;
+  date_received: string;
+  created_by: string;
+  updated_by: string;
 };
+
 
 const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   const queryClient = useQueryClient();
@@ -146,8 +88,19 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   // Mutation for posting Sadaka
   const { mutate: postSadakaMutation, isPending: posting } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await postSadaka(data);
-      return response;
+      const response:any = await postSadaka(data);
+      const revenueData:RevenuePostRequest = {
+        amount: data.sadaka_amount,
+        church: church?.id,
+        payment_type: data.payment_type,
+        revenue_type_record: response?.id,
+        date_received: data.date,
+        created_by: user?.username,
+        updated_by: user?.username,
+        revenue_type: "Sadaka"
+      }
+      const revenueResponse = await postSpRevenue(revenueData);
+      return revenueResponse;
     },
     onSuccess: () => {
       dispatch(
@@ -158,8 +111,8 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
         })
       );
       message.success("Sadaka added successfully!");
-      handleCancel();
       queryClient.invalidateQueries({ queryKey: ["sadaka", "sadaka_totals"] });
+      handleCancel();
       formWithCard.reset();
       formWithoutCard.reset();
       setBahashaData(null);
@@ -224,11 +177,8 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
     // Format date to YYYY-MM-DD
     if (data.date) {
       const localDate = new Date(data.date);
-      localDate.setMinutes(
-        localDate.getMinutes() + localDate.getTimezoneOffset()
-      );
-      const formattedDate = localDate.toISOString().split("T")[0];
-      data.date = formattedDate;
+  const formattedDate = localDate.toLocaleDateString("en-CA"); 
+  data.date = formattedDate;
     }
 
     // Prepare final data
@@ -242,7 +192,6 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       inserted_by: user?.username,
       updated_by: user?.username,
     };
-    console.log(data);
 
 
     postSadakaMutation(finalData);
@@ -352,12 +301,25 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 )}
               </div>
 
-              {/* Date */}
-              <DateInput
-                register={formWithCard.register}
-                error={formWithCard.formState.errors.date}
-                name="date"
-              />
+               {/* Date */}
+               <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                  Date
+                </label>
+                <input
+                  id="date"
+                  type="date"
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithCard.formState.errors.date ? "border-red-500" : "border-gray-300"
+                  }`}
+                  {...formWithCard.register("date")}
+                />
+                {formWithCard.formState.errors.date && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {formWithCard.formState.errors.date.message}
+                  </p>
+                )}
+              </div>
 
               {/* Remark */}
               <div className="col-span-2">

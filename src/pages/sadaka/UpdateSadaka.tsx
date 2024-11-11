@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPayTypes, updateSadaka, resolveBahasha } from "../../helpers/ApiConnectors";
+import { fetchPayTypes, updateSadaka, resolveBahasha, postSpRevenueUpdate } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
@@ -14,6 +14,17 @@ type ModalProps = {
   openModal: boolean;
   handleCancel: () => void;
   sadakaData?: any;  // Existing data to be updated
+};
+
+type RevenuePostRequest = {
+  amount: string;
+  church: number; 
+  payment_type: number; 
+  revenue_type: string;
+  revenue_type_record: string;
+  date_received: string;
+  created_by: string;
+  updated_by: string;
 };
 
 const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) => {
@@ -66,9 +77,7 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
     resolver: yupResolver(validationSchemaWithoutCard),
   });
 
-  console.log('====================================');
-  console.log(sadakaData);
-  console.log('====================================');
+
 
   // Prepopulate form with existing data
   useEffect(() => {
@@ -90,7 +99,18 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
 
   const { mutate: updateSadakaMutation, isPending: updating } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await updateSadaka(data, sadakaData?.id);
+      const revenueData:RevenuePostRequest = {
+        amount: data.sadaka_amount,
+        church: church?.id,
+        payment_type: data.payment_type,
+        revenue_type_record: sadakaData?.id,
+        date_received: data.date,
+        created_by: user?.username,
+        updated_by: user?.username,
+        revenue_type: "Sadaka"
+      }
+      const revenueResponse = await postSpRevenueUpdate(revenueData);
+      const response = await updateSadaka(sadakaData?.id, data);
       return response;
     },
     onSuccess: () => {
@@ -162,7 +182,8 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
 
   const onSubmit = (data: any, hasCard: boolean) => {
     if (data.date) {
-      const formattedDate = new Date(data.date).toISOString().split("T")[0];
+      const localDate = new Date(data.date);
+      const formattedDate = localDate.toLocaleDateString("en-CA"); 
       data.date = formattedDate;
     }
 
@@ -174,6 +195,7 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
       payment_type: data.payment_type,
       date: data.date,
       updated_by: user?.username,
+      inserted_by: user?.username,
     };
 
     updateSadakaMutation(finalData);

@@ -18,7 +18,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   fetchWahumini,
    fetchMichango,
-   postMichangoPayment
+   postMichangoPayment,
+   postSpRevenue,
+   fetchPayTypes
 } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
@@ -37,6 +39,8 @@ export interface MchangoPayment {
   mchango: number; // ID of the Mchango
   amount: number;
   mhumini?: number | null;
+  mchango_description:string;
+  payment_type: number;
   inserted_by: string;
   inserted_at: string; // ISO date string
   updated_by: string;
@@ -60,15 +64,28 @@ interface OngezaChagizoProps {
 interface FormDataWithMuhumini {
   mchango: number;
   amount: number;
+  payment_type: number;
   mhumini: number;
   remark: string;
 }
 
 interface FormDataWithoutMuhumini {
   mchango: number;
+  payment_type: number;
   amount: number;
   remark: string;
 }
+
+type RevenuePostRequest = {
+  amount: string;
+  church: number; 
+  payment_type: number; 
+  revenue_type: string;
+  revenue_type_record: string;
+  date_received: string;
+  created_by: string;
+  updated_by: string;
+};
 
 // Define Validation Schemas
 const schemaWithMuhumini = yup.object().shape({
@@ -86,6 +103,9 @@ const schemaWithMuhumini = yup.object().shape({
     .typeError("Muhumini ni lazima")
     .required("Muhumini ni lazima"),
   remark: yup.string().required("Maelezo ni lazima"),
+  payment_type: yup.number()
+  .typeError("Payment type must be a number")
+  .required("Payment type is required"),
 });
 
 const schemaWithoutMuhumini = yup.object().shape({
@@ -99,6 +119,10 @@ const schemaWithoutMuhumini = yup.object().shape({
     .positive("Kiasi lazima kiwe chanya")
     .required("Kiasi ni lazima"),
   remark: yup.string().required("Maelezo ni lazima"),
+
+  payment_type: yup.number()
+  .typeError("Payment type must be a number")
+  .required("Payment type is required"),
 });
 
 const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
@@ -137,11 +161,32 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
     // }
   });
 
+  const { data: payTypes, isLoading: payTypesLoading } = useQuery({
+    queryKey: ["payTypes", church.id],
+    queryFn: async () => {
+      const response: any = await fetchPayTypes(`?church_id=${church.id}`);
+      return response;
+    },
+  });
+
 
   const { mutate: addMchangoPaymentMutation, isPending: posting } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await postMichangoPayment(data);
-      return response;
+      const response:any = await postMichangoPayment(data);
+      const localDate = new Date();
+      const formattedDate = localDate.toLocaleDateString("en-CA"); 
+      const revenueData:RevenuePostRequest = {
+        amount: data.amount,
+        church: church?.id,
+        payment_type: data.payment_type,
+        revenue_type_record: response?.id,
+        date_received: formattedDate,
+        created_by: user?.username,
+        updated_by: user?.username,
+        revenue_type: "Michango"
+      }
+      const revenueResponse = await postSpRevenue(revenueData);
+      return revenueResponse;
     },
     onSuccess: () => {
       dispatch(
@@ -183,9 +228,10 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
     > = {
       mchango: data.mchango,
       amount: data.amount,
+      payment_type: data.payment_type,
       mhumini:
         activeTab === "with" ? (data as FormDataWithMuhumini).mhumini : null,
-
+        mchango_description: data.remark,
         inserted_by: user?.username,
         updated_by: user?.username,
     };
@@ -269,6 +315,43 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
               />
             </Form.Item>
 
+            <Form.Item
+              label="Payment type"
+              validateStatus={errors.payment_type ? "error" : ""}
+              help={errors.payment_type?.message}
+            >
+              {payTypesLoading ? (
+                <Spin />
+              ) : (
+                <Controller
+                  name="payment_type"
+                  control={control}
+                  defaultValue={undefined}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      showSearch
+                      placeholder="Chagua aina ya malipo"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option?.children
+                          .toString()
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                      notFoundContent="Haijapatikana"
+                    >
+                      {payTypes?.map((py: any) => (
+                        <Option key={py.id} value={py.id}>
+                      {py.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              )}
+            </Form.Item>
+
             {/* Muhumini Select Field */}
             <Form.Item
               label="Muhumini"
@@ -333,6 +416,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
               <Button
                 type="primary"
                 htmlType="submit"
+                className="font-bold bg-[#152033]"
                 loading={posting}
                 block
               >
@@ -403,6 +487,43 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
               />
             </Form.Item>
 
+            <Form.Item
+              label="Payment type"
+              validateStatus={errors.payment_type ? "error" : ""}
+              help={errors.payment_type?.message}
+            >
+              {payTypesLoading ? (
+                <Spin />
+              ) : (
+                <Controller
+                  name="payment_type"
+                  control={control}
+                  defaultValue={undefined}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      showSearch
+                      placeholder="Chagua aina ya malipo"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option?.children
+                          .toString()
+                          .toLowerCase()
+                          .includes(input.toLowerCase())
+                      }
+                      notFoundContent="Haijapatikana"
+                    >
+                      {payTypes?.map((py: any) => (
+                        <Option key={py.id} value={py.id}>
+                      {py.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                />
+              )}
+            </Form.Item>
+
             {/* Remark Field */}
             <Form.Item
               label="Maelezo"
@@ -429,6 +550,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
               <Button
                 type="primary"
                 htmlType="submit"
+                className="font-bold bg-[#152033]"
                 loading={posting}
                 block
               >
