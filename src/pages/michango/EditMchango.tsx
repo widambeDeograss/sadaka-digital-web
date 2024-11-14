@@ -34,9 +34,19 @@ const EditMchango = () => {
     resolver: yupResolver(schema),
   });
 
+  console.log(record);
+  
+
   useEffect(() => {
     if (record) {
-     reset({...record})
+     const updateData = {
+      lengo: record?.mchango_amount,
+      amount: record?.target_amount,
+      description:record?.mchango_description,
+      name:record?.mchango_name,
+      date:record?.date
+         }
+     reset({...updateData})
     }
   }, [record, reset]);
 

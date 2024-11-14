@@ -104,3 +104,4 @@ export const fetchAhadiStats = (id:any) =>  api.get(url.AHADI_STATS + `${id}`);
 export const fetchSadataZakaStats = (id:any) =>  api.get(url.SADAKA_ZAKA_STATS + `${id}`);
 export const fetchMatumiziStats = (id:any) =>  api.get(url.MATUMIZI_STATS + `${id}`);
 export const fetchMichangoStats = (id:any) =>  api.get(url.MICHANGO_STATS + `${id}`);
+export const fetchMchangoStats = (id:any) =>  api.get(url.MCHANGO_STATS + `${id}`);

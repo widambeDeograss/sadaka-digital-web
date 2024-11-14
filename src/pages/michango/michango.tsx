@@ -18,6 +18,7 @@ import modal from "antd/es/modal";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 
 
+
 const MichangoList = () => {
   const [openMOdal, setopenMOdal] = useState(false);
   const navigate = useNavigate();

@@ -64,4 +64,5 @@ export const AHADI_UPDATE = `${DataBaseUrl}/service-providers/ahadi-retrieve-upd
 export const MATUMIZI_STATS = `${DataBaseUrl}/service-providers/matumizi-stats`
 export const AHADI_STATS = `${DataBaseUrl}/service-providers/ahadi-stats`
 export const MICHANGO_STATS = `${DataBaseUrl}/service-providers/michango-stats`
+export const MCHANGO_STATS = `${DataBaseUrl}/service-providers/mchango-details/`
 export const SADAKA_ZAKA_STATS = `${DataBaseUrl}/service-providers/sadaka-zaka-stats`

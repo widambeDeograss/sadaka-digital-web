@@ -1,9 +1,9 @@
 import React from "react";
-import { TotalEmployeeChart } from "../../components/chart/MichangoChart";
 import CountUp from "react-countup";
 import { useAppSelector } from "../../store/store-hooks";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMichangoStats } from "../../helpers/ApiConnectors";
+import { Progress } from "antd";
 
 const Widgets = () => {
   const church = useAppSelector((state: any) => state.sp);
@@ -21,9 +21,6 @@ const Widgets = () => {
     },
   });
 
-  console.log('====================================');
-  console.log(mchango_totals);
-  console.log('====================================');
 
   if (isLoading) {
     return (
@@ -66,13 +63,8 @@ const Widgets = () => {
                   </h5>
                 </div>
                 <div className="col-span-4 md:col-span-3">
-                  <TotalEmployeeChart
-                    chartId="rejectedCandidates"
-                    dataChartColor='["bg-custom-500"]'
-                    series={[
-                     mchango?.percentage_collected
-                    ]}
-                  />
+                <Progress percent={ mchango?.percentage_collected} size="default" type="circle" className="justify-start"/>
+              
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-3">
