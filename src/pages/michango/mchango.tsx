@@ -9,8 +9,6 @@ import {
   Table,
   Typography,
 } from "antd";
-import LineChart from "../../components/chart/lineChart.tsx";
-import Column from "antd/es/table/Column";
 import { DownloadOutlined, PlusCircleFilled } from "@ant-design/icons";
 import Chart from "react-apexcharts";
 import { useParams } from "react-router-dom";
@@ -113,7 +111,7 @@ const Mchango = () => {
   const { data: ahadiList, isLoading: loadingAhadi } = useQuery({
     queryKey: ["Ahadi"],
     queryFn: async () => {
-      const response: any = await fetchAhadi(`?mchango_id=$${params?.id}`);
+      const response: any = await fetchAhadi( `?mchango_id=${params?.id}&&church_id=${church.id}`);
       console.log(response);
       return response;
     },
@@ -173,12 +171,34 @@ const Mchango = () => {
   //   });
 
   const mchangoPaymentColumns = [
-    { title: "S/No", render: (_, __, index: number) => index + 1 },
-    { title: "Name", dataIndex: "mchango" },
-    { title: "Payment type", dataIndex: "payment_type" },
-    { title: "Muhumini", dataIndex: "mhumini" },
-    { title: "Amount Paid", dataIndex: "amount" },
-    { title: "Date", dataIndex: "inserted_at" },
+    {
+      title: "S/No",
+      render: (_: any, __: any, index: number) => index + 1,
+    },
+    {
+      title: "Name",
+      dataIndex: ["mhumini_details", "first_name"],
+      render: (_: any, record: any) => `${record.mhumini_details.first_name} ${record.mhumini_details.last_name}`,
+    },
+    {
+      title: "Payment type",
+      dataIndex: ["payment_type_details", "name"],
+    },
+    {
+      title: "Muhumini",
+      dataIndex: ["mhumini_details", "first_name"],
+      render: (_: any, record: any) => `${record.mhumini_details.first_name} ${record.mhumini_details.last_name}`,
+    },
+    {
+      title: "Amount Paid",
+      dataIndex: "amount",
+      render: (amount: string) => `Tsh ${parseFloat(amount).toLocaleString()}`,
+    },
+    {
+      title: "Date",
+      dataIndex: "inserted_at",
+      render: (date: string) => new Date(date).toLocaleDateString(),
+    },
     {
       title: "Actions",
       render: (_: any, record: any) => (
@@ -300,7 +320,7 @@ const Mchango = () => {
       },
     },
     {
-      title: "Date Pledged",
+      title: "Ahadi date",
       dataIndex: "date_pledged",
       key: "date_pledged",
       render: (date: string) => (
@@ -467,7 +487,7 @@ const Mchango = () => {
           />
         </div>
       </Card>
-      <Card title={<Title level={5}>Orodha ya Ahadi</Title>} className="mt-5">
+      <Card title={<h3 className="text-left">Orodha ya Ahadi</h3>} className="mt-5">
         <div className="table-responsive">
           <Tabletop
             inputfilter={false}

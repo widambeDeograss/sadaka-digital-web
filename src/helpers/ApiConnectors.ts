@@ -94,6 +94,7 @@ export const retrieveMichangoPayment = (id:any) =>  api.get(url.MICHANGO_PAYMENT
 
 //AHADI
 export const fetchAhadi = (id:any) =>  api.get(url.AHADI_LIST + `${id}`);
+export const fetchAhadiPayments = (id:any) =>  api.get(url.AHADI_PAYMENTS + `${id}`);
 export const postAhadi = (data:any) =>  api.create(url.AHADI_LIST, data);
 export const postAhadiPayment = (data:any) =>  api.create(url.AHADI_PAYMENTS, data);
 export const updateAhadi = (id:any, data:any) =>  api.put(url.AHADI_UPDATE + `${id}`, data);
@@ -105,3 +106,6 @@ export const fetchSadataZakaStats = (id:any) =>  api.get(url.SADAKA_ZAKA_STATS +
 export const fetchMatumiziStats = (id:any) =>  api.get(url.MATUMIZI_STATS + `${id}`);
 export const fetchMichangoStats = (id:any) =>  api.get(url.MICHANGO_STATS + `${id}`);
 export const fetchMchangoStats = (id:any) =>  api.get(url.MCHANGO_STATS + `${id}`);
+export const fetchMhuminiStats = (id:any) =>  api.get(url.MHUMINI_STATS + `${id}`);
+export const fetchZakBahashaInfo = (id:any) =>  api.get(url.ZAKA_BAHASHA_CHECK + `${id}`);
+export const fetchDashboard = (id:any) =>  api.get(url.DASHBORD_STATS + `${id}`);

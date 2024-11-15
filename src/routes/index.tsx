@@ -30,6 +30,7 @@ import KandaJumuiya from '../pages/wahumini/jumuiya/JumuiyaList.tsx';
 import SpManagerList from '../pages/users/SpManagerList.tsx';
 import UpdateMuhumini from '../pages/wahumini/EditMuhumini.tsx';
 import EditMchango from '../pages/michango/EditMchango.tsx';
+import AhadiPayments from '../pages/Ahadi/AhadiPayments.tsx';
 
 
 const AppRouter = () => {
@@ -70,6 +71,7 @@ const AppRouter = () => {
                 {path:"sadaka-monthly-report", element:<SadakaReportTable/>},
                 {path:"profile", element:<Profile />},
                 {path:"ahadi", element:<Ahadi />},
+                {path:"ahadi/:id", element:<AhadiPayments />},
                 {path:"wahumini/waliopo", element:<Wahumini/>},
                 {path:"wahumini/ongeza", element:<OngezaMuhumini/>},
                 {path:"wahumini/update", element:<UpdateMuhumini/>},

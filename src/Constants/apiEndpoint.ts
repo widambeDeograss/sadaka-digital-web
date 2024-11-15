@@ -66,3 +66,6 @@ export const AHADI_STATS = `${DataBaseUrl}/service-providers/ahadi-stats`
 export const MICHANGO_STATS = `${DataBaseUrl}/service-providers/michango-stats`
 export const MCHANGO_STATS = `${DataBaseUrl}/service-providers/mchango-details/`
 export const SADAKA_ZAKA_STATS = `${DataBaseUrl}/service-providers/sadaka-zaka-stats`
+export const ZAKA_BAHASHA_CHECK = `${DataBaseUrl}/service-providers/check-zaka/`
+export const MHUMINI_STATS = `${DataBaseUrl}/service-providers/wahumini-stats`
+export const DASHBORD_STATS = `${DataBaseUrl}/service-providers/dashboard-stats`

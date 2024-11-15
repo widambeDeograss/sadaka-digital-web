@@ -1,9 +1,26 @@
 import ReactApexChart from "react-apexcharts";
 import { Row, Col, Typography } from "antd";
 import eChart from "./config/bchart";
+import { useAppSelector } from "../../store/store-hooks";
+import { fetchMichangoStats } from "../../helpers/ApiConnectors";
 
 function EChart() {
   const { Title, Paragraph } = Typography;
+
+  const church = useAppSelector((state: any) => state.sp);
+
+  const {
+    data: mchango_totals,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["mchango_totals"],
+    queryFn: async () => {
+      let query = `?church_id=${church.id}&&type=mchango_stats`;
+      const response: any = await fetchMichangoStats(query);
+      return response;
+    },
+  });
 
   const items = [
     {

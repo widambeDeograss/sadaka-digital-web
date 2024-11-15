@@ -17,6 +17,7 @@ import ViewModal from "./ViewZaka";
 import EditZaka from "./EditZaka";
 import modal from "antd/es/modal";
 import Widgets from "./Stats";
+import CheckZakaPresenceModal from "./ZakaMonthlyCheck";
 
 const Zaka = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -30,7 +31,7 @@ const Zaka = () => {
   const [selectedData, setSelectedData] = useState(null);
   const [updateZakaModal, setupdateZakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
-
+  const [openBahashaModal, setOpenBahashaModal] = useState(false);
   const queryClient = useQueryClient();
   // const [modal, contextHolder] = Modal.useModal();
 
@@ -188,9 +189,6 @@ const Zaka = () => {
           <h3 className="text-left">
             Tarehe: <span>{new Date().toDateString()}</span>
           </h3>
-          <h3 className="text-left">
-            Bahasha Zilizorudishwa Mwezi huu: <span>0</span>
-          </h3>
           <div className="flex justify-between flex-wrap mt-3">
             <div>
               <Button.Group className="mt-5">
@@ -200,6 +198,13 @@ const Zaka = () => {
                   onClick={() => setOpenModal(true)}
                 >
                   Ongeza Zaka
+                </Button>
+                <Button
+                  type="primary"
+                  className="bg-[#152033] text-white"
+                  onClick={() => setOpenBahashaModal(true)}
+                >
+                  Fuatilia Bahasha
                 </Button>
                 <Button
                   type="primary"
@@ -271,6 +276,10 @@ const Zaka = () => {
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         data={selectedData}
+      />
+       <CheckZakaPresenceModal
+        visible={openBahashaModal}
+        onClose={() => setOpenBahashaModal(false)}
       />
     </div>
   );
