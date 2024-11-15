@@ -12,7 +12,7 @@ const eChart = {
         type: "bar",
         width: "100%",
         height: "auto",
-
+        color: "#fff",
         toolbar: {
           show: false,
         },

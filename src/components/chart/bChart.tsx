@@ -3,6 +3,7 @@ import { Row, Col, Typography } from "antd";
 import eChart from "./config/bchart";
 import { useAppSelector } from "../../store/store-hooks";
 import { fetchMichangoStats } from "../../helpers/ApiConnectors";
+import { useQuery } from "@tanstack/react-query";
 
 function EChart() {
   const { Title, Paragraph } = Typography;
@@ -14,7 +15,7 @@ function EChart() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["mchango_totals"],
+    queryKey: ["mchango_stats"],
     queryFn: async () => {
       let query = `?church_id=${church.id}&&type=mchango_stats`;
       const response: any = await fetchMichangoStats(query);
@@ -22,24 +23,22 @@ function EChart() {
     },
   });
 
-  const items = [
-    {
-      Title: "3,6K",
-      user: "Wahumini",
+  const {
+    data: mchango_stats,
+  } = useQuery({
+    queryKey: ["mchango_totals"],
+    queryFn: async () => {
+      let query = `?church_id=${church.id}&&type=mchango_totals`;
+      const response: any = await fetchMichangoStats(query);
+      return response;
     },
-    {
-      Title: "2m",
-      user: "Ujenzi",
-    },
-    {
-      Title: "30m Tsh",
-      user: "Makusanyo jumla",
-    },
-    {
-      Title: "12",
-      user: "Michango",
-    },
-  ];
+  });
+
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: Unable to fetch data</div>;
+  console.log(mchango_totals);
+  
 
   return (
     <>
@@ -48,9 +47,10 @@ function EChart() {
           className="bar-chart"
             // @ts-ignore
           options={eChart.options}
-          series={eChart.series}
+          series={mchango_totals?.area_chart_data?.series}
           type="bar"
           height={220}
+        
         />
       </div>
       <div className="chart-vistior">
@@ -63,11 +63,11 @@ function EChart() {
           into pixel perfect pages.
         </Paragraph>
         <Row >
-          {items.map((v, index) => (
+          {mchango_stats?.map((v:any, index:number) => (
             <Col xs={6} xl={6} sm={6} md={6} key={index}>
               <div className="chart-visitor-count">
-                <Title level={4}>{v.Title}</Title>
-                <span>{v.user}</span>
+                <Title level={5}>{v?.percentage_collected}%</Title>
+                <span>{v.mchango_name}</span>
               </div>
             </Col>
           ))}
