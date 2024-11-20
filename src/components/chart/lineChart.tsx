@@ -22,6 +22,8 @@ function LineChart() {
       const response: any = await fetchSadataZakaStats(query);
       return response;
     },
+    retry: 2,
+    staleTime: 5 * 60 * 1000,
     // {?
     //   enabled: false,
     // }

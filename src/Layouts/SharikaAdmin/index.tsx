@@ -318,7 +318,7 @@ const Main: React.FC = () => {
           style={{ textAlign: "center" }}
           className="footer-bg"
         >
-          Sadaka Digital ©2023 Created by UED
+          Sadaka Digital ©{new Date().getFullYear()} Created by EVD solutions
         </Footer>
       </Layout>
 

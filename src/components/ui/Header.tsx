@@ -178,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
         >
           <div className="cursor-pointer flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg">
             <Avatar 
-              size="small"
+              size="default"
               icon={<UserOutlined />} 
               className="bg-blue-500"
             />

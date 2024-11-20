@@ -39,6 +39,7 @@ const eChart = {
       },
       xaxis: {
         categories: [
+          "Jan",
           "Feb",
           "Mar",
           "Apr",
@@ -48,6 +49,8 @@ const eChart = {
           "Aug",
           "Sep",
           "Oct",
+          "Nov",
+          "Dec",
         ],
         labels: {
           show: true,
@@ -56,6 +59,8 @@ const eChart = {
           maxWidth: 160,
           style: {
             colors: [
+              "#fff",
+              "#fff",
               "#fff",
               "#fff",
               "#fff",

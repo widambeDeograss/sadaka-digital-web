@@ -183,7 +183,7 @@ const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }
         dataSource={cardDetails}
         rowKey="card_no"
         loading={isLoading}
-        pagination={false}
+        // pagination={false}
       />
     </Modal>
   );

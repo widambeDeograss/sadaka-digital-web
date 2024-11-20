@@ -60,18 +60,11 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = async (data: any) => {
-    const response:any = await postUserSetup(data);
-   
-    if (!response?.success) {
-       throw new Error("Failed to save user, Try again later")   
-    }
-    return response;
-  };
-
-  
   const { mutate: addUserMutation, isPending: loading } = useMutation({
-    mutationFn: onSubmit,
+    mutationFn: async (data: any) => {
+      const response:any = await postUserSetup(data);
+      return response;
+    },
     onSuccess: (data) => {
       console.log(data);
 
@@ -99,6 +92,14 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     },
   });
 
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    await addUserMutation(data);
+  };
+
+  
+ 
+
   return (
     <div>
       <Modal
@@ -111,7 +112,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
       >
         <Tabs defaultActiveKey="1" centered>
           <TabPane tab="User Details" key="1">
-            <form onSubmit={handleSubmit(addUserMutation)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid grid-cols-2 gap-3">
                 {/* Username */}
                 <div className="">
