@@ -15,7 +15,6 @@ import logo from "../../assets/church.png";
 // const { Content, Sider } = Layout;
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigate();
   const dispatch = useDispatch();
 
@@ -75,7 +74,7 @@ export default function LoginPage() {
       dispatch(
         addAlert({
           title: "Login error",
-          message: error.message,
+          message: "Ops.. Error on sign in. Try again!",
           type: "error",
         })
       );
@@ -171,7 +170,7 @@ export default function LoginPage() {
 
           <Divider>Or continue with</Divider>
 
-          <div className="flex justify-center space-x-4">
+          {/* <div className="flex justify-center space-x-4">
             {[
               { icon: <GoogleOutlined />, color: "text-red-500" },
               { icon: <GithubOutlined />, color: "text-gray-800" },
@@ -185,15 +184,15 @@ export default function LoginPage() {
                 {provider.icon}
               </motion.div>
             ))}
-          </div>
+          </div> */}
 
           <div className="text-center mt-6">
-            <p className="text-sm text-gray-600">
+            {/* <p className="text-sm text-gray-600">
               Don't have an account?{" "}
               <Link to="/register" className="text-blue-600 font-bold hover:underline">
                 Sign Up
               </Link>
-            </p>
+            </p> */}
           </div>
         </div>
       </div>
