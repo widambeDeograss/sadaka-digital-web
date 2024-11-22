@@ -1,15 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FilterIcon, X, SearchCheckIcon, FileText, FileSpreadsheet, Printer } from "lucide-react";
-import { Input } from "antd"; // Import Ant Design Input
+import { FilterIcon, X, SearchCheckIcon, FileSpreadsheet } from "lucide-react";
+import { Input, Tooltip } from "antd";
+import { motion } from "framer-motion";
+import * as XLSX from 'xlsx';
 
-// Define props for the Tabletop component
 interface TabletopProps {
   inputfilter: boolean;
   togglefilter: (value: boolean) => void;
   showFilter?: boolean;
-  searchTerm: string; // Prop for search term
-  onSearch: (value: string) => void; // Prop for search handler
+  searchTerm: string;
+  onSearch: (value: string) => void;
+  data: any[]; // Data to be exported
 }
 
 const Tabletop: React.FC<TabletopProps> = ({
@@ -18,61 +20,89 @@ const Tabletop: React.FC<TabletopProps> = ({
   showFilter = true,
   searchTerm,
   onSearch,
+  data,
 }) => {
+  const flattenObject = (obj: any, prefix: string = ''): Record<string, any> => {
+    let result: Record<string, any> = {};
+  
+    Object.keys(obj).forEach((key) => {
+      const value = obj[key];
+      const newKey = prefix ? `${prefix}.${key}` : key;
+  
+      // If the value is a nested object, flatten it recursively
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        result = { ...result, ...flattenObject(value, newKey) };
+      } else {
+        result[newKey] = value;
+      }
+    });
+  
+    return result;
+  };
+  
+  const handleExport = () => {
+    // Flatten the data before exporting
+    const flattenedData = data.map(item => flattenObject(item));
+  
+    // Create the worksheet from the flattened data
+    const worksheet = XLSX.utils.json_to_sheet(flattenedData);
+  
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
+  
+    // Append the sheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+  
+    // Write the workbook to a file
+    XLSX.writeFile(workbook, `ExcelData.xlsx`);
+  };
+  
+
+
   return (
-    <div className="flex justify-between items-center p-4 bg-white shadow-md">
+    <div className="flex justify-between items-center p-4 bg-white shadow-md rounded-lg">
       <div className="flex items-center space-x-3">
         {showFilter && (
-          <div className="relative">
+          <Tooltip title={inputfilter ? "Close Filter" : "Open Filter"}>
             <button
-              className={`flex items-center justify-center p-2 border rounded-lg ${
-                inputfilter ? "bg-red-500 text-white" : "bg-gray-200 text-gray-700"
+              className={`flex items-center justify-center p-2 border rounded-lg transition-all duration-300 ${
+                inputfilter 
+                  ? "bg-red-500 text-white hover:bg-red-600" 
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
-              id="filter_search"
               onClick={() => togglefilter(!inputfilter)}
             >
-              <FilterIcon className="h-4 w-4" />
-              {inputfilter && (
-                <span className="ml-2">
-                  <X className="h-4 w-4" />
-                </span>
-              )}
+              {inputfilter ? <X className="h-4 w-4" /> : <FilterIcon className="h-4 w-4" />}
             </button>
-          </div>
+          </Tooltip>
         )}
 
-        {/* Search Input using Ant Design */}
         <div className="relative">
           <Input
-            className="w-64" 
+            className="w-64 rounded-lg" 
             type="text"
             placeholder="Search..."
             value={searchTerm} 
             onChange={(e) => onSearch(e.target.value)} 
+            prefix={<SearchCheckIcon className="h-4 w-4 text-gray-400 mr-2" />}
           />
-          <Link to="#" className="absolute right-2 top-1/2 transform -translate-y-1/2">
-            <SearchCheckIcon className="h-4 w-4 text-gray-600" />
-          </Link>
         </div>
       </div>
+      
       <div>
-        <ul className="flex space-x-3">
-          <li>
-            <button className="p-2 hover:bg-gray-100 bg-gray-200 text-gray-700 rounded-full">
-              <FileText className="h-4 w-4 text-red-600" />
-            </button>
-          </li>
-          <li>
-            <button className="p-2 hover:bg-gray-100 bg-gray-200 text-gray-700 rounded-full">
-              <FileSpreadsheet className="h-4 w-4 text-green-600" />
-            </button>
-          </li>
-          <li>
-            <button className="p-2 hover:bg-gray-100 bg-gray-200 text-gray-700 rounded-full">
-              <Printer className="h-4 w-4 text-black" />
-            </button>
-          </li>
-        </ul>
+        <Tooltip title="Export to Excel">
+        <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleExport}
+            className="bg-gradient-to-br  from-[#152033] to-[#3E5C76] text-white 
+            px-4 py-2 rounded-lg flex items-center space-x-2 
+            transition-all duration-300 ease-in-out"
+          >
+            <FileSpreadsheet className="h-5 w-5" />
+            <span>Export Excel</span>
+          </motion.button>
+        </Tooltip>
       </div>
     </div>
   );

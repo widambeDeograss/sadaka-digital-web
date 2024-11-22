@@ -88,13 +88,17 @@ const Ahadi = () => {
       const lowercasedTerm = searchTerm.toLowerCase();
       const filtered = ahadiList.filter((item: any) => {
         return (
-          item?.bahasha_details?.mhumini_details?.first_name
+          item?.mhumini_details?.first_name
             .toLowerCase()
             .includes(lowercasedTerm) ||
-          item?.bahasha_details?.mhumini_details?.last_name
+          item?.mhumini_details?.last_name
             .toLowerCase()
             .includes(lowercasedTerm) ||
-          item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
+          item?.mchango_details?.mchango_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.amount.toLowerCase().includes(lowercasedTerm) ||
+          item?.paid_amount.toLowerCase().includes(lowercasedTerm)
         );
       });
       setFilteredData(filtered);
@@ -177,7 +181,7 @@ const Ahadi = () => {
       },
     },
     {
-      title: "Date Pledged",
+      title: "Tarehe ya ahadi",
       dataIndex: "date_pledged",
       key: "date_pledged",
       render: (date: string) => <div>{new Date(date).toLocaleDateString()}</div>,
@@ -185,19 +189,14 @@ const Ahadi = () => {
         new Date(a.date_pledged).getTime() - new Date(b.date_pledged).getTime(),
     },
     {
-      title: "Due Date",
+      title: "Tarehe ya mwisho wa ahadi",
       dataIndex: "due_date",
       key: "due_date",
       render: (date: string) => <div>{new Date(date).toLocaleDateString()}</div>,
       sorter: (a: any, b: any) =>
         new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
     },
-    {
-      title: "Remark",
-      dataIndex: "remark",
-      key: "remark",
-      render: (remark: string) => <div>{remark}</div>,
-    },
+ 
     {
       title: "",
       render: (text: any, record: any) => (
@@ -251,16 +250,17 @@ const Ahadi = () => {
     },
   ];
 
+
+
   return (
     <div className="">
-      <Widgets />
+      {/* <Widgets /> */}
       <Card title={<Title level={4}>Ahadi</Title>} className="mb-10">
         <div className="text-xs">
           <h3 className="text-left">
             Tarehe: <span>{new Date().toDateString()}</span>
           </h3>
           <h3 className="text-left">
-            Ahadi Zilizorudishwa Mwezi huu: <span>0</span>
           </h3>
           <div className="flex justify-between flex-wrap mt-3">
             <div>
@@ -288,13 +288,15 @@ const Ahadi = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
             searchTerm={searchTerm}
+            showFilter={false}
+            data={ahadiList}
           />
           <Table
             columns={columns}
             dataSource={filteredData}
             loading={loadingAhadi}
+            bordered
             rowKey="id"
-            pagination={{ pageSize: 10 }}
           />
         </div>
       </Card>

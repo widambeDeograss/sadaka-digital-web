@@ -23,7 +23,6 @@ import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { ToastContainer } from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";
 import NoActivePackageModal from "../Admin/NoActivePackage";
-import { motion } from "framer-motion";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -79,7 +78,7 @@ const menuItems:MenuItem[] = [
       key: "user",
       label: "Users",
       icon: <PiUsersFourBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
-      permissions:['MANAGE_SPS'],
+      permissions:['MANAGE_USERS'],
       children: [
           { key: "list", label: "Users", path: "/dashboard/users/list",  permissions:['ADD_USER'], },
           { key: "spList", label: "Users", path: "/dashboard/sp-users/list",  permissions:['VIEW_SP_ADMINS'], },
@@ -209,129 +208,126 @@ const Main: React.FC = () => {
   }, [pathname, filteredMenuItems]);
 
   return (
-
-  <Layout className="bg-transparent">
-  <ToastContainer />
-
-    <Sider
-      collapsible
-      collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
-      width={250}
-      breakpoint="lg"
-      collapsedWidth={80}
-      style={{
-        backgroundColor: Colors.primary,
-        // height: "100vh",
-        overflowY:"scroll",
-        position: "fixed",
-        zIndex:1000,
-        left: 0,
-        top: 0,
-        bottom: 0,
-        background: "linear-gradient(to bottom right, #152033, #3E5C76)",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06)",
-      }}
-      // className="fixed left-0 top-0 bottom-0 z-50 bg-gradient-to-br from-blue-600 to-purple-700 shadow-2xl overflow-y-scroll"
-    >
-      <div className="logo-container p-6 flex justify-center items-center">
-        <motion.img 
-          src={logo} 
-          alt="Logo" 
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="h-10 w-10 mr-2 rounded-full shadow-lg" 
-        />
-        {!collapsed && (
-          <h3 className="logo-text text-lg text-white font-bold">
-            Sadaka Digital
-          </h3>
-        )}
-      </div>
-      <Menu
-        mode="inline"
+    <Layout>
+      <ToastContainer />
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
         theme="dark"
-        forceSubMenuRender={true}
-        selectedKeys={selectedKeys}
-        className="bg-transparent border-none menu-items text-base text-left"
-        onClick={({ key }) => {
-          const selectedItem = menuItems.find(
-            (item) => item.key === key || item.children?.some((child) => child.key === key)
-          );
-          if (selectedItem) {
-            if (selectedItem.path) {
-              navigate(selectedItem.path);
-            } else if (selectedItem.children) {
-              const child = selectedItem.children.find((child) => child.key === key);
-              if (child && child.path) {
-                navigate(child.path);
+        width={250}
+        breakpoint="lg"
+        collapsedWidth={80}
+        style={{
+          backgroundColor: Colors.primary,
+          // height: "100vh",
+          overflowY:"scroll",
+          position: "fixed",
+          zIndex:1000,
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}
+        trigger={null} 
+      >
+        <div className="logo-container p-6 flex justify-center items-center">
+          <img src={logo} alt="Logo" className="h-10 w-10 mr-2" />
+          {!collapsed && (
+            <h3 className="logo-text text-lg text-white font-semibold">
+              Sadaka
+              <br />
+              Digital
+            </h3>
+          )}
+        </div>
+        <Menu
+          mode="inline"
+          theme="dark"
+
+          selectedKeys={selectedKeys}
+          className="menu-items text-base text-left"
+          onClick={({ key }) => {
+            const selectedItem = menuItems.find(
+              (item) => item.key === key || item.children?.some((child) => child.key === key)
+            );
+            if (selectedItem) {
+              if (selectedItem.path) {
+                navigate(selectedItem.path);
+              } else if (selectedItem.children) {
+                // Handle navigation for submenu items
+                const child = selectedItem.children.find((child) => child.key === key);
+                if (child && child.path) {
+                  navigate(child.path);
+                }
               }
             }
-          }
-        }}
-      >
-        {filteredMenuItems.map((item) => 
-          item.children && item.children.length > 0 ? (
-            <Menu.SubMenu
-              key={item.key}
-              title={item.label}
-              icon={item.icon}
-              className="hover:bg-white/10 transition-all duration-300"
-            >
-              {item.children.map((child) => (
-                <Menu.Item 
-                  key={child.key} 
-                  className="hover:bg-white/20 transition-all duration-300"
+          }}
+          style={{ borderRight: 0 }}
+        >
+          {filteredMenuItems.map((item) => {
+            if (item.children && item.children.length > 0) {
+              return (
+                <Menu.SubMenu
+                  key={item.key}
+                  title={item.label}
+                  icon={item.icon}
+                  popupClassName="submenu-popup"
                 >
-                  {child.label}
-                </Menu.Item>
-              ))}
-            </Menu.SubMenu>
-          ) : (
-            <Menu.Item 
-              key={item.key} 
-              icon={item.icon}
-              className="hover:bg-white/10 transition-all duration-300"
-            >
-              {item.label}
-            </Menu.Item>
-          )
-        )}
-      </Menu>
-    </Sider>
-    
-    <Layout
-      className="site-layout"
-      style={{
-        marginLeft: collapsed ? 80 : 250,
-        transition: "margin-left 0.2s",
-      }}
-    >
-      <Header
-        toggle={() => setCollapsed(!collapsed)}
-        collapsed={collapsed}
-      />
-      
-      <Content 
-        className="rounded-3xl shadow-sm p-6 m-4 "
-        style={{ 
-          minHeight: 'calc(100vh - 120px)',
+                  {item.children.map((child) => (
+                    <Menu.Item key={child.key}>
+                      {child.label}
+                    </Menu.Item>
+                  ))}
+                </Menu.SubMenu>
+              );
+            }
+            return (
+              <Menu.Item key={item.key} icon={item.icon}>
+                {item.label}
+              </Menu.Item>
+            );
+          })}
+        </Menu>
+      </Sider>
+      <Layout
+        className="site-layout"
+        style={{
+          marginLeft: collapsed ? 80 : 240,
+          minHeight: "100vh",
+          transition: "margin-left 0.2s",
         }}
       >
-        <Outlet />
-      </Content>
-      
-      <Footer 
-        className="text-center bg-transparent text-gray-600"
-      >
-        Sadaka Digital ©{new Date().getFullYear()} Created by EVD solutions
-      </Footer>
+        <Header
+          toggle={() => setCollapsed(!collapsed)}
+          collapsed={collapsed}
+        />
+        <Content
+          className="content-wrapper"
+          style={{
+            margin: "2px ",
+            padding: 24,
+            background: Colors.bgDarkAddon,
+            minHeight: 280,
+            overflowY: "auto",
+            marginTop: 24,
+          }}
+        >
+          <Outlet />
+        </Content>
+        <Footer
+          style={{ textAlign: "center" }}
+          className="footer-bg"
+        >
+          Sadaka Digital ©{new Date().getFullYear()} Created by EVD solutions
+        </Footer>
+      </Layout>
+
+      {
+        !activePackage.is_active && (
+          <NoActivePackageModal/>
+        )
+      }
     </Layout>
-
-    {!activePackage.is_active && <NoActivePackageModal />}
-  </Layout>
-
   );
 };
 

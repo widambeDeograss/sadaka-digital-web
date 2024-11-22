@@ -47,9 +47,14 @@ axios.interceptors.response.use(
   async (error:any) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
+      console.log('====================================');
+      console.log('Token expired, refreshing token...');
+      console.log('====================================');
       originalRequest._retry = true;
       const state = store.getState();
       const refreshToken = state.user.refreshToken;
+      console.log(refreshToken);
+      
 
       if (refreshToken) {
         try {

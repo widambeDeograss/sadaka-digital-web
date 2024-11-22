@@ -268,6 +268,7 @@ const Expenses = () => {
               onSearch={(term: string) => setSearchTerm(term)}
               togglefilter={(value: boolean) => setShowFilter(value)}
               searchTerm={searchTerm}
+              data={filteredData}
           />
              {showFilter && (
             <div className="bg-gray-100 p-4 mt-4 rounded-lg">

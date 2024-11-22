@@ -15,9 +15,11 @@ const loginSlice = createSlice({
     initialState,
     reducers: {
         loginSuccess(state, action) {
+            console.log(action.payload);
+            
             state.isAuthenticated = true;
             state.accessToken = action.payload.accessToken
-            state.refreshToken = action.payload.refeshToken
+            state.refreshToken = action.payload.refreshToken
             state.success = true;
         },
         loginError(state, action) {

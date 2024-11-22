@@ -53,8 +53,8 @@ const Widgets = () => {
     }
     return (
         <React.Fragment>
-             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-3 mb-3">
-            <div className="">
+             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-3 mb-3 ">
+            <div className=" shadow-lg rounded-lg">
                 <div className="text-center bg-white text-black py-4">
                     <div className="flex items-center justify-center mx-auto rounded-full w-12 h-12    bg-blue-500/10 text-blue-500 ">
                         <Wallet2 />
@@ -65,7 +65,7 @@ const Widgets = () => {
                     <p className="text-slate-500 ">Cash</p>
                 </div>
             </div>
-            <div className="">
+            <div className="  shadow-lg rounded-lg">
                 <div className="text-center bg-white text-black py-4">
                     <div className="flex items-center justify-center mx-auto text-purple-500 bg-purple-100 rounded-full  w-12 h-12  dark:bg-purple-500/20">
                         <BanknoteIcon />
@@ -74,7 +74,7 @@ const Widgets = () => {
                     <p className="text-slate-500 dark:text-zink-200">Others payment types</p>
                 </div>
             </div>
-            <div className="">
+            <div className=" shadow-lg rounded-lg">
                 <div className="text-center bg-white text-black py-4">
                     <div className="flex items-center justify-center mx-auto text-green-500 bg-green-100 rounded-full  w-12 h-12  dark:bg-green-500/20">
                         <Table2Icon />
@@ -83,7 +83,7 @@ const Widgets = () => {
                     <p className="text-slate-500 dark:text-zink-200">Jumla leo</p>
                 </div>
             </div>
-            <div className="">
+            <div className=" shadow-lg rounded-lg">
                 <div className="text-center bg-white text-black py-4">
                     <div className="flex items-center justify-center mx-auto text-red-500 bg-red-100 rounded-full  w-12 h-12  dark:bg-red-500/20">
                         <EqualIcon />

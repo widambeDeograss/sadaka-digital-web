@@ -1,58 +1,33 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layout, Form, Input, Checkbox, Button, Divider } from "antd";
-import { UserOutlined, WeiboOutlined, GoogleOutlined } from "@ant-design/icons";
+import { UserOutlined, GoogleOutlined, GithubOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { Colors } from "../../Constants/Colors";
-import logo from "../../assets/church.png";
+import { motion } from "framer-motion";
 import { ToastContainer } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
 import { fetchSpByAdmin, postLogin } from "../../helpers/ApiConnectors";
 import { addAlert } from "../../store/slices/alert/alertSlice";
-import { useMutation } from "@tanstack/react-query";
 import { loginSuccess, setUserInfo } from "../../store/slices/auth/authSlice";
 import { setActivePackage, setCurrentSP } from "../../store/slices/sp/spSlice";
+import logo from "../../assets/church.png";
 
-const { Content, Sider } = Layout;
+// const { Content, Sider } = Layout;
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const navigation = useNavigate();
   const dispatch = useDispatch();
 
+  const onFinish = async (values: any) => {
+    const response: any = await postLogin(values);
+    
+    if (response?.success === false)
+      throw new Error("Failed to sign in. Invalid username or password");
 
-  useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
-      const leftSide:any = document.querySelector(".left-side");
-
-      if (screenWidth < 768) {
-        leftSide.style.display = "none";
-      } else {
-        leftSide.style.display = "block";
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const onFinish = async (values:any) => {
-
-      const response:any = await postLogin(values);
-      
-      if (response?.success === false)
-         throw new Error("Failed on sign. Invalid username or password");
-  
-      return response;
-
+    return response;
   };
 
-  
   const { mutate: signInMutation, isPending } = useMutation({
     mutationFn: onFinish,
     onSuccess: async (data: any) => {
@@ -109,130 +84,119 @@ export default function LoginPage() {
       //  });
     },
   });
-
   return (
-    <div>    <ToastContainer/>
-    <Layout className="min-h-screen"
-    style={{backgroundColor:Colors.bgDarkAddon}}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-200 flex items-center justify-center"
     >
-  
-      <Sider
-        width={500}
-        style={{
-          background: Colors.primary,
-          color: "#fff",
-          borderRadius:"0px 40% 50% 0px   / 30px"
-        }}
-        className="left-side relative"
-      >
-        <div className="flex flex-col items-center justify-center h-full p-8">
-          <img src={logo} className='h-24 w-24'/>
-          <h1 className="text-2xl font-bold">Sadaka Digital</h1>
-          <h3></h3>
-          <p className="text-xs">A few more clicks to sign in to your account.</p>
+      <ToastContainer />
+      <div className="bg-white shadow-2xl rounded-3xl overflow-hidden w-full max-w-4xl grid grid-cols-1 md:grid-cols-2">
+        {/* Left Side - Branding Section */}
+        <div className="bg-gradient-to-br  from-[#152033] to-[#3E5C76] text-white p-12 flex flex-col justify-center items-center">
+          <motion.img 
+            src={logo} 
+            alt="Sadaka Digital Logo"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="w-32 h-32 mb-6 rounded-full shadow-lg"
+          />
+          <h1 className="text-3xl font-bold mb-4 text-center">Sadaka Digital</h1>
+          <p className="text-sm text-center opacity-80">
+            Empowering digital church management with seamless solutions
+          </p>
         </div>
-        <div className="w-full h-32 bg-darkgray rounded-r-full absolute bottom-0"></div> {/* Add the semi-circle */}
-      </Sider>
-      <Content className="flex items-center justify-center p-8">
-        <div className="w-full max-w-lg">
-          <h1 className="text-2xl font-bold text-center mb-4">Sadaka Digital</h1>
-          <Divider plain>
-            <span className=" text-xs">Sign in to your account</span>
-          </Divider>
+
+        {/* Right Side - Login Form */}
+        <div className="p-12 flex flex-col justify-center">
+          <h2 className="text-2xl font-bold text-center mb-8 text-gray-800">
+            Welcome Back
+          </h2>
 
           <Form
             onFinish={signInMutation}
             layout="vertical"
             className="space-y-4"
           >
-            {errorMsg && (
-              <div className="text-red-800 text-center text-xs">{errorMsg}!!</div>
-            )}
             <Form.Item
-              label="Email"
               name="email"
-              className="text-xs"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your email!",
-                },
-              ]}
+              rules={[{ 
+                required: true, 
+                message: "Please enter your email",
+                type: "email" 
+              }]}
             >
-              <Input placeholder="Email" type="email" className="h-9" />
+              <Input 
+                prefix={<UserOutlined className="text-gray-400" />}
+                placeholder="Email Address" 
+                className="h-12 rounded-full" 
+              />
             </Form.Item>
 
             <Form.Item
-              label="Password"
               name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your password!",
-                },
-              ]}
-
+              rules={[{ 
+                required: true, 
+                message: "Please enter your password" 
+              }]}
             >
-              <Input.Password  className="h-9"/>
+              <Input.Password 
+                placeholder="Password" 
+                className="h-12 rounded-full" 
+              />
             </Form.Item>
 
-            <Form.Item name="remember" valuePropName="checked">
-              <Checkbox defaultChecked className="text-xs">Remember me</Checkbox>
-            </Form.Item>
+            <div className="flex justify-between items-center">
+              <Form.Item name="remember" valuePropName="checked" className="mb-0">
+                <Checkbox>Remember me</Checkbox>
+              </Form.Item>
+              <Link to="/forgot-password" className="text-blue-600 hover:underline">
+                Forgot Password?
+              </Link>
+            </div>
 
             <Form.Item>
-              {isPending ? (
-                <Button
-                  className="w-full h-9 "
-                  type="primary"
-                  htmlType="submit"
-                  style={{backgroundColor:Colors.primary}}
-                  loading
-                >
-                  Signing in...
-                </Button>
-              ) : (
-                <Button
-                  className="w-full h-9"
-                  style={{backgroundColor:Colors.primary}}
-                  type="primary"
-                  htmlType="submit"
-                  color={Colors.primary}
-                >
-                  SIGN IN
-                </Button>
-              )}
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={isPending}
+                className="w-full h-12 rounded-full bg-gradient-to-br from-[#152033] to-[#3E5C76] hover:from-blue-800 hover:to-purple-900 border-none"
+              >
+                {isPending ? 'Signing In...' : 'Sign In'}
+              </Button>
             </Form.Item>
+          </Form>
 
-            <p className="text-gray-600 text-xs">
+          <Divider>Or continue with</Divider>
+
+          <div className="flex justify-center space-x-4">
+            {[
+              { icon: <GoogleOutlined />, color: "text-red-500" },
+              { icon: <GithubOutlined />, color: "text-gray-800" },
+            ].map((provider, index) => (
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className={`p-3 border rounded-full cursor-pointer ${provider.color} hover:bg-gray-100 transition`}
+              >
+                {provider.icon}
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <Link to="/register" className="text-blue-500 font-bold">
+              <Link to="/register" className="text-blue-600 font-bold hover:underline">
                 Sign Up
               </Link>
             </p>
-          </Form>
-
-          <div>
-  
-    </div>
-
-          <Divider plain>
-            <span className="text-gray-400 text-sm">Sign in with</span>
-          </Divider>
-          <div className="flex justify-center space-x-4">
-            <div className="p-2 border rounded-full">
-              <GoogleOutlined className="text-blue-500" />
-            </div>
-            <div className="p-2 border rounded-full">
-              <UserOutlined className="text-orange-500" />
-            </div>
-            <div className="p-2 border rounded-full">
-              <WeiboOutlined className="text-gray-800" />
-            </div>
           </div>
         </div>
-      </Content>
-    </Layout>
-    </div>
+      </div>
+    </motion.div>
   );
 }
