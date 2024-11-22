@@ -198,40 +198,40 @@ const Mchango = () => {
       dataIndex: "inserted_at",
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
-    {
-      title: "Actions",
-      render: (_: any, record: any) => (
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item
-                icon={<EyeOutlined />}
-                onClick={() => console.log("View Payment", record.id)}
-              >
-                View
-              </Menu.Item>
-              <Menu.Item
-                icon={<EditOutlined />}
-                onClick={() => console.log("Edit Payment", record.id)}
-              >
-                Edit
-              </Menu.Item>
-              <Menu.Item
-                icon={<DeleteOutlined />}
-                onClick={() => handleDeletePayment(record.id)}
-                danger
-              >
-                Delete
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <a onClick={(e) => e.preventDefault()}>
-            Actions <DownOutlined />
-          </a>
-        </Dropdown>
-      ),
-    },
+    // {
+    //   title: "Actions",
+    //   render: (_: any, record: any) => (
+    //     <Dropdown
+    //       overlay={
+    //         <Menu>
+    //           <Menu.Item
+    //             icon={<EyeOutlined />}
+    //             onClick={() => console.log("View Payment", record.id)}
+    //           >
+    //             View
+    //           </Menu.Item>
+    //           <Menu.Item
+    //             icon={<EditOutlined />}
+    //             onClick={() => console.log("Edit Payment", record.id)}
+    //           >
+    //             Edit
+    //           </Menu.Item>
+    //           <Menu.Item
+    //             icon={<DeleteOutlined />}
+    //             onClick={() => handleDeletePayment(record.id)}
+    //             danger
+    //           >
+    //             Delete
+    //           </Menu.Item>
+    //         </Menu>
+    //       }
+    //     >
+    //       <a onClick={(e) => e.preventDefault()}>
+    //         Actions <DownOutlined />
+    //       </a>
+    //     </Dropdown>
+    //   ),
+    // },
   ];
 
   // Define table columns
@@ -344,57 +344,57 @@ const Mchango = () => {
       key: "remark",
       render: (remark: string) => <div>{remark}</div>,
     },
-    {
-      title: "",
-      render: (text: any, record: any) => (
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EyeOutlined />}
-                // onClick={() => handleView(record)}
-              >
-                View
-              </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<PlusCircleFilled />}
-                onClick={() => {
-                  //   setSelectedData(record);
-                  //   setPayAhadiModal(true)
-                }}
-              >
-                Lipia Ahadi
-              </Menu.Item>
-              <Menu.Item
-                key="3"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  //   setSelectedData(record);
-                  //   setupdateAhadiModal(true);
-                }}
-              >
-                Edit
-              </Menu.Item>
-              <Menu.Item
-                key="4"
-                icon={<DeleteOutlined />}
-                danger
-                // onClick={() => handleDelete(record?.id)}
-              >
-                Delete
-              </Menu.Item>
-            </Menu>
-          }
-          trigger={["click"]}
-        >
-          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-            Actions <DownOutlined />
-          </a>
-        </Dropdown>
-      ),
-    },
+    // {
+    //   title: "",
+    //   render: (text: any, record: any) => (
+    //     <Dropdown
+    //       overlay={
+    //         <Menu>
+    //           <Menu.Item
+    //             key="1"
+    //             icon={<EyeOutlined />}
+    //             // onClick={() => handleView(record)}
+    //           >
+    //             View
+    //           </Menu.Item>
+    //           <Menu.Item
+    //             key="2"
+    //             icon={<PlusCircleFilled />}
+    //             onClick={() => {
+    //               //   setSelectedData(record);
+    //               //   setPayAhadiModal(true)
+    //             }}
+    //           >
+    //             Lipia Ahadi
+    //           </Menu.Item>
+    //           <Menu.Item
+    //             key="3"
+    //             icon={<EditOutlined />}
+    //             onClick={() => {
+    //               //   setSelectedData(record);
+    //               //   setupdateAhadiModal(true);
+    //             }}
+    //           >
+    //             Edit
+    //           </Menu.Item>
+    //           <Menu.Item
+    //             key="4"
+    //             icon={<DeleteOutlined />}
+    //             danger
+    //             // onClick={() => handleDelete(record?.id)}
+    //           >
+    //             Delete
+    //           </Menu.Item>
+    //         </Menu>
+    //       }
+    //       trigger={["click"]}
+    //     >
+    //       <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+    //         Actions <DownOutlined />
+    //       </a>
+    //     </Dropdown>
+    //   ),
+    // },
   ];
 
   return (

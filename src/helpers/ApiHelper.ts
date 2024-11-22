@@ -47,13 +47,10 @@ axios.interceptors.response.use(
   async (error:any) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
-      console.log('====================================');
-      console.log('Token expired, refreshing token...');
-      console.log('====================================');
+  
       originalRequest._retry = true;
       const state = store.getState();
       const refreshToken = state.user.refreshToken;
-      console.log(refreshToken);
       
 
       if (refreshToken) {
@@ -66,7 +63,7 @@ axios.interceptors.response.use(
         } catch (err) {
           toast.warning("Session timed out, please login again", { autoClose: 2000 });
           localStorage.clear();
-          window.location.href = "/signIn";
+          window.location.href = "/login";
         }
       }
     }

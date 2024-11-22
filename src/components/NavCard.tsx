@@ -15,7 +15,7 @@ function NavCard({id,name, icon, to}:NavCardProps) {
     <div key={id}
 
     >
-        <div className="bg-[#152033] p-1 max-w-md min-w-[240px] h-32 rounded-lg   mb-1 hover:scale-105 transition-transform"
+        <div className="bg-gradient-to-br  from-[#152033] to-[#3E5C76] p-1 max-w-md min-w-[220px] h-32 rounded-lg   mb-1 hover:scale-105 transition-transform"
          onClick={() => {
           navigate(to)
          }}

@@ -145,7 +145,7 @@ const Wahumini = () => {
                 <Menu.Item
                 icon={<EyeOutlined />}
                   onClick={() =>
-                    navigate(`/dashboard/muhumini/${record.id}`,)
+                    navigate(`/dashboard/muhumini/${record.id}`, {state:{record:record}})
                   }
                 >
                   View

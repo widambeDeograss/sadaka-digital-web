@@ -1,6 +1,6 @@
 import { Card, Col, Row, Table, Progress, Dropdown, Menu } from "antd";
 import { TransactionOutlined, DownOutlined, EyeOutlined, EditOutlined, DeleteOutlined, PlusCircleFilled } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useAppSelector } from "../../store/store-hooks.ts";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +17,8 @@ import {
 
 const Muhumini = () => {
     const params = useParams();
+    const location = useLocation();
+    const muhumi_details = location?.state?.record;
     const church = useAppSelector((state: any) => state.sp);
     const [chartData, setChartData] = useState<{
         series: { name: string; data: number[] }[];
@@ -172,57 +174,57 @@ const Muhumini = () => {
           key: "remark",
           render: (remark: string) => <div>{remark}</div>,
         },
-        {
-          title: "",
-          render: (text: any, record: any) => (
-            <Dropdown
-              overlay={
-                <Menu>
-                  <Menu.Item
-                    key="1"
-                    icon={<EyeOutlined />}
-                    // onClick={() => handleView(record)}
-                  >
-                    View
-                  </Menu.Item>
-                  <Menu.Item
-                    key="2"
-                    icon={<PlusCircleFilled />}
-                    onClick={() => {
-                      //   setSelectedData(record);
-                      //   setPayAhadiModal(true)
-                    }}
-                  >
-                    Lipia Ahadi
-                  </Menu.Item>
-                  <Menu.Item
-                    key="3"
-                    icon={<EditOutlined />}
-                    onClick={() => {
-                      //   setSelectedData(record);
-                      //   setupdateAhadiModal(true);
-                    }}
-                  >
-                    Edit
-                  </Menu.Item>
-                  <Menu.Item
-                    key="4"
-                    icon={<DeleteOutlined />}
-                    danger
-                    // onClick={() => handleDelete(record?.id)}
-                  >
-                    Delete
-                  </Menu.Item>
-                </Menu>
-              }
-              trigger={["click"]}
-            >
-              <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                Actions <DownOutlined />
-              </a>
-            </Dropdown>
-          ),
-        },
+        // {
+        //   title: "",
+        //   render: (text: any, record: any) => (
+        //     <Dropdown
+        //       overlay={
+        //         <Menu>
+        //           <Menu.Item
+        //             key="1"
+        //             icon={<EyeOutlined />}
+        //             // onClick={() => handleView(record)}
+        //           >
+        //             View
+        //           </Menu.Item>
+        //           <Menu.Item
+        //             key="2"
+        //             icon={<PlusCircleFilled />}
+        //             onClick={() => {
+        //               //   setSelectedData(record);
+        //               //   setPayAhadiModal(true)
+        //             }}
+        //           >
+        //             Lipia Ahadi
+        //           </Menu.Item>
+        //           <Menu.Item
+        //             key="3"
+        //             icon={<EditOutlined />}
+        //             onClick={() => {
+        //               //   setSelectedData(record);
+        //               //   setupdateAhadiModal(true);
+        //             }}
+        //           >
+        //             Edit
+        //           </Menu.Item>
+        //           <Menu.Item
+        //             key="4"
+        //             icon={<DeleteOutlined />}
+        //             danger
+        //             // onClick={() => handleDelete(record?.id)}
+        //           >
+        //             Delete
+        //           </Menu.Item>
+        //         </Menu>
+        //       }
+        //       trigger={["click"]}
+        //     >
+        //       <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
+        //         Actions <DownOutlined />
+        //       </a>
+        //     </Dropdown>
+        //   ),
+        // },
       ];
     const icons = [<PiHandsPrayingFill style={{ fontSize: '22px' }}/>, <GiSwapBag style={{ fontSize: '22px' }}/>, <PiHandshakeBold style={{ fontSize: '22px' }}/>, <GiTakeMyMoney style={{ fontSize: '22px' }}/>]
     return (
@@ -242,7 +244,13 @@ const Muhumini = () => {
             </Row>
 
             <Card title="Matoleo ya Muhumini">
-                <h3 className="text-sm font-bold text-left">JINA LA MUHUMINI: <span className="text-gray-800"></span></h3>
+                <h3 className="text-sm font-bold text-left">JINA LA MUHUMINI: <span className="text-gray-800">
+                  {muhumi_details?.first_name} {muhumi_details?.last_name}
+                  
+                  </span></h3>
+                <h3 className="text-sm font- text-left">JUMUIYA: <span className="text-gray-800">
+                  {muhumi_details?.jumuiya_details?.name}
+                  </span></h3>
                 
                 <div className="mt-5">
                 <Chart
@@ -279,11 +287,13 @@ const Muhumini = () => {
                         togglefilter={() => {}}
                         searchTerm={""}
                         onSearch={() => {}}
+                        data={ahadiList}
                     />
                     <Table
                         columns={columns}
                         dataSource={ahadiList}
                         rowKey="id"
+                        bordered
                         pagination={{ pageSize: 10 }}
                     />
                 </div>

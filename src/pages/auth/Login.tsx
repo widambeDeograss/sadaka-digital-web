@@ -162,7 +162,7 @@ export default function LoginPage() {
                 type="primary"
                 htmlType="submit"
                 loading={isPending}
-                className="w-full h-12 rounded-full bg-gradient-to-br from-[#152033] to-[#3E5C76] hover:from-blue-800 hover:to-purple-900 border-none"
+                className="w-full h-12 rounded-lg bg-gradient-to-br from-[#152033] to-[#3E5C76] hover:from-blue-800 hover:to-purple-900 border-none"
               >
                 {isPending ? 'Signing In...' : 'Sign In'}
               </Button>

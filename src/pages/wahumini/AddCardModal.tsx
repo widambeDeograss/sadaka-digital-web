@@ -130,17 +130,13 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
                   showSearch
                   placeholder="Chagua Mhumini"
                   optionFilterProp="children"
-                  filterOption={(input, option) => {
-                    const optionChildren =
-                      typeof option?.children === "string"
-                        ? option.children
-                        : "";
-                    return (
-                      optionChildren
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
+                  filterOption={(input, option) =>
+                    option?.children
+                      .toString()
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  notFoundContent="Hajapatikana"
                 >
                   {wahumini?.map((item: any) => (
                     <Option key={item.id} value={item.id}>

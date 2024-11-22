@@ -9,6 +9,7 @@ import { Colors } from '../Constants/Colors';
 import type { MenuProps } from "antd";
 import logo from "../assets/church.png"
 import { useAppSelector } from '../store/store-hooks';
+import ProfileDropdown from './ui/Profile';
 
 const TopBar = () => {
     const [modal, contextHolder] = Modal.useModal();
@@ -65,9 +66,9 @@ const TopBar = () => {
   return (
     <div>
    <div className="relative  shadow-md w-full">
-      <div className="absolute bottom-2 -left-1 border-b-0  bg-[#3E5C76]  border-solid rounded-lg w-full h-20"></div>
-      <div className="relative z-10 flex justify-between bg-[#152033] w-full h-20 p-3   rounded-lg ">
-         <div className="bg-[#92A2B1] max-w-xs min-w-[50px] rounded-lg   mb-1 hover:scale-105 transition-transform">
+      <div className="absolute bottom-2 -left-1 border-b-0  bg-[#152033]  border-solid rounded-lg w-full h-20"></div>
+      <div className="relative z-10 flex justify-between  bg-gradient-to-br  from-[#152033] to-[#3E5C76] w-full h-20 p-3   rounded-lg ">
+         <div className="bg-[#152033] max-w-xs min-w-[50px] rounded-lg   mb-1 hover:scale-105 transition-transform">
          <div className='  flex justify-center   p-2 ' >
             <img src={logo} className='h-8 w-8 '/>
 
@@ -88,15 +89,7 @@ const TopBar = () => {
         <div>
 
         <div className="hover:scale-105 transform">
-            <Dropdown menu={{ items }} >
-                <a onClick={(e) => e.preventDefault()}>
-                    <Space>
-                        <Avatar size={50} style={{ backgroundColor: Colors.accent }}>
-                            <UserOutlined/>
-                        </Avatar>
-                    </Space>
-                </a>
-            </Dropdown>
+          <ProfileDropdown/>
         </div>
         </div>
       </div>

@@ -18,6 +18,7 @@ export const ALL_SP_PACKAGES = `${DataBaseUrl}/service-providers/package-list-cr
 
 //SPS
 export const LIST_CREATE_SPS = `${DataBaseUrl}/service-providers/service-provider-list-create`;
+export const LIST_UPDATE_SP = `${DataBaseUrl}/service-providers/service-provider-retrieve-update-destroy/`;
 export const GET_SP_BY_ADMIN = `${DataBaseUrl}/service-providers/get-provider/admin/`;
 export const WAHUMINI_LIST_CREATE = `${DataBaseUrl}/service-providers/wahumini-list-create`;
 export const WAHUMINI_UPDATE_DISTROY = `${DataBaseUrl}/service-providers/wahumini-retrieve-update-destroy/`;

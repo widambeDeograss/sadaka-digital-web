@@ -2,11 +2,13 @@ import React from 'react';
 import { Dropdown, Menu, Avatar } from 'antd';
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useAppSelector } from '../../store/store-hooks';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const ProfileDropdown = () => {
-  const userDtl = useAppSelector((state:any) => state?.user?.userInfo)
+  const userDtl = useAppSelector((state:any) => state?.user?.userInfo);
+  const navigate =  useNavigate();
   const logout = () => {
     localStorage.clear()
     window.location.reload();
@@ -21,10 +23,14 @@ const ProfileDropdown = () => {
         </div>
       </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key="profile" icon={<UserOutlined />}>
+      <Menu.Item key="profile" icon={<UserOutlined />}
+       onClick={() => navigate('/dashboard/profile')}
+      >
         Profile
       </Menu.Item>
-      <Menu.Item key="settings" icon={<SettingOutlined />}>
+      <Menu.Item key="settings" icon={<SettingOutlined />}
+      onClick={() => navigate('/dashboard/profile')}
+      >
         Settings
       </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />} danger
@@ -36,10 +42,10 @@ const ProfileDropdown = () => {
   );
 
   return (
-    <Dropdown overlay={menu} trigger={['click']} placement="bottomRight" className='relative'>
-      <div className="flex items-center cursor-pointer text-gray-800">
-        <Avatar size="default" icon={<UserOutlined />} />
-        <span className="ml-2 hidden sm:hidden lg:block md:hidden">{userDtl?.username}</span>
+    <Dropdown overlay={menu} trigger={['click']} placement="bottom" className='relative'>
+      <div className=" cursor-pointer ">
+        <Avatar size="large" icon={<UserOutlined />} />
+        {/* <span className="ml-2 hidden sm:hidden lg:block md:hidden">{userDtl?.username}</span> */}
       </div>
     </Dropdown>
   );

@@ -28,6 +28,7 @@ export const fetchSpPackage = () =>  api.get(url.ALL_SP_PACKAGES);
 
 //SPS
 export const postSpSetup = (data:any) =>  api.create(url.LIST_CREATE_SPS, data);
+export const updateSp = (id:any, data:any) =>  api.put(url.LIST_UPDATE_SP + id, data);
 export const fetchSps = () =>  api.get(url.LIST_CREATE_SPS);
 export const fetchSpByAdmin = (id:any) =>  api.get(url.GET_SP_BY_ADMIN + `${id}`);
 export const postPayType = (data:any) =>  api.create(url.PAYMENT_LIST_CREATE, data);

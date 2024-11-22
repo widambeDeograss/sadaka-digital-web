@@ -3,6 +3,7 @@ import { Input, Dropdown, Badge, Avatar, Menu, AutoComplete } from 'antd';
 import { ChevronsLeft, ChevronsRight, Bell, User } from 'lucide-react';
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useAppSelector } from '../../store/store-hooks';
+import { useNavigate } from 'react-router-dom';
 
 // Predefined searches with their corresponding routes
 const searchSuggestions = [
@@ -52,6 +53,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
   const [searchValue, setSearchValue] = useState('');
+  const navigate = useNavigate();
   const userDtl = useAppSelector((state:any) => state?.user?.userInfo)
   const logout = () => {
     localStorage.clear()
@@ -74,10 +76,14 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
         </div>
       </Menu.Item>
       <Menu.Divider />
-       <Menu.Item key="profile" icon={<UserOutlined />}>
+      <Menu.Item key="profile" icon={<UserOutlined />}
+       onClick={() => navigate('/dashboard/profile')}
+      >
         Profile
       </Menu.Item>
-      <Menu.Item key="settings" icon={<SettingOutlined />}>
+      <Menu.Item key="settings" icon={<SettingOutlined />}
+      onClick={() => navigate('/dashboard/profile')}
+      >
         Settings
       </Menu.Item>
       <Menu.Divider />
