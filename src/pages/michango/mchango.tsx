@@ -9,7 +9,7 @@ import {
   Table,
   Typography,
 } from "antd";
-import { DownloadOutlined, PlusCircleFilled } from "@ant-design/icons";
+import { PlusCircleFilled } from "@ant-design/icons";
 import Chart from "react-apexcharts";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -28,7 +28,6 @@ import {
 import modal from "antd/es/modal";
 import { useEffect, useState } from "react";
 import Tabletop from "../../components/tables/TableTop.tsx";
-import Title from "antd/es/skeleton/Title";
 import { useAppSelector } from "../../store/store-hooks.ts";
 
 const Mchango = () => {
@@ -472,6 +471,7 @@ const Mchango = () => {
           <Tabletop
             inputfilter={false}
             showFilter={false}
+            data={michango}
             togglefilter={function (value: boolean): void {
               throw new Error("Function not implemented.");
             }}
@@ -492,6 +492,7 @@ const Mchango = () => {
           <Tabletop
             inputfilter={false}
             showFilter={false}
+            data={michango}
             togglefilter={function (value: boolean): void {
               throw new Error("Function not implemented.");
             }}

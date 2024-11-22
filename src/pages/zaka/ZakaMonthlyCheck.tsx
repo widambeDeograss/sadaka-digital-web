@@ -120,7 +120,8 @@ const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }
           Close
         </Button>,
       ]}
-      width={800}
+      
+      width={900}
     >
       <div style={{ marginBottom: 16 }} className="flex items-center gap-4">
         <DatePicker
@@ -177,13 +178,14 @@ const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }
             togglefilter={(value: boolean) =>{}}
             showFilter={false}
             searchTerm={""}
+            data={cardDetails}
           />
       <Table
         columns={columns}
         dataSource={cardDetails}
         rowKey="card_no"
         loading={isLoading}
-        // pagination={false}
+        // pagination={true}
       />
     </Modal>
   );

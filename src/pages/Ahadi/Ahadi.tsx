@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Select, Table, Typography, Progress, Dropdown, Menu, message } from "antd";
 import OngezaAhadi from "./OngezaAhadi";
-import Widgets from "./Stats";
 import Tabletop from "../../components/tables/TableTop";
 import { useAppSelector } from "../../store/store-hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -15,8 +14,6 @@ import {
   PlusCircleFilled
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
-import { useNavigate } from "react-router-dom";
-import EditCardModal from "../wahumini/EditBahasha";
 import EditAhadi from "./EditAhadi";
 import ViewModal from "./ViewAhadi";
 import PaymentAhadi from "./PayAhadi";

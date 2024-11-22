@@ -83,7 +83,7 @@ const Sadaka = () => {
       console.log(response);
       return response?.reverse();
     },
-    enabled: true
+    enabled: true,
     // {
     //   enabled: false,
     // }
@@ -152,6 +152,17 @@ const Sadaka = () => {
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
+      title: "Jumuiya",
+
+      dataIndex: "",
+      render: (text: any, record: any) => (
+        <div>
+          {record?.bahasha_details?.mhumini_details?.jumuiya_details?.name}
+        </div>
+      ),
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
+    {
       title: "Bahasha",
 
       dataIndex: "",
@@ -165,6 +176,13 @@ const Sadaka = () => {
       dataIndex: "sadaka_amount",
       render: (text: any, record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
+    },
+    {
+      title: "Payment type",
+      dataIndex: "sadaka_amount",
+      render: (text: any, record: any) => (
+        <div>{record?.payment_type_details?.name}</div>
+      ),
     },
 
     {
@@ -196,14 +214,14 @@ const Sadaka = () => {
               >
                 Edit
               </Menu.Item>
-              <Menu.Item
+              {/* <Menu.Item
                 key="3"
                 icon={<DeleteOutlined />}
                 danger
                 onClick={() => handleDelete(record?.id)}
               >
                 Delete
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           }
           trigger={["click"]}
@@ -225,6 +243,9 @@ const Sadaka = () => {
             .toLowerCase()
             .includes(lowercasedTerm) ||
           item?.bahasha_details?.mhumini_details?.last_name
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item.bahasha_details?.mhumini_details?.jumuiya_details?.name
             .toLowerCase()
             .includes(lowercasedTerm) ||
           item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
@@ -303,9 +324,12 @@ const Sadaka = () => {
                 className="timelinelist lastweek text-xs "
                 reverse={reverse}
               >
-                {sadakaToday?.slice(0,4).map((t:any, index:number) => (
+                {sadakaToday?.slice(0, 4).map((t: any, index: number) => (
                   <Timeline.Item color="green" key={index}>
-                    <h3 className=" text-xs text-center ">{t?.bahasha_details?.mhumini_details?.first_name}-TZS{t?.sadaka_amount} </h3>
+                    <h3 className=" text-xs text-center ">
+                      {t?.bahasha_details?.mhumini_details?.first_name}-TZS
+                      {t?.sadaka_amount}{" "}
+                    </h3>
                     <Text>Card No: {t?.bahasha_details?.card_no}</Text>
                   </Timeline.Item>
                 ))}
@@ -327,11 +351,12 @@ const Sadaka = () => {
         className="mt-5"
       >
         <div className="table-responsive">
-        <Tabletop
+          <Tabletop
             inputfilter={showFilter}
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
             searchTerm={searchTerm}
+            data={filteredData}
           />
           {showFilter && (
             <div className="bg-gray-100 p-4 mt-4 rounded-lg">
@@ -358,19 +383,24 @@ const Sadaka = () => {
               </Button>
             </div>
           )}
-          <Table columns={columns} dataSource={filteredData} loading={loadingSadaka} />
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            loading={loadingSadaka}
+            bordered
+          />
         </div>
       </Card>
       <OngezaSadaka
         openModal={openMOdal}
         handleCancel={() => setopenMOdal(!openMOdal)}
       />
-            <UpdateSadaka
+      <UpdateSadaka
         openModal={updateSadakaModal}
         handleCancel={() => setupdateSadakaModal(false)}
         sadakaData={selectedData}
       />
-            <ViewModal
+      <ViewModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         data={selectedData}

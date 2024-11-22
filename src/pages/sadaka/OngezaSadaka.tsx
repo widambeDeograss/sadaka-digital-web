@@ -239,7 +239,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 )}
                 {bahashaData && (
                   <p className="mt-1 text-sm text-green-600">
-                    Bahasha imefanikiwa kupatikana.
+                    Bahasha imefanikiwa kupatikana. Jina: {bahashaData?.mhumini_details?.first_name} {bahashaData?.mhumini_details?.last_name}
                   </p>
                 )}
               </div>

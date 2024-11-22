@@ -141,14 +141,14 @@ const Zaka = () => {
               >
                 Edit
               </Menu.Item>
-              <Menu.Item
+              {/* <Menu.Item
                 key="3"
                 icon={<DeleteOutlined />}
                 danger
                 onClick={() => handleDelete(record?.id)}
               >
                 Delete
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           }
           trigger={["click"]}
@@ -229,6 +229,7 @@ const Zaka = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
             searchTerm={searchTerm}
+            data={filteredData}
           />
           {showFilter && (
             <div className="bg-gray-100 p-4 mt-4 rounded-lg">
@@ -259,6 +260,7 @@ const Zaka = () => {
             columns={columns}
             dataSource={filteredData}
             loading={loadingZaka}
+            bordered
           />
         </div>
       </Card>
