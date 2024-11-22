@@ -1,68 +1,10 @@
-import { Modal, Dropdown, Space, Avatar } from 'antd';
-import {
-    StarOutlined,
-    LogoutOutlined,
-    ExclamationCircleOutlined,
-    UserOutlined
-  } from "@ant-design/icons";
-import { Colors } from '../Constants/Colors';
-import type { MenuProps } from "antd";
 import logo from "../assets/church.png"
 import { useAppSelector } from '../store/store-hooks';
 import ProfileDropdown from './ui/Profile';
 
 const TopBar = () => {
-    const [modal, contextHolder] = Modal.useModal();
     const church = useAppSelector((state:any) =>  state.sp)
 
-    const items: MenuProps["items"] = [
-        {
-          key: "1",
-          label: (
-              <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="#"
-              >
-                Widambe
-              </a>
-          ),
-        },
-        {
-          key: "2",
-          label: (
-              <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.aliyun.com"
-              >
-                Admin
-              </a>
-          ),
-          icon: <StarOutlined />,
-          disabled: true,
-        },
-        {
-          key: "4",
-          danger: true,
-          icon: <LogoutOutlined />,
-          label: "Log out",
-          onClick:() => {
-            modal.confirm({
-              title: 'Confirm',
-              icon: <ExclamationCircleOutlined />,
-              content: 'Log out from e-Mizani',
-              okText: 'OK',
-              okType:"danger",
-              cancelText: 'cancel',
-              onOk:() => {
-                localStorage.clear();
-                window.location.reload()
-              }
-            });
-          }
-        },
-      ];
   return (
     <div>
    <div className="relative  shadow-md w-full">

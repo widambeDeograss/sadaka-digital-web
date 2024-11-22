@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Layout, Form, Input, Checkbox, Button, Divider } from "antd";
-import { UserOutlined, GoogleOutlined, GithubOutlined } from "@ant-design/icons";
+import {  Form, Input, Checkbox, Button, Divider } from "antd";
+import { UserOutlined, } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -70,7 +69,7 @@ export default function LoginPage() {
       }
     
     },
-    onError: (error) => {
+    onError: (_error) => {
       dispatch(
         addAlert({
           title: "Login error",
@@ -168,7 +167,7 @@ export default function LoginPage() {
             </Form.Item>
           </Form>
 
-          <Divider>Or continue with</Divider>
+          <Divider>Or contact us!!</Divider>
 
           {/* <div className="flex justify-center space-x-4">
             {[

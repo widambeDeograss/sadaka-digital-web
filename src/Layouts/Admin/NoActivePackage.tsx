@@ -1,20 +1,14 @@
 import { Modal, Button } from "antd";
-import React, { useState } from "react";
 import { ExclamationCircleOutlined } from "@ant-design/icons"; // Import Ant Design icons
 
 const NoActivePackageModal = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Function to show the modal
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
 
   // Function to handle when the modal is closed
   const handleCancel = () => {
     localStorage.clear();
     window.location.reload();
-    setIsModalVisible(false);
+    // setIsModalVisible(false);
   };
 
   // Function to redirect user to contact page (or open email)

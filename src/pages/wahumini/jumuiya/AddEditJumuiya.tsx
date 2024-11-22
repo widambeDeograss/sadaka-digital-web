@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Form, Input, Modal, Select } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../store/store-hooks";
@@ -57,7 +57,7 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
     },
   });
 
-  const { data: kandas, isLoading: loadingKanda } = useQuery({
+  const { data: kandas,  } = useQuery({
     queryKey: ["kanda"],
     queryFn: async () => {
       const response: any = await fetchtKanda(`?church_id=${church.id}`);

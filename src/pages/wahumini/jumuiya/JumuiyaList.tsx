@@ -9,9 +9,7 @@ import JumuiyaFormModal from "./AddEditJumuiya.tsx";
 import {
   EditOutlined,
   DeleteOutlined,
-  EyeOutlined,
   DownOutlined,
-  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
 const KandaJumuiya = () => {
@@ -61,7 +59,7 @@ const KandaJumuiya = () => {
     {
       title: "s/No",
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
     },
     {
       title: "Name",
@@ -85,7 +83,7 @@ const KandaJumuiya = () => {
     },
     {
       title: "Action",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
@@ -120,45 +118,45 @@ const KandaJumuiya = () => {
     {
       title: "s/No",
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "Jumuiya Name",
       dataIndex: "name",
-      render: (text: any, record: any) => <div>{record?.name}</div>,
+      render: (_text: any, record: any) => <div>{record?.name}</div>,
     },
     {
       title: "Kanda Name",
       dataIndex: "kanda_details",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>{record?.kanda_details?.name}</div>
       ),
     },
     {
       title: "Leader's Name",
       dataIndex: "jina_kiongozi",
-      render: (text: any, record: any) => <div>{record?.jina_kiongozi}</div>,
+      render: (_text: any, record: any) => <div>{record?.jina_kiongozi}</div>,
     },
     {
       title: "Address",
       dataIndex: "address",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
     },
     {
       title: "Phone Number",
       dataIndex: "namba_ya_simu",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
     },
     {
       title: "Location",
       dataIndex: "location",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
     },
     {
       title: "Actions",
       dataIndex: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>
           <Dropdown
             overlay={

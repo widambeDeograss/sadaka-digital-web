@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Row,
   Col,
@@ -13,7 +13,6 @@ import {
   Tag,
   Tabs,
   Typography,
-  Statistic,
   Divider,
   Space,
   Progress,
@@ -85,7 +84,7 @@ const ChurchProfile = () => {
       );
       form.resetFields();
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       dispatch(
         addAlert({
           title: "Error",

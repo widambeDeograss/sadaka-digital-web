@@ -7,7 +7,6 @@ import {
   Form,
   InputNumber,
   Select,
-  message,
   Spin,
   Button,
 } from "antd";
@@ -137,7 +136,6 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
   const {
     data: wahuminiList,
     isLoading: isLoadingWahumini,
-    error,
   } = useQuery({
     queryKey: ["wahumini"],
     queryFn: async () => {
@@ -198,7 +196,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
       );
       reset();
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       dispatch(
         addAlert({
           title: "Error",

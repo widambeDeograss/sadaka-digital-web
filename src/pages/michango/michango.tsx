@@ -6,9 +6,7 @@ import {
   Menu,
   message,
   Progress,
-  Select,
   Table,
-  Typography,
 } from "antd";
 import { useEffect, useState } from "react";
 import Widgets from "./Stats";
@@ -83,37 +81,37 @@ const MichangoList = () => {
       title: "s/No",
 
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "Name",
       dataIndex: "mchango_name",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Amount",
       dataIndex: "mchango_amount",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Collected Amount",
       dataIndex: "collected_amount",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Lengo",
       dataIndex: "target_amount",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Lengo",
       dataIndex: "status",
-      render: (text: any, record: any) => (
+      render: (text: any, _record: any) => (
         <div>
           {text === true ? (
             <Badge className="" color="green">
@@ -129,7 +127,7 @@ const MichangoList = () => {
     {
       title: "Progress",
       dataIndex: "status",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>
           <Progress
             percent={Math.floor(
@@ -144,13 +142,13 @@ const MichangoList = () => {
     {
       title: "date",
       dataIndex: "date",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: "Actions",
       dataIndex: "actions",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
@@ -264,7 +262,7 @@ const MichangoList = () => {
           <Tabletop
            inputfilter={false}
            onSearch={(term: string) => setSearchTerm(term)}
-           togglefilter={(value: boolean) => {}}
+           togglefilter={(_value: boolean) => {}}
            searchTerm={searchTerm}
            data={filteredData}
            showFilter={false}

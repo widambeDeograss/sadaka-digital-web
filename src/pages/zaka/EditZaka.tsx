@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchPayTypes, fetchZakaById, updateZaka, resolveBahasha, postSpRevenueUpdate } from "../../helpers/ApiConnectors";
+import { fetchPayTypes, updateZaka, resolveBahasha, postSpRevenueUpdate } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
@@ -37,7 +37,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
   const [bahashaError, setBahashaError] = useState<string | null>(null);
 
   // Fetch Payment Types
-  const { data: payTypes, isLoading: payTypesLoading } = useQuery({
+  const { data: payTypes } = useQuery({
     queryKey: ["payTypes", church.id],
     queryFn: async () => {
       const response: any = await fetchPayTypes(`?church_id=${church.id}`);
@@ -131,7 +131,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
       setBahashaData(null);
       setBahashaError(null);
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       dispatch(
         addAlert({
           title: "Error",

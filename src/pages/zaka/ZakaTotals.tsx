@@ -11,24 +11,19 @@ interface MonthData {
   total_amount: number;
 }
 
-interface ZakaData {
-  card_no: string;
-  member_name: string;
-  months: MonthData[];
-}
 
 const ZakaReportTable: React.FC = () => {
   const church = useAppSelector((state: any) => state.sp);
-  const userPermissions = useAppSelector(
-    (state: any) => state.user.userInfo.role.permissions
-  );
+  // const _userPermissions = useAppSelector(
+  //   (state: any) => state.user.userInfo.role.permissions
+  // );
   const [yearFilter, setYearFilter] = useState<string | null>(null);
   const [showFilter, setShowFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [zakaData, setZakaData] = useState([]);
 
-  const { data: zaka, isLoading: loadingzaka } = useQuery({
+  const { isLoading: loadingzaka } = useQuery({
     queryKey: ["zakaTotals", yearFilter],
     queryFn: async () => {
       let query = `?church_id=${church.id}`;

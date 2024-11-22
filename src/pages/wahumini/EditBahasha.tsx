@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Modal, Button, Input, Form, Select, Spin } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchWahumini, postBahasha, updateBahasha } from "../../helpers/ApiConnectors";
+import { fetchWahumini, updateBahasha } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 import { toast } from "react-toastify";
@@ -46,7 +46,6 @@ const EditCardModal = ({ visible, onClose, bahashaData }: ModalProps) => {
   const {
     data: wahumini,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["wahumini"],
     queryFn: async () => {

@@ -174,8 +174,8 @@ const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }
       {/* Table to display card details */}
       <Tabletop
             inputfilter={false}
-            onSearch={(term: string) => {}}
-            togglefilter={(value: boolean) =>{}}
+            onSearch={(_term: string) => {}}
+            togglefilter={(_value: boolean) =>{}}
             showFilter={false}
             searchTerm={""}
             data={cardDetails}

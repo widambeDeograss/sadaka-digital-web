@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal, Button, Input, Form, Select, Spin } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,7 +25,6 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -35,7 +33,6 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
   const {
     data: wahumini,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["wahumini"],
     queryFn: async () => {
@@ -61,30 +58,33 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
       updated_by: user?.username,
     };
 
-    const response = await postBahasha(finalData);
-    if (!response) {
-      dispatch(
-        addAlert({
-          title: "Error adding Bahasha",
-          message: "Error adding Bahasha.",
-          type: "error",
-        })
-      );
-    } else {
-      dispatch(
-        addAlert({
-          title: "Success",
-          message: "Bahasha added successfully",
-          type: "success",
-        })
-      );
-      reset(); // Clear the form
-      onClose(); // Close the modal
-    }
+     await addBahashaMutation(finalData);
+    // if (!response) {
+    //   dispatch(
+    //     addAlert({
+    //       title: "Error adding Bahasha",
+    //       message: "Error adding Bahasha.",
+    //       type: "error",
+    //     })
+    //   );
+    // } else {
+    //   dispatch(
+    //     addAlert({
+    //       title: "Success",
+    //       message: "Bahasha added successfully",
+    //       type: "success",
+    //     })
+    //   );
+    //   reset(); // Clear the form
+    //   onClose(); // Close the modal
+    // }
   };
 
   const { mutate: addBahashaMutation, isPending: loading } = useMutation({
-    mutationFn: onSubmit,
+    mutationFn: async (finalData:any) => {
+      const response = await postBahasha(finalData);
+      return response;
+    },
     onSuccess: () => {
       dispatch(
         addAlert({
@@ -94,11 +94,11 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
         })
       );
     },
-    onError: (error) => {
+    onError: (_error) => {
       dispatch(
         addAlert({
           title: "Error adding Bahasha",
-          message: error.message,
+          message:  "Error adding Bahasha",
           type: "error",
         })
       );

@@ -44,7 +44,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   const [bahashaError, setBahashaError] = useState<string | null>(null);
 
   // Fetch Payment Types based on church ID
-  const { data: payTypes, isLoading: payTypesLoading } = useQuery({
+  const { data: payTypes } = useQuery({
     queryKey: ["payTypes", church.id],
     queryFn: async () => {
       const response: any = await fetchPayTypes(`?church_id=${church.id}`);
@@ -118,7 +118,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       setBahashaData(null);
       setBahashaError(null);
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       dispatch(
         addAlert({
           title: "Error",

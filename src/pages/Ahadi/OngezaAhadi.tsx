@@ -3,10 +3,8 @@ import React, { useState, useEffect } from "react";
 import {
   Modal,
   Tabs,
-  Form,
   InputNumber,
   Select,
-  message,
   Spin,
   Button,
   Input,
@@ -110,7 +108,6 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
   const {
     data: wahumini,
     isLoading: loadWahumini,
-    error,
   } = useQuery({
     queryKey: ["wahumini"],
     queryFn: async () => {

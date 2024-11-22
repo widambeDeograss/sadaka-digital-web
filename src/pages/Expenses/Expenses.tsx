@@ -1,8 +1,7 @@
 // src/components/Expenses.tsx
 
-import React, { useEffect, useState } from "react";
-import { Button, Card, Table, Typography, Progress, Spin, message, Dropdown, Menu } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
+import  { useEffect, useState } from "react";
+import { Button, Card, Table, Typography, Progress, message, Dropdown, Menu } from "antd";
 import AddExpenseModal from "./AddExpModal";
 import Tabletop from "../../components/tables/TableTop";
 import Widgets from "./Stats";
@@ -56,14 +55,13 @@ const Expenses = () => {
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const userPermissions = useAppSelector(
-    (state: any) => state.user.userInfo.role.permissions
-  );
+  // const userPermissions = useAppSelector(
+  //   (state: any) => state.user.userInfo.role.permissions
+  // );
 
   const {
     data: expenses,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["expenses", yearFilter],
     queryFn: async () => {
@@ -175,7 +173,7 @@ const Expenses = () => {
     },
     {
       title: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>

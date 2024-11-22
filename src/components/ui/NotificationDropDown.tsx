@@ -1,4 +1,3 @@
-import React from "react";
 import { Dropdown, Badge, Menu } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";

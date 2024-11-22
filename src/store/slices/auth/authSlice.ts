@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 
 const initialState = {
     isAuthenticated: false,
@@ -29,7 +28,7 @@ const loginSlice = createSlice({
         setUserInfo(state, action){
             state.userInfo = action.payload
         },
-        logoutSuccess(state, action) {
+        logoutSuccess(state, _action) {
             localStorage.removeItem('persist:root');
             state.isAuthenticated = false;
             state.accessToken = null;

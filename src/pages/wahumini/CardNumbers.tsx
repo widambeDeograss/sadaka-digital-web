@@ -1,5 +1,4 @@
 import { Button, Card, Col, Dropdown, Menu, message, Row, Table } from "antd";
-import { useNavigate } from "react-router-dom";
 import Tabletop from "../../components/tables/TableTop";
 import { deleteBahasha, fetchBahasha } from "../../helpers/ApiConnectors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -19,7 +18,6 @@ import EditCardModal from "./EditBahasha";
 import ViewModal from "./ViewBahasha";
 
 const CardNumberList = () => {
-  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [showEditModal, setshowEditModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
@@ -35,7 +33,6 @@ const CardNumberList = () => {
   const {
     data: bahasha,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["bahasha"],
     queryFn: async () => {
@@ -85,21 +82,21 @@ const CardNumberList = () => {
       title: "s/No",
 
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "Card No",
 
       dataIndex: "card_no",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Name",
 
       dataIndex: "mhumini",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>
           {record?.mhumini_details?.first_name}{" "}
           {record?.mhumini_details?.last_name}
@@ -111,7 +108,7 @@ const CardNumberList = () => {
       title: "Phone",
 
       dataIndex: "mhumini",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>{record?.mhumini_details?.phone_number}</div>
       ),
       // sorter: (a, b) => a.name.length - b.name.length,
@@ -120,7 +117,7 @@ const CardNumberList = () => {
       title: "Jumuiya",
 
       dataIndex: "mhumini",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>{record?.mhumini_details?.jumuiya_details?.name}</div>
       ),
       // sorter: (a, b) => a.name.length - b.name.length,
@@ -129,20 +126,20 @@ const CardNumberList = () => {
     {
       title: "bahasha_type",
       dataIndex: "bahasha_type",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
 
     {
       title: "created_at",
       dataIndex: "created_at",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: <strong>Card status</strong>,
       dataIndex: "card_status",
-      render: (text: any, record: any) => (
+      render: (text: any, _record: any) => (
         <>
           {text === true && (
             <span className="bg-green-300 rounded-lg p-1 text-white">
@@ -161,7 +158,7 @@ const CardNumberList = () => {
     {
       title: "Actions",
       dataIndex: "actions",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>

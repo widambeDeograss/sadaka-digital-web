@@ -5,14 +5,12 @@ import {
   PiHandsPrayingFill, 
   PiHandshakeBold, 
   PiBuildingApartmentBold, 
-  PiChurchBold,
+  PiChurchBold ,
   PiCardholder
 } from "react-icons/pi";
 import { 
   GiSwapBag, 
-  GiTakeMyMoney, 
   GiPayMoney, 
-  GiChurch 
 } from "react-icons/gi";
 import { RiDashboardFill } from "react-icons/ri";
 import TopBar from "../components/TopBar.tsx";

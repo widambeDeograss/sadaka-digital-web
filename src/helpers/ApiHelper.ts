@@ -8,13 +8,9 @@ import { REFRESH_TOKEN } from "../Constants/apiEndpoint";
 axios.defaults.baseURL = "http://localhost:3010";
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
-interface AuthUser {
-  accessToken: string;
-  refreshToken: string;
-}
 
-const state = store.getState();
-const accessToken = state.user.accessToken;
+// const state = store.getState();
+// const accessToken = state.user.accessToken;
 
 // Intercepting requests to add the Authorization header
 axios.interceptors.request.use(

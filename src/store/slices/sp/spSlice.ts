@@ -32,7 +32,7 @@ const currentSPSlice = createSlice({
   name: 'sp',
   initialState,
   reducers: {
-    setCurrentSP(state, action){
+    setCurrentSP(_state, action){
       return action.payload;
     },
     setActivePackage(state:any, action) {

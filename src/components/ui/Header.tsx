@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Dropdown, Badge, Avatar, Menu, AutoComplete } from 'antd';
-import { ChevronsLeft, ChevronsRight, Bell, User } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, Bell } from 'lucide-react';
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useAppSelector } from '../../store/store-hooks';
 import { useNavigate } from 'react-router-dom';
@@ -60,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
     window.location.reload();
 }
 
-  const handleSearchSelect = (value: string, option: any) => {
+  const handleSearchSelect = (_value: string, option: any) => {
     // Navigate to the selected route
     console.log('Navigate to:', option.route);
     setSearchValue('');

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, {  useState } from "react";
 import { Table, TableProps } from "antd";
 import { ColumnsType } from "antd/lib/table";
 // import "./antd.css";
@@ -9,17 +9,9 @@ interface DatatableProps<T> extends TableProps<T> {
   isLoading?: boolean;
 }
 
-function itemRender(current:any, type:String, originalElement: ReactNode) {
-    if (type === "prev") {
-      return <a>Previous</a>;
-    }
-    if (type === "next") {
-      return <a>Next</a>;
-    }
-    return originalElement;
-  }
+
   
-function onShowSizeChange(current:any, pageSize:any) {
+function onShowSizeChange(_current:any, _pageSize:any) {
     // console.log(current, pageSize);
   }
 

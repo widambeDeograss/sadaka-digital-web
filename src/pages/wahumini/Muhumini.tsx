@@ -1,5 +1,4 @@
-import { Card, Col, Row, Table, Progress, Dropdown, Menu } from "antd";
-import { TransactionOutlined, DownOutlined, EyeOutlined, EditOutlined, DeleteOutlined, PlusCircleFilled } from "@ant-design/icons";
+import { Card, Col, Row, Table, Progress,  } from "antd";
 import { useLocation, useParams } from "react-router-dom";
 import { useAppSelector } from "../../store/store-hooks.ts";
 import { useEffect, useState } from "react";
@@ -8,12 +7,10 @@ import { fetchAhadi, fetchMhuminiStats } from "../../helpers/ApiConnectors.ts";
 import Tabletop from "../../components/tables/TableTop.tsx";
 import Chart from "react-apexcharts";
 import {
-    PiChurchBold,
     PiHandsPrayingFill,
     PiHandshakeBold,
-    PiUsersFourBold,
   } from "react-icons/pi";
-  import { GiSwapBag, GiTakeMyMoney, GiPayMoney } from "react-icons/gi";
+  import { GiSwapBag, GiTakeMyMoney, } from "react-icons/gi";
 
 const Muhumini = () => {
     const params = useParams();
@@ -292,6 +289,7 @@ const Muhumini = () => {
                     <Table
                         columns={columns}
                         dataSource={ahadiList}
+                        loading={ahadiLoading}
                         rowKey="id"
                         bordered
                         pagination={{ pageSize: 10 }}

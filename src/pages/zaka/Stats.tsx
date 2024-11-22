@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, PackageX, Truck, Wallet2,BanknoteIcon, Table2Icon, EqualIcon } from 'lucide-react';
+import {  Wallet2,BanknoteIcon, Table2Icon, EqualIcon } from 'lucide-react';
 import CountUp from 'react-countup';
 import { fetchSadataZakaStats } from '../../helpers/ApiConnectors';
 import { useAppSelector } from '../../store/store-hooks';
@@ -12,7 +12,6 @@ const Widgets = () => {
     const {
         data: zaka_totals,
         isLoading,
-        error,
       } = useQuery({
         queryKey: ["zaka_totals"],
         queryFn: async () => {

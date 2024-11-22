@@ -20,7 +20,7 @@ interface ThemeProviderProps{
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const isDarkMode = useAppSelector((state) => state.AppStateReducer.isDarkMode);
+  const isDarkMode = "dark" === useAppSelector((state:any) => state?.theme?.theme);
 
   useEffect(() => {
     const root = document.documentElement;

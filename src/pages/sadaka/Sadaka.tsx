@@ -4,7 +4,6 @@ import {
   Col,
   Dropdown,
   Menu,
-  message,
   Row,
   Table,
   Timeline,
@@ -15,38 +14,18 @@ import OngezaSadaka from "./OngezaSadaka.tsx";
 import Widgets from "./Stats.tsx";
 import Tabletop from "../../components/tables/TableTop.tsx";
 import { useAppSelector } from "../../store/store-hooks.ts";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteSadakaById, fetchSadaka } from "../../helpers/ApiConnectors";
+import { useQuery } from "@tanstack/react-query";
+import { fetchSadaka } from "../../helpers/ApiConnectors";
 import { useNavigate } from "react-router-dom";
 import {
   EditOutlined,
-  DeleteOutlined,
   EyeOutlined,
   DownOutlined,
-  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import ViewModal from "./ViewSadaka.tsx";
 import UpdateSadaka from "./UpdateSadaka.tsx";
-import modal from "antd/es/modal";
 
-const timelineList = [
-  {
-    title: "Tsh 2500 - Michael card:20221",
-    time: "09 JUN 7:20 PM",
-    color: "green",
-  },
-  {
-    title: "Tsh 2500 - Michael card:20221",
-    time: "09 JUN 7:20 PM",
-    color: "green",
-  },
-  {
-    title: "Tsh 2500 - Michael card:20221",
-    time: "09 JUN 7:20 PM",
-  },
-];
-
-const { Title, Paragraph, Text } = Typography;
+const { Paragraph, Text } = Typography;
 const Sadaka = () => {
   const [reverse, setReverse] = useState(false);
   const [openMOdal, setopenMOdal] = useState(false);
@@ -56,14 +35,14 @@ const Sadaka = () => {
   const [SadakaData, setSadakaData] = useState([]);
   const [yearFilter, setYearFilter] = useState<string | null>(null);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [updateSadakaModal, setupdateSadakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
-  const userPermissions = useAppSelector(
-    (state: any) => state.user.userInfo.role.permissions
-  );
+  // const userPermissions = useAppSelector(
+  //   (state: any) => state.user.userInfo.role.permissions
+  // );
 
   const handleView = (record: any) => {
     setSelectedData(record);
@@ -73,7 +52,6 @@ const Sadaka = () => {
   const {
     data: sadakaToday,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["sadakaToday"],
     queryFn: async () => {
@@ -89,7 +67,7 @@ const Sadaka = () => {
     // }
   });
 
-  const { data: sadaka, isLoading: loadingSadaka } = useQuery({
+  const {  isLoading: loadingSadaka } = useQuery({
     queryKey: ["sadaka", yearFilter],
     queryFn: async () => {
       let query = `?church_id=${church.id}`;
@@ -104,46 +82,46 @@ const Sadaka = () => {
     // }
   });
 
-  const handleDelete = (SadakaId: any) => {
-    modal.confirm({
-      title: "Confirm Deletion",
-      icon: <ExclamationCircleOutlined />,
-      content: "Are you sure you want to delete this record?",
-      okText: "OK",
-      okType: "danger",
-      cancelText: "cancel",
-      onOk: () => {
-        deleteSadakaMutation(SadakaId);
-      },
-    });
-  };
+  // const handleDelete = (SadakaId: any) => {
+  //   modal.confirm({
+  //     title: "Confirm Deletion",
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: "Are you sure you want to delete this record?",
+  //     okText: "OK",
+  //     okType: "danger",
+  //     cancelText: "cancel",
+  //     onOk: () => {
+  //       deleteSadakaMutation(SadakaId);
+  //     },
+  //   });
+  // };
 
-  const { mutate: deleteSadakaMutation } = useMutation({
-    mutationFn: async (SadakaId: any) => {
-      await deleteSadakaById(SadakaId);
-    },
-    onSuccess: () => {
-      message.success("Sadaka deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
-    },
-    onError: () => {
-      message.error("Failed to delete Sadaka.");
-    },
-  });
+  // const { mutate: deleteSadakaMutation } = useMutation({
+  //   mutationFn: async (SadakaId: any) => {
+  //     await deleteSadakaById(SadakaId);
+  //   },
+  //   onSuccess: () => {
+  //     message.success("Sadaka deleted successfully!");
+  //     queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
+  //   },
+  //   onError: () => {
+  //     message.error("Failed to delete Sadaka.");
+  //   },
+  // });
 
   const columns = [
     {
       title: "s/No",
 
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "Name",
 
       dataIndex: "name",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>
           {record?.bahasha_details?.mhumini_details?.first_name}{" "}
           {record?.bahasha_details?.mhumini_details?.last_name}
@@ -155,7 +133,7 @@ const Sadaka = () => {
       title: "Jumuiya",
 
       dataIndex: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>
           {record?.bahasha_details?.mhumini_details?.jumuiya_details?.name}
         </div>
@@ -166,7 +144,7 @@ const Sadaka = () => {
       title: "Bahasha",
 
       dataIndex: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>{record?.bahasha_details?.card_no}</div>
       ),
       // sorter: (a, b) => a.name.length - b.name.length,
@@ -174,13 +152,13 @@ const Sadaka = () => {
     {
       title: "Amount",
       dataIndex: "sadaka_amount",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Payment type",
       dataIndex: "sadaka_amount",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>{record?.payment_type_details?.name}</div>
       ),
     },
@@ -188,12 +166,12 @@ const Sadaka = () => {
     {
       title: "date",
       dataIndex: "date",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>

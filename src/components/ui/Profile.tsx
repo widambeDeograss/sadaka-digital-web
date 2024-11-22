@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dropdown, Menu, Avatar } from 'antd';
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useAppSelector } from '../../store/store-hooks';

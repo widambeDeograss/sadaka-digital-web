@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button, Card, Select, Table, Typography, Progress, Dropdown, Menu, message } from "antd";
+import  { useEffect, useState } from "react";
+import { Button, Card, Table, Typography, Progress, Dropdown, Menu, message } from "antd";
 import OngezaAhadi from "./OngezaAhadi";
 import Tabletop from "../../components/tables/TableTop";
 import { useAppSelector } from "../../store/store-hooks";
@@ -19,7 +19,6 @@ import ViewModal from "./ViewAhadi";
 import PaymentAhadi from "./PayAhadi";
 
 const { Title } = Typography;
-const { Option } = Select;
 
 const Ahadi = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -32,9 +31,9 @@ const Ahadi = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [payAhadiModal, setPayAhadiModal] = useState(false);
-  const userPermissions = useAppSelector(
-    (state: any) => state.user.userInfo.role.permissions
-  );
+  // const userPermissions = useAppSelector(
+  //   (state: any) => state.user.userInfo.role.permissions
+  // );
 
   const { data: ahadiList, isLoading: loadingAhadi } = useQuery({
     queryKey: ["Ahadi"],
@@ -196,7 +195,7 @@ const Ahadi = () => {
  
     {
       title: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>

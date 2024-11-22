@@ -1,6 +1,4 @@
 import { Button, Card, Col, Dropdown, Menu, message, Row, Table } from "antd";
-import { useNavigate } from "react-router-dom";
-import Tabletop from "../..//../components/tables/TableTop";
 import { deletePayType, fetchPayTypes } from "../../../helpers/ApiConnectors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAppSelector } from "../../../store/store-hooks";
@@ -9,28 +7,24 @@ import PaymentTypeModal from "./AddPaymentCategory";
 import {
   EditOutlined,
   DeleteOutlined,
-  EyeOutlined,
   DownOutlined,
   ExclamationCircleOutlined,
-  PlusCircleFilled
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
 
 const PaymentTypeList = () => {
-  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false)
   const queryClient = useQueryClient();
   const church = useAppSelector((state: any) => state.sp);
-  const userPermissions = useAppSelector(
-    (state: any) => state.user.userInfo.role.permissions
-  );
-  const [modalVisible, setModalVisible] = useState(false);
+  // const userPermissions = useAppSelector(
+  //   (state: any) => state.user.userInfo.role.permissions
+  // );
+  // const [, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
 
   const {
     data: payTypes,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["payTypes"],
     queryFn: async () => {
@@ -70,44 +64,44 @@ const PaymentTypeList = () => {
     },
   });
 
-  const handleView = (record: any) => {
-    setSelectedData(record);
-    setModalVisible(true);
-  };
+  // const handleView = (record: any) => {
+  //   setSelectedData(record);
+  //   setModalVisible(true);
+  // };
 
   const columns = [
     {
       title: "s/No",
   
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "Name",
 
       dataIndex: "name",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Description",
 
       dataIndex: "description",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
  
     {
         title: "created_at",
         dataIndex: "created_at",
-        render: (text: any, record: any) => <div>{text}</div>,
+        render: (text: any, _record: any) => <div>{text}</div>,
         // sorter: (a, b) => a.capacity.length - b.capacity.length,
       },
 
       {
         title: "",
-        render: (text: any, record: any) => (
+        render: (_text: any, record: any) => (
           <Dropdown
             overlay={
               <Menu>

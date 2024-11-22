@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Button, Modal, Select, Tabs } from "antd";
+import { Button, Modal, Tabs } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchRoles, postSpManagers, postUserSetup } from "../../helpers/ApiConnectors";
+import { fetchRoles, postSpManagers } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
@@ -17,7 +17,7 @@ type modalType = {
 const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmLoading, ] = useState(false);
   const dispatch = useAppDispatch();
 
   // Yup validation schema
@@ -34,8 +34,6 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
 
   const {
     data: roles,
-    isLoading: rolesLoading,
-    error,
   } = useQuery({
     queryKey: ["roles"],
     queryFn: async () => {
@@ -56,8 +54,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
+
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),

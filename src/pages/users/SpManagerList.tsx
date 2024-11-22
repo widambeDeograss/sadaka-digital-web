@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import {useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {  fetchtSpManagers } from "../../helpers/ApiConnectors.js";
 import { Button, Card, Dropdown, Menu } from "antd";
 import { Table } from "antd";
@@ -10,7 +10,6 @@ import Tabletop from "../../components/tables/TableTop.js";
 import CreateUserModal from "./SpManagers.js";
 import {
   EditOutlined,
-  DeleteOutlined,
   EyeOutlined,
   DownOutlined,
   ExclamationCircleOutlined,
@@ -18,9 +17,7 @@ import {
 
 function SpManagerList() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const [selectedUserForPasswordEdit, setSelectedUserForPasswordEdit] =
-    useState(null);
+  
     const [openMOdal, setopenMOdal] = useState(false);
     const church = useAppSelector((state: any) => state.sp);
     const userPermissions = useAppSelector(
@@ -41,7 +38,6 @@ function SpManagerList() {
     });
   const handleActivateDeactivate = async (record: any) => {
     if (record.status === "ACTIVE") {
-      const response = "";
       //   await userEnableDisable(record.id, "disable");
       //   if (response === "User Disabled successfully") {
       //     queryClient.invalidateQueries(['users']);
@@ -85,8 +81,8 @@ function SpManagerList() {
     }
   };
 
-  const handleChangePassword = (record: any) => {
-    setSelectedUserForPasswordEdit(record);
+  const handleChangePassword = (_record: any) => {
+    // setSelectedUserForPasswordEdit(record);
     const modalTrigger = document.getElementById("resetPassword");
     console.log(modalTrigger);
 
@@ -97,7 +93,7 @@ function SpManagerList() {
     {
       title: "s/No",
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
@@ -146,12 +142,12 @@ function SpManagerList() {
         { text: 'Active', value: true },
         { text: 'Disabled', value: false },
       ],
-      onFilter: (value: boolean, record: any) => record.sp_manager.user_active === value,
+      onFilter: (value: boolean | any, record: any) => record.sp_manager.user_active === value,
     },
     {
       title: "Actions",
       dataIndex: "actions",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
@@ -228,11 +224,13 @@ function SpManagerList() {
             </Button>
         }
       >
-        <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
+        <Tabletop inputfilter={false} togglefilter={function (_value: boolean): void {
           throw new Error("Function not implemented.");
-        } } searchTerm={""} onSearch={function (value: string): void {
+        } } searchTerm={""} onSearch={function (_value: string): void {
           throw new Error("Function not implemented.");
-        } }/>
+        } }
+        data={spManagers}
+        />
         <div className="table-responsive">
           <Table columns={columns} dataSource={spManagers} loading={isLoading}/>
         </div>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import {useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchAllUsers } from "../../helpers/ApiConnectors.js";
 import { Button, Card, Dropdown, Menu } from "antd";
 import { DownOutlined } from "@ant-design/icons";
@@ -12,8 +12,7 @@ import CreateUserModal from "./AddUser.js";
 
 function UsersList() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const [selectedUserForPasswordEdit, setSelectedUserForPasswordEdit] =
+  const [, setSelectedUserForPasswordEdit] =
     useState(null);
     const [openMOdal, setopenMOdal] = useState(false);
   const userPermissions = useAppSelector(
@@ -22,7 +21,6 @@ function UsersList() {
   const {
     data: users,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
@@ -37,7 +35,6 @@ function UsersList() {
 
   const handleActivateDeactivate = async (record: any) => {
     if (record.status === "ACTIVE") {
-      const response = "";
       //   await userEnableDisable(record.id, "disable");
       //   if (response === "User Disabled successfully") {
       //     queryClient.invalidateQueries(['users']);
@@ -93,44 +90,44 @@ function UsersList() {
     {
       title: "s/No",
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a:any, b:any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "Name",
       dataIndex: "firstname",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Name",
 
       dataIndex: "lastname",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "User name",
       dataIndex: "username",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: "Email",
       dataIndex: "email",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: "Phone",
       dataIndex: "phone",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: <strong>Status</strong>,
       dataIndex: "user_active",
-      render: (text: any, record: any) => (
+      render: (text: any, _record: any) => (
         <>
           {text === true && (
             <span className="bg-green-300 rounded-lg p-1 text-white">Active</span>
@@ -145,7 +142,7 @@ function UsersList() {
     {
       title: "",
       dataIndex: "is_main_branch",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
@@ -218,11 +215,13 @@ function UsersList() {
             </Button>
         }
       >
-        <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
+        <Tabletop inputfilter={false} togglefilter={function (_value: boolean): void {
           throw new Error("Function not implemented.");
-        } } searchTerm={""} onSearch={function (value: string): void {
+        } } searchTerm={""} onSearch={function (_value: string): void {
           throw new Error("Function not implemented.");
-        } }/>
+        } }
+        data={[]}
+        />
         <div className="table-responsive">
           <Table columns={columns} dataSource={users} loading={isLoading}/>
         </div>

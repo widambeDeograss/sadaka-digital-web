@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal, Select, Tabs } from "antd";
+import { Button, Modal, Tabs } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,7 +15,7 @@ type modalType = {
 };
 
 const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmLoading, ] = useState(false);
   const dispatch = useAppDispatch();
 
   // Yup validation schema
@@ -33,8 +33,6 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
 
   const {
     data: roles,
-    isLoading: rolesLoading,
-    error,
   } = useQuery({
     queryKey: ["roles"],
     queryFn: async () => {

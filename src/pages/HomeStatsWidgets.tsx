@@ -1,7 +1,6 @@
 import React from 'react';
-import { ChevronDown, Cog, Coins, Kanban, ListFilter, Users } from 'lucide-react';
+import {  Cog, Coins, Kanban, ListFilter, Users } from 'lucide-react';
 import CountUp from 'react-countup';
-import { Link } from 'react-router-dom';
 
 const Widgets = () => {
     return (

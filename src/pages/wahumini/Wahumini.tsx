@@ -27,7 +27,6 @@ const Wahumini = () => {
   const {
     data: wahumini,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["wahumini"],
     queryFn: async () => {
@@ -72,19 +71,19 @@ const Wahumini = () => {
       title: "s/No",
 
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
       title: "First Name",
       dataIndex: "first_name",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Last Name",
       dataIndex: "last_name",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
@@ -98,25 +97,25 @@ const Wahumini = () => {
     {
       title: "Email",
       dataIndex: "email",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: "Phone",
       dataIndex: "phone_number",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: "Location",
       dataIndex: "address",
-      render: (text: any, record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.capacity.length - b.capacity.length,
     },
     {
       title: <strong>Active</strong>,
       dataIndex: "has_loin_account",
-      render: (text: any, record: any) => (
+      render: (text: any, _record: any) => (
         <>
           {text === true && (
             <span className="bg-red-300 rounded-lg p-1 text-white">
@@ -134,7 +133,7 @@ const Wahumini = () => {
     {
       title: "Actions",
       dataIndex: "actions",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>

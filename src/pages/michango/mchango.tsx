@@ -1,40 +1,32 @@
 import {
-  Button,
   Card,
-  Dropdown,
-  Menu,
-  message,
   Progress,
-  Select,
   Table,
-  Typography,
 } from "antd";
-import { PlusCircleFilled } from "@ant-design/icons";
 import Chart from "react-apexcharts";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useQuery, } from "@tanstack/react-query";
 import {
   fetchAhadi,
   fetchMchangoStats,
   fetchMichangoPayment,
 } from "../../helpers/ApiConnectors.ts";
-import {
-  DownOutlined,
-  EyeOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons";
-import modal from "antd/es/modal";
+// import {
+//   DownOutlined,
+//   EyeOutlined,
+//   EditOutlined,
+//   DeleteOutlined,
+//   ExclamationCircleOutlined,
+// } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import Tabletop from "../../components/tables/TableTop.tsx";
 import { useAppSelector } from "../../store/store-hooks.ts";
 
 const Mchango = () => {
   const params = useParams();
-  const [openModal, setOpenModal] = useState(false);
+  // const [openModal, setOpenModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const [chartData, setChartData] = useState<{
     series: { name: string; data: number[] }[];
     categories: string[];
@@ -74,8 +66,6 @@ const Mchango = () => {
 
   const {
     data: mchango_totals,
-    isLoading,
-    error,
   } = useQuery({
     queryKey: ["mchango_totals"],
     queryFn: async () => {
@@ -121,43 +111,43 @@ const Mchango = () => {
 
   console.log(chartData);
 
-  const handleDeletePayment = (id: any) => {
-    modal.confirm({
-      title: "Confirm Deletion",
-      icon: <ExclamationCircleOutlined />,
-      content: "Are you sure you want to delete this payment?",
-      onOk: () => {
-        deletePaymentMutation(id);
-      },
-    });
-  };
+  // const handleDeletePayment = (id: any) => {
+  //   modal.confirm({
+  //     title: "Confirm Deletion",
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: "Are you sure you want to delete this payment?",
+  //     onOk: () => {
+  //       deletePaymentMutation(id);
+  //     },
+  //   });
+  // };
 
-  const { mutate: deletePaymentMutation } = useMutation({
-    mutationFn: async () => {
-      return new Promise((resolve) => {
-        // Your delete logic here
-        // resolve();
-      });
-    },
-    onSuccess: () => {
-      message.success("Payment deleted successfully!");
-      //   queryClient.invalidateQueries();
-    },
-    onError: () => {
-      message.error("Failed to delete payment.");
-    },
-  });
+  // const { mutate: deletePaymentMutation } = useMutation({
+  //   mutationFn: async () => {
+  //     return new Promise((_resolve) => {
+  //       // Your delete logic here
+  //       // resolve();
+  //     });
+  //   },
+  //   onSuccess: () => {
+  //     message.success("Payment deleted successfully!");
+  //     //   queryClient.invalidateQueries();
+  //   },
+  //   onError: () => {
+  //     message.error("Failed to delete payment.");
+  //   },
+  // });
 
-  const handleDeleteAhadi = (id: any) => {
-    modal.confirm({
-      title: "Confirm Deletion",
-      icon: <ExclamationCircleOutlined />,
-      content: "Are you sure you want to delete this ahadi?",
-      onOk: () => {
-        // deleteAhadiMutation(id);
-      },
-    });
-  };
+  // const handleDeleteAhadi = (_id: any) => {
+  //   modal.confirm({
+  //     title: "Confirm Deletion",
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: "Are you sure you want to delete this ahadi?",
+  //     onOk: () => {
+  //       // deleteAhadiMutation(id);
+  //     },
+  //   });
+  // };
 
   //   const { mutate: deleteAhadiMutation } = useMutation(deleteAhadi, {
   //     onSuccess: () => {
@@ -472,11 +462,11 @@ const Mchango = () => {
             inputfilter={false}
             showFilter={false}
             data={michango}
-            togglefilter={function (value: boolean): void {
+            togglefilter={function (_value: boolean): void {
               throw new Error("Function not implemented.");
             }}
             searchTerm={""}
-            onSearch={function (value: string): void {
+            onSearch={function (_value: string): void {
               throw new Error("Function not implemented.");
             }}
           />
@@ -493,11 +483,11 @@ const Mchango = () => {
             inputfilter={false}
             showFilter={false}
             data={michango}
-            togglefilter={function (value: boolean): void {
+            togglefilter={function (_value: boolean): void {
               throw new Error("Function not implemented.");
             }}
             searchTerm={""}
-            onSearch={function (value: string): void {
+            onSearch={function (_value: string): void {
               throw new Error("Function not implemented.");
             }}
           />

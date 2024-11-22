@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import {
-  postWahumini,
   fetchtJumuiya,
   updateMuhumini,
 } from "../../helpers/ApiConnectors"; // Make sure fetchJumuiyas is defined
@@ -44,7 +43,6 @@ const UpdateMuhumini = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue
   } = useForm({
     resolver: yupResolver(schema),
   });

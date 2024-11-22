@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Button, Card, Dropdown, Menu, message, Modal, Table } from "antd";
+import { useEffect, useState } from "react";
+import { Button, Card, Dropdown, Menu, Table } from "antd";
 import Tabletop from "../../components/tables/TableTop";
 import OngezaZaka from "./OngezaZakaModal";
 import { useAppSelector } from "../../store/store-hooks";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteZakaById, fetchZaka } from "../../helpers/ApiConnectors";
+import {  useQuery } from "@tanstack/react-query";
+import { fetchZaka } from "../../helpers/ApiConnectors";
 import { useNavigate } from "react-router-dom";
 import {
   EditOutlined,
-  DeleteOutlined,
   EyeOutlined,
   DownOutlined,
-  ExclamationCircleOutlined,
+  
 } from "@ant-design/icons";
 import ViewModal from "./ViewZaka";
 import EditZaka from "./EditZaka";
-import modal from "antd/es/modal";
 import Widgets from "./Stats";
 import CheckZakaPresenceModal from "./ZakaMonthlyCheck";
 
@@ -32,10 +30,10 @@ const Zaka = () => {
   const [updateZakaModal, setupdateZakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
   const [openBahashaModal, setOpenBahashaModal] = useState(false);
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   // const [modal, contextHolder] = Modal.useModal();
 
-  const { data: zaka, isLoading: loadingZaka } = useQuery({
+  const { isLoading: loadingZaka } = useQuery({
     queryKey: ["zaka", yearFilter],
     queryFn: async () => {
       let query = `?church_id=${church.id}`;
@@ -52,42 +50,42 @@ const Zaka = () => {
     setModalVisible(true);
   };
 
-  const { mutate: deleteZakaMutation } = useMutation({
-    mutationFn: async (zakaId: any) => {
-      await deleteZakaById(zakaId);
-    },
-    onSuccess: () => {
-      message.success("Zaka deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["zaka"] });
-    },
-    onError: () => {
-      message.error("Failed to delete Zaka.");
-    },
-  });
+  // const { mutate: deleteZakaMutation } = useMutation({
+  //   mutationFn: async (zakaId: any) => {
+  //     await deleteZakaById(zakaId);
+  //   },
+  //   onSuccess: () => {
+  //     message.success("Zaka deleted successfully!");
+  //     queryClient.invalidateQueries({ queryKey: ["zaka"] });
+  //   },
+  //   onError: () => {
+  //     message.error("Failed to delete Zaka.");
+  //   },
+  // });
 
 
 
-  const handleDelete = (zakaId: any) => {
-    modal.confirm({
-      title: "Confirm Deletion",
-      icon: <ExclamationCircleOutlined />,
-      content: "Are you sure you want to delete this record?",
-      okText: "OK",
-      okType: "danger",
-      cancelText: "cancel",
-      onOk: () => {
-        deleteZakaMutation(zakaId);
-      },
-    });
-  };
+  // const handleDelete = (zakaId: any) => {
+  //   modal.confirm({
+  //     title: "Confirm Deletion",
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: "Are you sure you want to delete this record?",
+  //     okText: "OK",
+  //     okType: "danger",
+  //     cancelText: "cancel",
+  //     onOk: () => {
+  //       deleteZakaMutation(zakaId);
+  //     },
+  //   });
+  // };
   const columns = [
     {
       title: "S/No",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
     },
     {
       title: "Name",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>
           {record?.bahasha_details?.mhumini_details?.first_name}{" "}
           {record?.bahasha_details?.mhumini_details?.last_name}
@@ -96,7 +94,7 @@ const Zaka = () => {
     },
     {
       title: "Jumuiya",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>
           {record?.bahasha_details?.mhumini_details?.jumuiya_details?.name}{" "}
         </div>
@@ -104,7 +102,7 @@ const Zaka = () => {
     },
     {
       title: "Bahasha",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <div>{record?.bahasha_details?.card_no}</div>
       ),
     },
@@ -120,7 +118,7 @@ const Zaka = () => {
     },
     {
       title: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
