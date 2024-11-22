@@ -16,6 +16,7 @@ import {
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
 import EditCardModal from "./EditBahasha";
+import ViewModal from "./ViewBahasha";
 
 const CardNumberList = () => {
   const navigate = useNavigate();
@@ -25,10 +26,11 @@ const CardNumberList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const queryClient = useQueryClient();
-  const [selectedCard, setselectedCard] = useState(null);
+  const [selectedCard, setselectedCard] = useState<any>(null);
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
+  const [viewBahasha, setviewBahasha] = useState(false);
 
   const {
     data: bahasha,
@@ -114,6 +116,15 @@ const CardNumberList = () => {
       ),
       // sorter: (a, b) => a.name.length - b.name.length,
     },
+    {
+      title: "Jumuiya",
+
+      dataIndex: "mhumini",
+      render: (text: any, record: any) => (
+        <div>{record?.mhumini_details?.jumuiya_details?.name}</div>
+      ),
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
 
     {
       title: "bahasha_type",
@@ -160,7 +171,10 @@ const CardNumberList = () => {
               ) && (
                 <Menu.Item
                   icon={<EyeOutlined />}
-                  onClick={() =>     handleEdit(record)}
+                  onClick={() =>   {
+                    setselectedCard(record)
+                    setviewBahasha(true);
+                  }}
                 >
                   View
                 </Menu.Item>
@@ -213,6 +227,9 @@ const CardNumberList = () => {
             .toLowerCase()
             .includes(lowercasedTerm) ||
           item?.card_no
+            .toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.bahasha_type
             .toLowerCase()
             .includes(lowercasedTerm) ||
           item?.mhumini_details?.first_name?.toLowerCase().includes(lowercasedTerm)||
@@ -271,12 +288,14 @@ const CardNumberList = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={() =>  {}}
             searchTerm={searchTerm}
+            data={filteredData}
               />
 
               <Table
                 columns={columns}
                 dataSource={filteredData}
                 loading={isLoading}
+                bordered
               />
             </div>
           </Card>
@@ -290,6 +309,11 @@ const CardNumberList = () => {
         visible={showEditModal}
         onClose={() => setshowEditModal(false)}
         bahashaData={selectedCard}
+      />
+      <ViewModal
+      data={selectedCard}
+      onClose={() => setviewBahasha(false)}
+      visible={viewBahasha}
       />
     </div>
   );

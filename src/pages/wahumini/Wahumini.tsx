@@ -252,12 +252,14 @@ const Wahumini = () => {
                 onSearch={(term: string) => setSearchTerm(term)}
                 togglefilter={() =>  {}}
                 searchTerm={searchTerm}
+                data={filteredData}
               />
 
               <Table
                 columns={columns}
                 dataSource={filteredData}
                 loading={isLoading}
+                bordered
               />
             </div>
           </Card>

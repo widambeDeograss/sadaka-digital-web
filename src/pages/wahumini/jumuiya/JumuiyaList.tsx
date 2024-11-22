@@ -94,11 +94,11 @@ const KandaJumuiya = () => {
               onClick={() => handleOpenKandaModal("edit", record)}>
                 Edit
               </Menu.Item>
-              <Menu.Item
+              {/* <Menu.Item
               icon={<EyeOutlined />}
               onClick={() => handleOpenKandaModal("edit", record)}>
                 View
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item
               icon={<DeleteOutlined />}
               danger
@@ -172,11 +172,11 @@ const KandaJumuiya = () => {
                 </Menu.Item>
 
   
-              <Menu.Item
+              {/* <Menu.Item
               icon={<EyeOutlined />}
               onClick={() => handleOpenJumuiyaModal("edit", record)}>
                 View
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item
               icon={<DeleteOutlined />}
               danger
@@ -291,12 +291,14 @@ const KandaJumuiya = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={() =>  {}}
             searchTerm={searchTerm}
+            data={filteredData}
               />
 
               <Table
                 columns={kandaColumns}
                 dataSource={filteredData}
                 loading={loadingKanda}
+                bordered
               />
             </div>
           </Card>
@@ -316,11 +318,13 @@ const KandaJumuiya = () => {
           onSearch={(term: string) => setSearchTermJumuiya(term)}
           togglefilter={() =>  {}}
           searchTerm={searchTermJumuiya}
+          data={filteredDataJumuiya}
               />
               <Table
                 columns={jumuiyaColumns}
                 dataSource={filteredDataJumuiya}
                 loading={loadingJumuiya}
+                bordered
               />
             </div>
           </Card>

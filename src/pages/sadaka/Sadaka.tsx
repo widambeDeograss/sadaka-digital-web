@@ -307,6 +307,7 @@ const Sadaka = () => {
                 columns={columns}
                 dataSource={sadakaToday}
                 loading={isLoading}
+                bordered
               />
             </div>
           </Card>

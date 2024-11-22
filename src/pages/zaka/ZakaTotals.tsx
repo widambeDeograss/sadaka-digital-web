@@ -45,12 +45,13 @@ const ZakaReportTable: React.FC = () => {
 
   useEffect(() => {
     if (searchTerm) {
-      const lowercasedTerm = searchTerm.toLowerCase();
+      const lowercasedTerm = searchTerm?.toLowerCase();
       const filtered = zakaData.filter((item: any) => {
         return (
-          item?.jumuiya_name.toLowerCase().includes(lowercasedTerm) ||
-          item?.member_name.toLowerCase().includes(lowercasedTerm) ||
-          item?.card_no.toLowerCase().includes(lowercasedTerm)
+          item?.jumuiya_name?.toLowerCase().includes(lowercasedTerm) ||
+          item?.kanda_name?.toLowerCase().includes(lowercasedTerm) ||
+          item?.member_name?.toLowerCase().includes(lowercasedTerm) ||
+          item?.card_no?.toLowerCase().includes(lowercasedTerm)
         );
       });
       setFilteredData(filtered);
@@ -92,6 +93,11 @@ const ZakaReportTable: React.FC = () => {
       dataIndex: "jumuiya_name",
       key: "jumuiya_name",
     },
+    {
+      title: "Kanda",
+      dataIndex: "kanda_name",
+      key: "kanda_name",
+    },
     ...monthColumns.map((month) => ({
       title: month,
       dataIndex: "months",
@@ -114,6 +120,7 @@ const ZakaReportTable: React.FC = () => {
           onSearch={(term: string) => setSearchTerm(term)}
           togglefilter={(value: boolean) => setShowFilter(value)}
           searchTerm={searchTerm}
+          data={filteredData}
         />
         {showFilter && (
           <div className="bg-gray-100 p-4 mt-4 rounded-lg">

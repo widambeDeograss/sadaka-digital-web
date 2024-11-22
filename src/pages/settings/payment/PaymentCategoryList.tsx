@@ -111,13 +111,8 @@ const PaymentTypeList = () => {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item
-                  key="1"
-                  icon={<EyeOutlined />}
-                  onClick={() => handleView(record)}
-                >
-                  View
-                </Menu.Item>
+            {
+                record?.name !== "Cash" && (
                 <Menu.Item
                   key="3"
                   icon={<EditOutlined />}
@@ -128,6 +123,8 @@ const PaymentTypeList = () => {
                 >
                   Edit
                 </Menu.Item>
+
+                )}
                {
                 record?.name !== "Cash" && (
                   <Menu.Item
@@ -197,6 +194,7 @@ const PaymentTypeList = () => {
                 columns={columns}
                 dataSource={payTypes}
                 loading={isLoading}
+                bordered
               />
             </div>
           </Card>

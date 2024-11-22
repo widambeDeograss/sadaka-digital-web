@@ -201,6 +201,7 @@ const ExpenseCategoryList = () => {
                 columns={columns}
                 dataSource={expensecats}
                 loading={isLoading}
+                bordered
               />
             </div>
           </Card>

@@ -12,6 +12,7 @@ interface TabletopProps {
   searchTerm: string;
   onSearch: (value: string) => void;
   data: any[]; // Data to be exported
+  docName?: string;
 }
 
 const Tabletop: React.FC<TabletopProps> = ({
@@ -21,6 +22,7 @@ const Tabletop: React.FC<TabletopProps> = ({
   searchTerm,
   onSearch,
   data,
+  docName = "ExcelData"
 }) => {
   const flattenObject = (obj: any, prefix: string = ''): Record<string, any> => {
     let result: Record<string, any> = {};
@@ -54,7 +56,7 @@ const Tabletop: React.FC<TabletopProps> = ({
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
   
     // Write the workbook to a file
-    XLSX.writeFile(workbook, `ExcelData.xlsx`);
+  XLSX.writeFile(workbook, `${docName}.xlsx`);
   };
   
 

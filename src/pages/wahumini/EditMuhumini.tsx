@@ -272,7 +272,17 @@ const UpdateMuhumini = () => {
               loadingJumuiyas ? (
                 <Select loading placeholder="Loading..." />
               ) : (
-                <Select {...field} placeholder="Chagua Jumuiya">
+                <Select {...field} placeholder="Chagua Jumuiya"
+                optionFilterProp="children"
+                showSearch
+                filterOption={(input, option) =>
+                  option?.children
+                    .toString()
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                notFoundContent="Hajapatikana"
+                >
                   {jumuiyas?.map((jumuiya: any) => (
                     <Option key={jumuiya.id} value={jumuiya.id}>
                       {jumuiya.name}

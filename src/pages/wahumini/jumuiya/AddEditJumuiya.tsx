@@ -161,7 +161,17 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
             control={control}
             name="kanda"
             render={({ field }) => (
-              <Select {...field} placeholder="Select Kanda">
+              <Select {...field} placeholder="Select Kanda"
+              optionFilterProp="children"
+              showSearch
+              filterOption={(input, option) =>
+                option?.children
+                  .toString()
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              notFoundContent="Hajapatikana"
+              >
                 {kandas?.map((kanda: any) => (
                   <Select.Option key={kanda.id} value={kanda.id}>
                     {kanda.name}
