@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal, Input, Select, Tabs, Form } from "antd";
+import { Button, Modal,  Tabs,  } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,7 +15,7 @@ type modalType = {
 };
 
 const ServiceProviderModal = ({ openMOdal, handleCancel }: modalType) => {
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmLoading, ] = useState(false);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
 
@@ -34,8 +34,7 @@ const ServiceProviderModal = ({ openMOdal, handleCancel }: modalType) => {
 
   const {
     data: users,
-    isLoading,
-    error,
+  
   } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
@@ -63,20 +62,20 @@ const ServiceProviderModal = ({ openMOdal, handleCancel }: modalType) => {
       inserted_by: "admin",
       updated_by: "admin", 
     };
-    const response:any = await postSpSetup(finalData);
+    ;
    
-    if (!response) {
-       throw new Error("Failed to save SP, Try again later")   
-    }
-    return response;
+   await addSpMutation(finalData);
   };
 
 
   const { mutate: addSpMutation, isPending: loading } = useMutation({
-    mutationFn: onSubmit,
+    mutationFn: async (data:any) => {
+      const response:any = await postSpSetup(data);
+      return response;
+    },
     onSuccess: (data) => {
       console.log(data);
-
+    queryClient.invalidateQueries({ queryKey: ["serviceProviders"] });
       dispatch(
         addAlert({
           title: "Success",
@@ -113,7 +112,8 @@ const ServiceProviderModal = ({ openMOdal, handleCancel }: modalType) => {
       className="w-full"
       width={800} // Increasing modal size
     >
-      <form onSubmit={handleSubmit(addSpMutation)}>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Tabs defaultActiveKey="1" centered>
           <TabPane tab="Church Details" key="1">
             <div className="grid grid-cols-2 gap-3">
@@ -292,7 +292,7 @@ const ServiceProviderModal = ({ openMOdal, handleCancel }: modalType) => {
             <Button
               type="primary"
               htmlType="submit"
-              loading={isLoading}
+              loading={loading}
               className="font-bold bg-[#152033] text-white mt-8"
               style={{ width: "100%" }}
             >

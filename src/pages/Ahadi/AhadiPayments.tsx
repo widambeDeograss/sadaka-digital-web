@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Button, Card, Select, Table, Typography, Progress, Dropdown, Menu, message } from "antd";
-import OngezaAhadi from "./OngezaAhadi";
-import Widgets from "./Stats";
-import Tabletop from "../../components/tables/TableTop";
-import { useAppSelector } from "../../store/store-hooks";
+import  { useEffect, useState } from "react";
+import { Button, Card, Table, Typography, Progress, Dropdown, Menu, message } from "antd";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteAhadi, fetchAhadi, fetchAhadiPayments } from "../../helpers/ApiConnectors";
+import { deleteAhadi, fetchAhadiPayments } from "../../helpers/ApiConnectors";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -15,21 +11,19 @@ import {
   PlusCircleFilled
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
-import EditAhadi from "./EditAhadi";
 import ViewModal from "./ViewAhadi";
 import PaymentAhadi from "./PayAhadi";
 import { useParams } from "react-router-dom";
+import Tabletop from "../../components/tables/TableTop";
 
 const { Title } = Typography;
-const { Option } = Select;
 
 const AhadiPayments = () => {
-  const [openModal, setOpenModal] = useState(false);
   const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const [updateAhadiModal, setupdateAhadiModal] = useState(false);
-  const church = useAppSelector((state: any) => state.sp);
+  // const [ setupdateAhadiModal] = useState(false);
+  // const church = useAppSelector((state: any) => state.sp);
   const [showFilter, setShowFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -197,7 +191,7 @@ const AhadiPayments = () => {
     },
     {
       title: "",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
@@ -223,7 +217,7 @@ const AhadiPayments = () => {
                 icon={<EditOutlined />}
                 onClick={() => {
                   setSelectedData(record);
-                  setupdateAhadiModal(true);
+                  // setupdateAhadiModal(true);
                 }}
               >
                 Edit
@@ -262,7 +256,7 @@ const AhadiPayments = () => {
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white"
-                  onClick={() => setOpenModal(true)}
+                  // onClick={() => setOpenModal(true)}
                 >
                   Lipia Ahadi
                 </Button>
@@ -281,8 +275,7 @@ const AhadiPayments = () => {
             inputfilter={showFilter}
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
-            searchTerm={searchTerm}
-          />
+            searchTerm={searchTerm} data={[]}          />
           <Table
             columns={columns}
             dataSource={filteredData}

@@ -67,7 +67,7 @@ const columns = [
     {
       title: "S/No",
       dataIndex: "sNo",
-      render: (text: any, record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
@@ -127,7 +127,7 @@ const columns = [
     {
       title: "Actions",
       dataIndex: "actions",
-      render: (text: any, record: any) => (
+      render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
@@ -175,10 +175,11 @@ const columns = [
           <div className="table-responsive">
             <Tabletop
               inputfilter={false}
-              togglefilter={(value: boolean) => {
+              togglefilter={(_value: boolean) => {
                 // Implement filter logic here if necessary
-              }}
-            />
+              } } searchTerm={""} onSearch={function (_value: string): void {
+                throw new Error("Function not implemented.");
+              } } data={[]}            />
             <Table columns={columns} dataSource={systemPackages} loading={loadingSystemPackages} />
           </div>
         </Card>

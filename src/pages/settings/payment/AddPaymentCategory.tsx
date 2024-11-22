@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { Modal, Button } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -53,7 +53,7 @@ const PaymentTypeModal = ({ visible, onClose, paymentType, isEditing }:any) => {
       onClose();
       reset();
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to save payment type. Please try again.");
       dispatch(
         addAlert({

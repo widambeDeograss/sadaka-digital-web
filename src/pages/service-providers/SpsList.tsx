@@ -1,20 +1,18 @@
-import React, {useState} from 'react'
-import {Link, useNavigate} from "react-router-dom";
+import  {useState} from 'react'
 import { useQuery } from '@tanstack/react-query';
-import { Button, Card , Dropdown, Table} from 'antd';
+import { Button, Card , Table} from 'antd';
 import Tabletop from '../../components/tables/TableTop';
-import { fetchRoles, fetchSps } from '../../helpers/ApiConnectors.js';
+import {  fetchSps } from '../../helpers/ApiConnectors.js';
 import ServiceProviderModal from './AddSp.js';
 
 
 function SpList() {
     const [openMOdal, setopenMOdal] = useState(false);
-  const navigate = useNavigate();
 
     const {
         data: sps,
         isLoading,
-        error,
+
       } = useQuery({
         queryKey: ["sps"],
         queryFn: async () => {
@@ -32,47 +30,47 @@ function SpList() {
         {
             title: "s/No",
             dataIndex: "sNo",
-            render: (text:any, record:any, index:number) => <div >{index + 1}</div>,
+            render: (_text:any, _record:any, index:number) => <div >{index + 1}</div>,
             // sorter: (a, b) => a.sNo.length - b.sNo.length,
         },
         {
             title: "Name",
             dataIndex: "church_name",
-            render: (text:any, record:any) => <div>{text}</div>,
+            render: (text:any, _record:any) => <div>{text}</div>,
             // sorter: (a, b) => a.name.length - b.name.length,
         },
         {
 
             title: "Descriprion",
             dataIndex: "church_category",
-            render: (text:any, record:any) => <div>{text?.split('_')}</div>,
+            render: (text:any, _record:any) => <div>{text?.split('_')}</div>,
             // sorter: (a, b) => a.capacity.length - b.capacity.length,
         },
         {
 
             title: "Descriprion",
             dataIndex: "church_location",
-            render: (text:any, record:any) => <div>{text?.split('_')}</div>,
+            render: (text:any, _record:any) => <div>{text?.split('_')}</div>,
             // sorter: (a, b) => a.capacity.length - b.capacity.length,
         },
         {
 
             title: "Descriprion",
             dataIndex: "church_email",
-            render: (text:any, record:any) => <div>{text?.split('_')}</div>,
+            render: (text:any, _record:any) => <div>{text?.split('_')}</div>,
             // sorter: (a, b) => a.capacity.length - b.capacity.length,
         },
         {
 
             title: "Descriprion",
             dataIndex: "church_phone",
-            render: (text:any, record:any) => <div>{text?.split('_')}</div>,
+            render: (text:any, _record:any) => <div>{text?.split('_')}</div>,
             // sorter: (a, b) => a.capacity.length - b.capacity.length,
         },
         {
             title: <strong>Status</strong>,
             dataIndex: "church_status",
-            render: (text: any, record: any) => (
+            render: (text: any, _record: any) => (
               <>
                 {text === true && (
                   <span className="bg-green-300 rounded-lg p-1 text-white">Active</span>
@@ -165,9 +163,11 @@ function SpList() {
           }
         >
             <div className="table-responsive">
-          <Tabletop inputfilter={false} togglefilter={function (value: boolean): void {
-                    throw new Error("Function not implemented.");
-                } }/>
+          <Tabletop inputfilter={false} togglefilter={function (_value: boolean): void {
+              throw new Error("Function not implemented.");
+            } } searchTerm={''} onSearch={function (_value: string): void {
+              throw new Error('Function not implemented.');
+            } } data={sps}/>
         
             <Table columns={columns} dataSource={sps} loading={isLoading}/>
           </div>

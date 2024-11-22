@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, PackageX, Truck, Wallet2,BanknoteIcon, Table2Icon, EqualIcon } from 'lucide-react';
+import {  Wallet2,BanknoteIcon, Table2Icon, EqualIcon } from 'lucide-react';
 import CountUp from 'react-countup';
 
 const Widgets = () => {

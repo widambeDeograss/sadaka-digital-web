@@ -1,7 +1,7 @@
 // src/components/AddExpenseModal.tsx
 
 import React, { useEffect } from 'react';
-import { Button, Modal, message, Input, InputNumber, DatePicker, Select, Spin } from 'antd';
+import { Button, Modal, Input, InputNumber, DatePicker, Select, Spin } from 'antd';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -64,7 +64,6 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
   const {
     data: expensecats,
     isLoading: loadCategory,
-    error,
   } = useQuery({
     queryKey: ["expensecats"],
     queryFn: async () => {

@@ -11,7 +11,6 @@ const Widgets = () => {
   const {
     data: mchango_totals,
     isLoading,
-    error,
   } = useQuery({
     queryKey: ["mchango_totals"],
     queryFn: async () => {

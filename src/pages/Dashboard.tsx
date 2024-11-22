@@ -1,6 +1,5 @@
-import { Button, Card, Col, List, Row, Statistic } from "antd";
+import {  Card, Col, Row, Statistic } from "antd";
 import { Colors } from "../Constants/Colors.ts";
-import { WalletOutlined } from "@ant-design/icons";
 import EChart from "../components/chart/bChart.tsx";
 import LineChart from "../components/chart/lineChart.tsx";
 import { UsersIcon } from "lucide-react";

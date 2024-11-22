@@ -39,7 +39,6 @@ const AddSystemPackage = ({
 
   const {
     control,
-    register,
     handleSubmit,
     formState: { errors },
     reset,

@@ -45,7 +45,7 @@ const OngezaMchango = () => {
       );
      reset();
     },
-    onError: (error: any) => {
+    onError: () => {
       dispatch(
         addAlert({
           title: "Error",

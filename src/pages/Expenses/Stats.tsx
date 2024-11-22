@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, PackageX, Truck, Wallet2,BanknoteIcon, Table2Icon, EqualIcon } from 'lucide-react';
+import {  Wallet2, EqualIcon } from 'lucide-react';
 import CountUp from 'react-countup';
 import { fetchMatumiziStats } from '../../helpers/ApiConnectors';
 import { useQuery } from '@tanstack/react-query';
@@ -11,7 +11,6 @@ const Widgets = () => {
     const {
         data: expenses,
         isLoading,
-        error,
       } = useQuery({
         queryKey: ["expence_stats"],
         queryFn: async () => {

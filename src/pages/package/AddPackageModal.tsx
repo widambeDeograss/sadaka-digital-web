@@ -75,7 +75,7 @@ const AddPackage = ({
   });
 
   // Fetch options for select dropdowns
-    const { data: systemPackages, isLoading: loadingSystemPackages } = useQuery({
+    const { data: systemPackages,  } = useQuery({
       queryKey: ["SystemPackages"],
       queryFn: async () => {
         const response: any = await fetchSystemPackage();

@@ -37,7 +37,7 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
   const [verifyingBahasha, setVerifyingBahasha] = useState<boolean>(false);
   const [bahashaError, setBahashaError] = useState<string | null>(null);
 
-  const { data: payTypes, isLoading: payTypesLoading } = useQuery({
+  const { data: payTypes } = useQuery({
     queryKey: ["payTypes", church.id],
     queryFn: async () => {
       const response: any = await fetchPayTypes(`?church_id=${church.id}`);
@@ -109,7 +109,7 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
         updated_by: user?.username,
         revenue_type: "Sadaka"
       }
-      const revenueResponse = await postSpRevenueUpdate(revenueData);
+      await postSpRevenueUpdate(revenueData);
       const response = await updateSadaka(sadakaData?.id, data);
       return response;
     },
@@ -129,7 +129,7 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
       setBahashaData(null);
       setBahashaError(null);
     },
-    onError: (error: any) => {
+    onError: (_error: any) => {
       dispatch(
         addAlert({
           title: "Error",

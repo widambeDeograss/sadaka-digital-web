@@ -30,7 +30,7 @@ const SadakaReportTable: React.FC = () => {
   const {
     data: sadaka,
     isLoading,
-    error,
+ 
   } = useQuery({
     queryKey: ["sadakaTotals", yearFilter, monthFilter],
     queryFn: async () => {
@@ -89,8 +89,7 @@ const SadakaReportTable: React.FC = () => {
           inputfilter={showFilter}
           onSearch={(term: string) => setSearchTerm(term)}
           togglefilter={(value: boolean) => setShowFilter(value)}
-          searchTerm={searchTerm}
-        />
+          searchTerm={searchTerm} data={sadaka}        />
         {showFilter && (
           <div className="bg-gray-100 p-4 mt-4 rounded-lg">
             <h4 className="font-bold mb-2">Filter Options</h4>

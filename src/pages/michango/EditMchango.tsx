@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Card } from "antd";
-import { editMichango, postMichango } from "../../helpers/ApiConnectors";
+import { editMichango } from "../../helpers/ApiConnectors";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 import { useMutation } from "@tanstack/react-query";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
@@ -65,7 +65,7 @@ const EditMchango = () => {
       );
      reset();
     },
-    onError: (error: any) => {
+    onError: () => {
       dispatch(
         addAlert({
           title: "Error",

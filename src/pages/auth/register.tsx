@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Layout, Form, Input, Checkbox, Button, Divider } from "antd";
-import { useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import {  Link } from "react-router-dom";
 import { Colors } from "../../Constants/Colors";
 import logo from "../../assets/church.png";
 const { Content, Sider } = Layout;
@@ -9,9 +8,7 @@ const { Content, Sider } = Layout;
 
 export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const navigation = useNavigate();
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,7 +31,7 @@ export default function Register() {
     };
   }, []);
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (_values: any) => {
     localStorage.clear();
     setIsLoading(true);
     try {

@@ -1,12 +1,9 @@
 // src/components/EditAhadi.tsx
-import React, { useState, useEffect } from "react";
+import React, {  useEffect } from "react";
 import {
   Modal,
-  Tabs,
-  Form,
   InputNumber,
   Select,
-  message,
   Spin,
   Button,
   Input,
@@ -23,9 +20,7 @@ import {
 } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
-import moment from "moment";
 
-const { TabPane } = Tabs;
 const { Option } = Select;
 
 interface EditAhadiProps {
@@ -116,7 +111,6 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
     control,
     handleSubmit,
     setValue,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
