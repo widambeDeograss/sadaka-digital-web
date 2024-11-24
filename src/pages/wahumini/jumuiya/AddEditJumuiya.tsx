@@ -2,9 +2,9 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button, Form, Input, Modal, Select } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../store/store-hooks";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addAlert } from "../../../store/slices/alert/alertSlice";
-import { postJumuiya, fetchtKanda } from "../../../helpers/ApiConnectors";
+import { postJumuiya, fetchtKanda, updateJumuiya } from "../../../helpers/ApiConnectors";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -39,6 +39,7 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
   const dispatch = useAppDispatch();
   const church = useAppSelector((state: any) => state.sp);
   const currentUser = useAppSelector((state: any) => state?.user?.userInfo);
+  const queryClient = useQueryClient();
   const {
     control,
     handleSubmit,
@@ -68,7 +69,7 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
   const { mutate: postJumuiyaMutation, isPending } = useMutation({
     mutationFn: async (data: any) => {
       if (mode === "edit" && initialData) {
-        // Call update API here if needed
+       return await updateJumuiya(initialData?.id, data);
       } else {
         return await postJumuiya(data);
       }
@@ -84,6 +85,7 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
           type: "success",
         })
       );
+      queryClient.invalidateQueries({ queryKey: ["jumuiya"] });
       handleCancel();
       reset();
     },

@@ -199,15 +199,11 @@ const KandaJumuiya = () => {
   useEffect(() => {
     if (searchTerm) {
       const lowercasedTerm = searchTerm.toLowerCase();
-      const filtered = kanda.filter((item: any) => {
+      const filtered = kanda?.filter((item: any) => {
         return (
-          item?.name
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.jina_kiongozi
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.location.toLowerCase().includes(lowercasedTerm)
+          item?.name?.toLowerCase()?.includes(lowercasedTerm) ||
+          item?.jina_kiongozi?.toLowerCase()?.includes(lowercasedTerm) ||
+          item?.location?.toLowerCase()?.includes(lowercasedTerm)
         );
       });
       setFilteredData(filtered);
@@ -221,16 +217,11 @@ const KandaJumuiya = () => {
       const lowercasedTerm = searchTermJumuiya.toLowerCase();
       const filtered = jumuiya.filter((item: any) => {
         return (
-          item?.name
-            .toLowerCase()
+          item?.name?.toLowerCase()?.includes(lowercasedTerm) ||
+          item?.kanda_details?.name?.toLowerCase()
             .includes(lowercasedTerm) ||
-          item?.kanda_details?.name
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.jina_kiongozi
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.location.toLowerCase().includes(lowercasedTerm)
+          item?.jina_kiongozi?.toLowerCase()?.includes(lowercasedTerm) ||
+          item?.location?.toLowerCase()?.includes(lowercasedTerm)
         );
       });
       setFilteredDataJumuiya(filtered);

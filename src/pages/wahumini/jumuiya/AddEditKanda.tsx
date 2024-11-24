@@ -4,7 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { addAlert } from "../../../store/slices/alert/alertSlice";
-import { postKanda } from "../../../helpers/ApiConnectors"; 
+import { postKanda, updateKanda } from "../../../helpers/ApiConnectors"; 
 import { Button, Form, Input, Modal } from "antd";
 
 interface AddEditKandaProps {
@@ -38,7 +38,7 @@ const AddKanda = ({ mode, initialData, handleCancel }: AddEditKandaProps) => {
   const queryClient = useQueryClient();
   const church = useAppSelector((state: any) => state.sp);
   const currentUser = useAppSelector((state: any) => state?.user?.userInfo);
-
+  
   const {
     control,
     handleSubmit,
@@ -58,7 +58,7 @@ const AddKanda = ({ mode, initialData, handleCancel }: AddEditKandaProps) => {
   const { mutate: postKandaMutation, isPending: posting } = useMutation({
     mutationFn: async (data: any) => {
       if (mode === "edit" && initialData.id) {
-        //Kanda update
+        await  updateKanda(initialData.id, data);
       } else {
         return await postKanda(data);
       }
@@ -71,7 +71,7 @@ const AddKanda = ({ mode, initialData, handleCancel }: AddEditKandaProps) => {
           type: 'success',
         })
       );
-      queryClient.invalidateQueries({ queryKey: ['Kanda'] });
+      queryClient.invalidateQueries({ queryKey: ['kanda'] });
       handleCancel();
       reset();
     },
