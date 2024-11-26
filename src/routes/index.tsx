@@ -31,6 +31,7 @@ import SpManagerList from '../pages/users/SpManagerList.tsx';
 import UpdateMuhumini from '../pages/wahumini/EditMuhumini.tsx';
 import EditMchango from '../pages/michango/EditMchango.tsx';
 import AhadiPayments from '../pages/Ahadi/AhadiPayments.tsx';
+import SadakaTypes from '../pages/settings/sadaaka/SadakaTypes.tsx';
 
 
 const AppRouter = () => {
@@ -68,6 +69,7 @@ const AppRouter = () => {
                 {path:"sp-users/list", element:<SpManagerList/>},
                 {path:"users/roles", element:<RolesList/>},
                 {path:"sadaka", element:<Sadaka/>},
+                {path:"sadaka-type", element:<SadakaTypes/>},
                 {path:"sadaka-monthly-report", element:<SadakaReportTable/>},
                 {path:"profile", element:<Profile />},
                 {path:"ahadi", element:<Ahadi />},

@@ -150,11 +150,19 @@ const Sadaka = () => {
       // sorter: (a, b) => a.name.length - b.name.length,
     },
     {
+      title: "Sadaka type",
+      dataIndex: "sadaka_amount",
+      render: (_text: any, record: any) => (
+        <div>{record?.type_details?.name}</div>
+      ),
+    },
+    {
       title: "Amount",
       dataIndex: "sadaka_amount",
       render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
+ 
     {
       title: "Payment type",
       dataIndex: "sadaka_amount",

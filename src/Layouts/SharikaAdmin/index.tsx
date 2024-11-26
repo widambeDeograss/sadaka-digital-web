@@ -145,7 +145,7 @@ const menuItems:MenuItem[] = [
         { key: "payment", label: "Payment types", path: "/dashboard/settings/payment-type", permissions:['VIEW_WAHUMINI'], },
         { key: "expenditure", label: "Expenditure Category", path: "/dashboard/settings/expense-categories", permissions:['VIEW_WAHUMINI'], },
         { key: "sytemPackage", label: "Package list", path: "/dashboard/settings/system-package",  permissions:["MANAGE_PACKAGE"], },
-        // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
+        { key: "sadaka-type", label: "Sadaka", path: "/dashboard/sadaka-type", permissions:['VIEW_WAHUMINI'], },
     ],
 
 },

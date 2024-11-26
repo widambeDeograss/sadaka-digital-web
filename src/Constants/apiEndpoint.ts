@@ -40,6 +40,8 @@ export const SP_REVENUES_UPDATE = `${DataBaseUrl}/service-providers/revenue/upda
 
 //SP SADAKA and ZAKA
 export const SADAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-list-create`;
+export const SADAKA_TYPE_LIST_CREATE = `${DataBaseUrl}/service-providers/sadaka-type-list-create`;
+export const SADAKA_TYPE_UPDATE = `${DataBaseUrl}/service-providers/sadaka-type-retrieve-update-destroy/`;
 export const ZAKA_LIST_CREATE = `${DataBaseUrl}/service-providers/zaka-list-create`;
 export const ZAKA_UPDATE = `${DataBaseUrl}/service-providers/zaka-retrieve-update-destroy/`;
 export const SADAKA_UPDATE = `${DataBaseUrl}/service-providers/sadaka-retrieve-update-destroy/`;

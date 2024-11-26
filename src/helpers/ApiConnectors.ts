@@ -71,15 +71,19 @@ export const deleteKanda = (id:any) =>  api.delete(url.KANDA_UPDATE + `${id}`);
 
 //SADAKA ZAKA
 export const fetchSadaka = (id:any) =>  api.get(url.SADAKA_LIST_CREATE + `${id}`);
+export const fetchSadakaType = (id:any) =>  api.get(url.SADAKA_TYPE_LIST_CREATE + `${id}`);
 export const fetchZaka = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 // export const fetchAhadi = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 export const postSadaka = (data:any) =>  api.create(url.SADAKA_LIST_CREATE, data);
+export const postSadakaType = (data:any) =>  api.create(url.SADAKA_TYPE_LIST_CREATE, data);
 export const postZaka = (data:any) =>  api.create(url.ZAKA_LIST_CREATE, data);
 export const updateZaka = (id:any, data:any) =>  api.put(url.ZAKA_UPDATE + id, data);
 export const updateSadaka = (id:any, data:any) =>  api.put(url.SADAKA_UPDATE + id, data);
+export const updateSadakaType = (id:any, data:any) =>  api.put(url.SADAKA_TYPE_UPDATE + id, data);
 export const fetchZakaById = (id:any) =>  api.get(url.ZAKA_UPDATE + id);
 export const deleteZakaById = (id:any) =>  api.delete(url.ZAKA_UPDATE + id);
 export const deleteSadakaById = (id:any) =>  api.delete(url.SADAKA_UPDATE + id);
+export const deleteSadakaTypeById = (id:any) =>  api.delete(url.SADAKA_TYPE_UPDATE + id);
 export const resolveBahasha = (id:any) =>  api.get(url.BAHASHA_GET_NO + `${id}`);
 export const resolveZakaTotals = (id:any) =>  api.get(url.ZAKA_MONTHLY_TOTOLS + `${id}`);
 export const resolveSadakaTotals = (id:any) =>  api.get(url.SADAKA_MONTHLY_TOTOLS + `${id}`);

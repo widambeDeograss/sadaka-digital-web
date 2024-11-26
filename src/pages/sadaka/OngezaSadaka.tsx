@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchPayTypes,
+  fetchSadakaType,
   postSadaka,
   postSpRevenue,
   resolveBahasha,
@@ -51,6 +52,13 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       return response;
     },
   });
+  const { data: sadakaType } = useQuery({
+    queryKey: ["sadakaTypes", church.id],
+    queryFn: async () => {
+      const response: any = await fetchSadakaType(`?church_id=${church.id}`);
+      return response;
+    },
+  });
 
   // Base validation schema for common fields
   const baseSchema = {
@@ -59,6 +67,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       .required("Amount is required")
       .positive("Amount must be positive"),
     date: Yup.date().typeError("Date is invalid").required("Date is required"),
+    sadaka_type: Yup.string().optional(),
     payment_type: Yup.number()
       .typeError("Payment type must be a number")
       .required("Payment type is required"),
@@ -188,6 +197,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       bahasha: hasCard ? (bahashaData ? bahashaData.id : null) : null,
       church: church?.id,
       payment_type: data.payment_type,
+      sadaka_type: data.sadaka_type,
       date: data.date,
       inserted_by: user?.username,
       updated_by: user?.username,
@@ -297,6 +307,37 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 {formWithCard.formState.errors.payment_type && (
                   <p className="mt-1 text-sm text-red-600">
                     {formWithCard.formState.errors.payment_type.message}
+                  </p>
+                )}
+              </div>
+                
+                {/* Sadaka Type */}
+              <div>
+                <label
+                  htmlFor="sadaka_type"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Sadaka
+                </label>
+                <select
+                  id="sadaka_type"
+                  {...formWithCard.register("sadaka_type")}
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithCard.formState.errors.sadaka_type
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                >
+                  <option value="">Chagua Aina ya sadaka</option>
+                  {sadakaType?.map((py: any) => (
+                    <option key={py.id} value={py.id}>
+                      {py.name}
+                    </option>
+                  ))}
+                </select>
+                {formWithCard.formState.errors.sadaka_type && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {formWithCard.formState.errors.sadaka_type.message}
                   </p>
                 )}
               </div>
