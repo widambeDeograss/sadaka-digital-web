@@ -114,3 +114,14 @@ export const fetchMchangoStats = (id:any) =>  api.get(url.MCHANGO_STATS + `${id}
 export const fetchMhuminiStats = (id:any) =>  api.get(url.MHUMINI_STATS + `${id}`);
 export const fetchZakBahashaInfo = (id:any) =>  api.get(url.ZAKA_BAHASHA_CHECK + `${id}`);
 export const fetchDashboard = (id:any) =>  api.get(url.DASHBORD_STATS + `${id}`);
+
+//MAVUNO
+//MAVUNO
+export const fetchMavuno = (id:any) => api.get(url.MAVUNO_LIST_CREATE + `${id}`);
+export const postMavuno = (data:any) => api.create(url.MAVUNO_LIST_CREATE, data);
+export const updateMavuno = (id:any, data:any) => api.put(url.MAVUNO_RETRIEVE_UPDATE_DESTROY + `${id}`, data);
+export const deleteMavuno = (id:any) => api.delete(url.MAVUNO_RETRIEVE_UPDATE_DESTROY + `${id}`);
+export const fetchMavunoPayments = (id:any) => api.get(url.MAVUNO_PAYMENT_LIST_CREATE + `${id}`);
+export const postMavunoPayment = (data:any) => api.create(url.MAVUNO_PAYMENT_LIST_CREATE, data);
+export const updateMavunoPayment = (id:any, data:any) => api.put(url.MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY + `${id}`, data);
+export const deleteMavunoPayment = (id:any) => api.delete(url.MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY + `${id}`);

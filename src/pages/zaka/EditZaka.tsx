@@ -154,7 +154,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
     try {
       setVerifyingBahasha(true);
       setBahashaError(null);
-      const response: any = await resolveBahasha(no);
+      const response: any = await resolveBahasha(`${no}/?church_id=${church.id}`);
       if (response.bahasha_type === "sadaka") {
         dispatch(
           addAlert({

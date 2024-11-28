@@ -10,8 +10,9 @@ import {
   PiHandsPrayingFill,
   PiHandshakeBold,
   PiUsersFourBold,
+  
 } from "react-icons/pi";
-import { GiSwapBag, GiTakeMyMoney, GiPayMoney } from "react-icons/gi";
+import { GiSwapBag, GiTakeMyMoney, GiPayMoney,  } from "react-icons/gi";
 import { RiDashboardFill } from "react-icons/ri";
 import { FiSettings } from "react-icons/fi";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -63,6 +64,13 @@ const menuItems:MenuItem[] = [
       label: "Zaka",
       icon: <GiSwapBag style={{ fontSize: "14px", fontWeight: "bold",  }} />,
       path: "/dashboard/zaka",
+      permissions:['VIEW_ZAKA']
+  },
+  {
+      key: "mavuno",
+      label: "Mavuno",
+      icon: <GiSwapBag style={{ fontSize: "14px", fontWeight: "bold",  }} />,
+      path: "/dashboard/mavuno",
       permissions:['VIEW_ZAKA']
   },
   {

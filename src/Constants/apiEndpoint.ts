@@ -72,3 +72,9 @@ export const SADAKA_ZAKA_STATS = `${DataBaseUrl}/service-providers/sadaka-zaka-s
 export const ZAKA_BAHASHA_CHECK = `${DataBaseUrl}/service-providers/check-zaka/`
 export const MHUMINI_STATS = `${DataBaseUrl}/service-providers/wahumini-stats`
 export const DASHBORD_STATS = `${DataBaseUrl}/service-providers/dashboard-stats`
+
+//MAVUNO
+export const MAVUNO_LIST_CREATE = `${DataBaseUrl}/service-providers/mavuno-list-create`;
+export const MAVUNO_RETRIEVE_UPDATE_DESTROY = `${DataBaseUrl}/service-providers/mavuno-retrieve-update-destroy/`;
+export const MAVUNO_PAYMENT_LIST_CREATE = `${DataBaseUrl}/service-providers/mavuno-payment-list-create`;
+export const MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY = `${DataBaseUrl}/service-providers/mavuno-payment-retrieve-update-destroy/`;
