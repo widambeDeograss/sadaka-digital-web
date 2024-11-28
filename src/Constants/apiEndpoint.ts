@@ -72,6 +72,7 @@ export const SADAKA_ZAKA_STATS = `${DataBaseUrl}/service-providers/sadaka-zaka-s
 export const ZAKA_BAHASHA_CHECK = `${DataBaseUrl}/service-providers/check-zaka/`
 export const MHUMINI_STATS = `${DataBaseUrl}/service-providers/wahumini-stats`
 export const DASHBORD_STATS = `${DataBaseUrl}/service-providers/dashboard-stats`
+export const MAVUNO_STATS = `${DataBaseUrl}/service-providers/mavuno/stats-and-chart/`
 
 //MAVUNO
 export const MAVUNO_LIST_CREATE = `${DataBaseUrl}/service-providers/mavuno-list-create`;

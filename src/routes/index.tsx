@@ -33,6 +33,7 @@ import EditMchango from '../pages/michango/EditMchango.tsx';
 import AhadiPayments from '../pages/Ahadi/AhadiPayments.tsx';
 import SadakaTypes from '../pages/settings/sadaaka/SadakaTypes.tsx';
 import MavunoList from '../pages/mavuno/Mavuno.tsx';
+import MavunoDetails from '../pages/mavuno/MavunoDetails.tsx';
 
 
 const AppRouter = () => {
@@ -72,7 +73,7 @@ const AppRouter = () => {
                 {path:"sadaka", element:<Sadaka/>},
                 {path:"sadaka-type", element:<SadakaTypes/>},
                 {path:"mavuno", element:<MavunoList/>},
-                {path:"mavuno/:id", element:<SadakaTypes/>},
+                {path:"mavuno/:id", element:<MavunoDetails/>},
                 {path:"sadaka-monthly-report", element:<SadakaReportTable/>},
                 {path:"profile", element:<Profile />},
                 {path:"ahadi", element:<Ahadi />},

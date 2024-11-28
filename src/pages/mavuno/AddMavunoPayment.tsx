@@ -95,7 +95,7 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
   const { mutate: handleSave, isPending: saving } = useMutation({
     mutationFn: async (data: any) => {
       if (isEditMode) {
-        const res =  await updateMavunoPayment(editData.id, data);
+     await updateMavunoPayment(editData.id, data);
       }
       const response:any  =   await postMavunoPayment(data);
       const localDate = new Date();
@@ -223,6 +223,7 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
               payTypesLoading={payTypesLoading}
               control={control}
               errors={errors}
+              saving={saving}
             />
           </Form>
         </TabPane>
@@ -238,6 +239,7 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
               payTypesLoading={payTypesLoading}
               control={control}
               errors={errors}
+              saving={saving}
             />
           </Form>
         </TabPane>
@@ -254,6 +256,7 @@ const CommonFormFields = ({
   payTypesLoading,
   control,
   errors,
+  saving
 }: any) => (
   <>
     {/* Mavuno Select */}
@@ -337,6 +340,7 @@ const CommonFormFields = ({
     </Form.Item>
     <Button type="primary" htmlType="submit" block 
           className="bg-[#152033] text-white"
+          loading={saving}
     >
       Save
     </Button>

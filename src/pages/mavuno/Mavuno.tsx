@@ -24,6 +24,7 @@ import {
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
 import OngezaMavunoPayments from "./AddMavunoPayment";
+import Widgets from "./Stats";
 
 const MavunoList = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -198,6 +199,7 @@ const MavunoList = () => {
 
   return (
     <div className="">
+      <Widgets/>
       <Card
         className="mt-4"
         title={<h3 className="font-bold text-sm text-left ">Mavuno</h3>}
