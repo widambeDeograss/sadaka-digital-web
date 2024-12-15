@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import  { useState ,useRef } from "react";
 import {useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllUsers } from "../../helpers/ApiConnectors.js";
@@ -12,6 +12,7 @@ import CreateUserModal from "./AddUser.js";
 
 function UsersList() {
   const navigate = useNavigate();
+  const tableRef = useRef<HTMLTableElement>(null);
   const [, setSelectedUserForPasswordEdit] =
     useState(null);
     const [openMOdal, setopenMOdal] = useState(false);
@@ -221,9 +222,10 @@ function UsersList() {
           throw new Error("Function not implemented.");
         } }
         data={[]}
+        tableRef={tableRef}
         />
         <div className="table-responsive">
-          <Table columns={columns} dataSource={users} loading={isLoading}/>
+          <Table columns={columns} dataSource={users} loading={isLoading}  ref={tableRef} />
         </div>
       </Card>
       <CreateUserModal openModal={openMOdal} handleCancel={() => setopenMOdal(false)}/>

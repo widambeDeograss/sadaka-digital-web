@@ -2,7 +2,7 @@ import React from "react";
 import { FilterIcon, X, SearchCheckIcon, FileSpreadsheet } from "lucide-react";
 import { Input, Tooltip } from "antd";
 import { motion } from "framer-motion";
-import * as XLSX from 'xlsx';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 
 interface TabletopProps {
   inputfilter: boolean;
@@ -10,7 +10,7 @@ interface TabletopProps {
   showFilter?: boolean;
   searchTerm: string;
   onSearch: (value: string) => void;
-  data: any[]; // Data to be exported
+  tableRef: React.RefObject<HTMLTableElement>; // Reference to the AntD table
   docName?: string;
 }
 
@@ -20,45 +20,15 @@ const Tabletop: React.FC<TabletopProps> = ({
   showFilter = true,
   searchTerm,
   onSearch,
-  data,
-  docName = "ExcelData"
+  tableRef,
+  docName = "TableData"
 }) => {
-  const flattenObject = (obj: any, prefix: string = ''): Record<string, any> => {
-    let result: Record<string, any> = {};
-  
-    Object.keys(obj).forEach((key) => {
-      const value = obj[key];
-      const newKey = prefix ? `${prefix}.${key}` : key;
-  
-      // If the value is a nested object, flatten it recursively
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        result = { ...result, ...flattenObject(value, newKey) };
-      } else {
-        result[newKey] = value;
-      }
-    });
-  
-    return result;
-  };
-  
-  const handleExport = () => {
-    // Flatten the data before exporting
-    const flattenedData = data.map(item => flattenObject(item));
-  
-    // Create the worksheet from the flattened data
-    const worksheet = XLSX.utils.json_to_sheet(flattenedData);
-  
-    // Create a new workbook
-    const workbook = XLSX.utils.book_new();
-  
-    // Append the sheet to the workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-  
-    // Write the workbook to a file
-  XLSX.writeFile(workbook, `${docName}.xlsx`);
-  };
-  
-
+  // Export functionality using react-export-table-to-excel
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef,
+    filename: docName,
+    sheet: "Sheet1"
+  });
 
   return (
     <div className="flex justify-between items-center p-4 bg-white shadow-md rounded-lg">
@@ -95,7 +65,7 @@ const Tabletop: React.FC<TabletopProps> = ({
         <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleExport}
+            onClick={onDownload}
             className="bg-gradient-to-br  from-[#152033] to-[#3E5C76] text-white 
             px-4 py-2 rounded-lg flex items-center space-x-2 
             transition-all duration-300 ease-in-out"
