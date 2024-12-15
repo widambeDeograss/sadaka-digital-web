@@ -10,6 +10,7 @@ import Tabletop from "../../components/tables/TableTop";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
 const { Title } = Typography;
+const { RangePicker } = DatePicker;
 
 // Define the data type for table rows
 interface CardDetail {
@@ -17,15 +18,17 @@ interface CardDetail {
   mhumini_name: string;
   jumuiya: string;
   kanda: string;
-  present: boolean;
+  monthly_presence?: Record<string, boolean>;
+  present?: boolean; // Only used for single month
 }
 
-// Define the component
 const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }> = ({ visible, onClose }) => {
   const [date, setDate] = useState<dayjs.Dayjs | null>(null);
+  const [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>(null);
   const church = useAppSelector((state: any) => state.sp);
-  const [LaodingMessage, setLaodingMessage] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState(false);
   const dispatch = useAppDispatch();
+
   // Columns for the table
   const columns: ColumnsType<CardDetail> = [
     { title: "Card No", dataIndex: "card_no", key: "card_no" },
@@ -33,159 +36,163 @@ const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }
     { title: "Jumuiya", dataIndex: "jumuiya", key: "jumuiya" },
     { title: "Kanda", dataIndex: "kanda", key: "kanda" },
     {
-      title: "Present",
-      dataIndex: "present",
-      key: "present",
-      render: (present: boolean) =>
-        present ? (
-          <Badge
-            status="success"
-            text={<CheckCircleOutlined style={{ color: "green" }} />}
-          />
+      title: "Presence",
+      dataIndex: "monthly_presence",
+      key: "monthly_presence",
+      render: (monthlyPresence: Record<string, boolean> | undefined, record: CardDetail) => {
+        if (monthlyPresence) {
+          return Object.entries(monthlyPresence).map(([month, present]) => (
+            <Badge
+              key={month}
+              count={`${month}: ${present ? "✔" : "✖"}`}
+              style={{ backgroundColor: present ? "green" : "red", marginRight: 5 }}
+            />
+          ));
+        }
+        return record.present ? (
+          <CheckCircleOutlined style={{ color: "green" }} />
         ) : (
-          <Badge
-            status="error"
-            text={<CloseCircleOutlined style={{ color: "red" }} />}
-          />
-        ),
+          <CloseCircleOutlined style={{ color: "red" }} />
+        );
+      },
     },
   ];
 
-  // Fetch data based on date selection and church ID
+  // Fetch data based on single month or range selection
   const { data: cardDetails, isLoading, refetch, error } = useQuery({
-    queryKey: ["zakaPresence", date, church?.id],
+    queryKey: ["zakaPresence", date, range, church?.id],
     queryFn: async () => {
-      if (!date || !church?.id) throw new Error("Invalid parameters");
-      const month = date.month() + 1;
-      const year = date.year();
-      const response: any = await fetchZakBahashaInfo(`?month=${month}&year=${year}&church_id=${church.id}&query_type=check`);
-      return response.card_details;
+      if (!church?.id) throw new Error("Invalid parameters");
+
+      if (range) {
+        const startMonth = range[0].month() + 1;
+        const startYear = range[0].year();
+        const endMonth = range[1].month() + 1;
+        const endYear = range[1].year();
+        const response: any = await fetchZakBahashaInfo(
+          `?month=${startMonth}&year=${startYear}&end_month=${endMonth}&end_year=${endYear}&church_id=${church.id}&query_type=range`
+        );
+        return response.card_details;
+      } else if (date) {
+        const month = date.month() + 1;
+        const year = date.year();
+        const response: any = await fetchZakBahashaInfo(
+          `?month=${month}&year=${year}&church_id=${church.id}&query_type=check`
+        );
+        return response.card_details;
+      }
     },
-    enabled: !!date && !!church?.id, // Only run if date and church ID are available
-    // onError: () => message.error("Failed to fetch data."),
+    enabled: (!!date || !!range) && !!church?.id, // Only run if date or range and church ID are available
   });
 
+  // Send reminders function
   async function fetchZakaBahashaInfoWithCheck() {
     if (!date || !church) {
-        throw new Error("Invalid parameters");
+      throw new Error("Invalid parameters");
     }
-     setLaodingMessage(true);
-    const month = date.month() + 1;  // Adjust month to be 1-based
+    setLoadingMessage(true);
+    const month = date.month() + 1; // Adjust month to be 1-based
     const year = date.year();
     const queryParams = `?month=${month}&year=${year}&church_id=${church?.id}&query_type=reminder`;
 
-    // Call the API endpoint
     try {
-        const response = await fetchZakBahashaInfo(queryParams);
-        dispatch(
-            addAlert({
-              title: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
-              message: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
-              type: "success",
-            })
-          );
-        return response;
+      const response = await fetchZakBahashaInfo(queryParams);
+      dispatch(
+        addAlert({
+          title: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
+          message: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
+          type: "success",
+        })
+      );
+      return response;
     } catch (error) {
-        console.error("Error fetching Zaka Bahasha info:", error);
-        throw error;  // Re-throw the error to handle it elsewhere if needed
-    }finally{
-      setLaodingMessage(false);
+      console.error("Error fetching Zaka Bahasha info:", error);
+      throw error;
+    } finally {
+      setLoadingMessage(false);
     }
-}
-
+  }
 
   // Handle date selection
   const handleDateChange = (date: dayjs.Dayjs | null) => {
+    setRange(null); // Clear range when a single date is selected
     setDate(date);
-    if (date) refetch(); // Trigger data refetch on date change
+    if (date) refetch();
+  };
+
+  // Handle range selection
+  const handleRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+    setDate(null);
+    setRange(dates);
+    if (dates) refetch();
   };
 
   useEffect(() => {
     if (error) {
-        message.error("Failed to fetch data.")
+      message.error("Failed to fetch data.");
     }
-  }, [error])
-
-  // Calculate totals for present and not present
-  const totalPresent = cardDetails?.filter((card:any) => card.present).length;
-  const totalNotPresent = cardDetails?.length - totalPresent;
+  }, [error]);
 
   return (
     <Modal
       title="Bahasha za zaka"
       visible={visible}
       onCancel={onClose}
-      footer={[
-        <Button key="close" onClick={onClose}>
-          Close
-        </Button>,
-      ]}
-      
+      footer={[<Button key="close" onClick={onClose}>Close</Button>]}
       width={900}
     >
       <div style={{ marginBottom: 16 }} className="flex items-center gap-4">
         <DatePicker
           onChange={handleDateChange}
-          size="large"
+          size="small"
           picker="month"
-          placeholder="chagua mwaka na mwexi"
+          placeholder="Chagua mwaka na mwezi"
           className="w-full"
         />
-         {
-            date && (
-                <Button type="primary" onClick={() =>  fetchZakaBahashaInfoWithCheck()} loading={LaodingMessage}  className="bg-[#152033] text-white">
-          Tuma Kukumbusha matoleo ya zaka
-        </Button>
-            )
-         }
+        <RangePicker
+          onChange={(dates, dateStrings) => handleRangeChange(dates as [dayjs.Dayjs | null, dayjs.Dayjs | null] | null)}
+          size="small"
+          picker="month"
+          placeholder={['Mwezi wa mwanzo', 'Mwezi wa mwisho']}
+          className="w-full"
+        />
+        {date && (
+          <Button
+            type="primary"
+            onClick={() => fetchZakaBahashaInfoWithCheck()}
+            loading={loadingMessage}
+            className="bg-[#152033] text-white"
+          >
+            Tuma Kukumbusha matoleo ya zaka
+          </Button>
+        )}
       </div>
 
-      {/* Display selected month and year */}
       {date && (
         <Title level={4} style={{ textAlign: "center", marginBottom: 16 }}>
           Bahasha mwezi: {date.format("MMMM YYYY")}
         </Title>
       )}
 
-      {/* Display totals for present and not present */}
-      <Row gutter={16} style={{ marginBottom: 16 }}>
-        <Col>
-          <Badge
-            count={totalPresent}
-            style={{ backgroundColor: "green" }}
-            overflowCount={999}
-          >
-            <CheckCircleOutlined style={{ color: "green", fontSize: 23 }} />
-          </Badge>
-          <span style={{ marginLeft: 8 }}>Zilizorudishwa</span>
-        </Col>
-        <Col>
-          <Badge
-            count={totalNotPresent || 0}
-            style={{ backgroundColor: "red" }}
-            overflowCount={999}
-          >
-            <CloseCircleOutlined style={{ color: "red", fontSize: 23 }} />
-          </Badge>
-          <span style={{ marginLeft: 8 }}>Zisizorudisha</span>
-        </Col>
-      </Row>
+      {range && (
+        <Title level={4} style={{ textAlign: "center", marginBottom: 16 }}>
+          Bahasha kuanzia: {range[0].format("MMMM YYYY")} hadi {range[1].format("MMMM YYYY")}
+        </Title>
+      )}
 
-      {/* Table to display card details */}
       <Tabletop
-            inputfilter={false}
-            onSearch={(_term: string) => {}}
-            togglefilter={(_value: boolean) =>{}}
-            showFilter={false}
-            searchTerm={""}
-            data={cardDetails}
-          />
+        inputfilter={false}
+        onSearch={(_term: string) => {}}
+        togglefilter={(_value: boolean) => {}}
+        showFilter={false}
+        searchTerm={""}
+        data={cardDetails}
+      />
       <Table
         columns={columns}
         dataSource={cardDetails}
         rowKey="card_no"
         loading={isLoading}
-        // pagination={true}
       />
     </Modal>
   );

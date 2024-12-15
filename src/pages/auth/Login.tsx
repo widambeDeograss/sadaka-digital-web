@@ -17,19 +17,17 @@ export default function LoginPage() {
   const navigation = useNavigate();
   const dispatch = useDispatch();
 
-  const onFinish = async (values: any) => {
-    const response: any = await postLogin(values);
-    
-    if (response?.success === false)
-      throw new Error("Failed to sign in. Invalid username or password");
-
-    return response;
-  };
+  
 
   const { mutate: signInMutation, isPending } = useMutation({
-    mutationFn: onFinish,
+    mutationFn: async (values: any) => {
+      const response =  await postLogin(values);
+      console.log(response);
+      
+      return response
+    },
     onSuccess: async (data: any) => {
-       console.log(data);
+      console.log(data);
        
       dispatch(
         addAlert({
@@ -60,7 +58,9 @@ export default function LoginPage() {
         dispatch(setActivePackage(defaultPackage));
         navigation("/dashboard"); 
       } else {
-        const spResponse: any = await fetchSpByAdmin(data?.user.id);
+        console.log(data?.user?.id);
+        
+        const spResponse: any = await fetchSpByAdmin(data?.user?.id);
         dispatch(setCurrentSP(spResponse?.service_provider));
         dispatch(setActivePackage(spResponse?.active_package || null)); 
         console.log(spResponse);
@@ -82,6 +82,10 @@ export default function LoginPage() {
       //  });
     },
   });
+
+  const onFinish = async (values: any) => {
+    await signInMutation(values);
+  };
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -114,7 +118,7 @@ export default function LoginPage() {
           </h2>
 
           <Form
-            onFinish={signInMutation}
+            onFinish={onFinish}
             layout="vertical"
             className="space-y-4"
           >

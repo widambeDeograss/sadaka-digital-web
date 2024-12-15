@@ -80,6 +80,8 @@ class APIClient {
   create = async (url: string, data: any): Promise<AxiosResponse<any>> => {
     try {
       const response = await axios.post(url, data);
+      console.log(response);
+      
       return response;
     } catch (error:any) {
       console.error("API Client Create Error:", error.message);
