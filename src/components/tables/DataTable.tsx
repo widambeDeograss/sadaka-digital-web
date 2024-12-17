@@ -33,7 +33,8 @@ const Datatable = <T extends { id: React.Key }>({
   };
 
   return (
-    <Table<T>
+    <Table
+              id={tableId}<T>
       className="table datanew dataTable no-footer"
       rowSelection={rowSelection}
       loading={isLoading}

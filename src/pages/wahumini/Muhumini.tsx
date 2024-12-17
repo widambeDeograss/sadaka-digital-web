@@ -17,6 +17,7 @@ const Muhumini = () => {
     const location = useLocation();
     const muhumi_details = location?.state?.record;
     const church = useAppSelector((state: any) => state.sp);
+    const tableId = "data-table";
     const [chartData, setChartData] = useState<{
         series: { name: string; data: number[] }[];
         categories: string[];
@@ -284,9 +285,10 @@ const Muhumini = () => {
                         togglefilter={() => {}}
                         searchTerm={""}
                         onSearch={() => {}}
-                        data={ahadiList}
+                        data={tableId}
                     />
                     <Table
+              id={tableId}
                         columns={columns}
                         dataSource={ahadiList}
                         loading={ahadiLoading}

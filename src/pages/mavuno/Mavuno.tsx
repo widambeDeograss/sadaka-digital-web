@@ -45,6 +45,7 @@ const MavunoList = () => {
       return response;
     },
   });
+  const tableId = "data-table";
 
   const handleDelete = (id: any) => {
     modal.confirm({
@@ -238,10 +239,11 @@ const MavunoList = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(_value: boolean) => {}}
             searchTerm={searchTerm}
-            data={filteredData}
+            data={tableId}
             showFilter={false}
           />
           <Table
+              id={tableId}
             columns={columns}
             dataSource={filteredData}
             bordered

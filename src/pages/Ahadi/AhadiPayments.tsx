@@ -28,6 +28,7 @@ const AhadiPayments = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [payAhadiModal, setPayAhadiModal] = useState(false);
+  const tableId = "data-table";
   const params = useParams();
 
   const { data: ahadiList, isLoading: loadingAhadi } = useQuery({
@@ -275,8 +276,9 @@ const AhadiPayments = () => {
             inputfilter={showFilter}
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
-            searchTerm={searchTerm} data={[]}          />
+            searchTerm={searchTerm} data={tableId}          />
           <Table
+              id={tableId}
             columns={columns}
             dataSource={filteredData}
             loading={loadingAhadi}

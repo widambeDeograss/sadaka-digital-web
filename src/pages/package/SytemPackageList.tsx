@@ -16,6 +16,7 @@ import {
   const SystemPackagesList = () => {
     const [showModal, setShowModal] = useState(false);
     const [mode, setMode] = useState<"add" | "edit">("add");
+    const tableId = "data-table";
     const [initialData, setInitialData] = useState<{
       id: number;
       name: string;
@@ -152,8 +153,9 @@ import {
                 // Implement filter logic here if necessary
               } } searchTerm={""} onSearch={function (_value: string): void {
                 throw new Error("Function not implemented.");
-              } } data={[]}            />
-            <Table columns={columns} dataSource={systemPackages} loading={loadingSystemPackages} />
+              } } data={tableId}            />
+            <Table
+              id={tableId} columns={columns} dataSource={systemPackages} loading={loadingSystemPackages} />
           </div>
         </Card>
   

@@ -30,6 +30,7 @@ const Zaka = () => {
   const [updateZakaModal, setupdateZakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
   const [openBahashaModal, setOpenBahashaModal] = useState(false);
+  const tableId = "data-table";
   // const queryClient = useQueryClient();
   // const [modal, contextHolder] = Modal.useModal();
 
@@ -227,7 +228,7 @@ const Zaka = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
             searchTerm={searchTerm}
-            data={filteredData}
+            data={tableId}
           />
           {showFilter && (
             <div className="bg-gray-100 p-4 mt-4 rounded-lg">
@@ -255,6 +256,7 @@ const Zaka = () => {
             </div>
           )}
           <Table
+              id={tableId}
             columns={columns}
             dataSource={filteredData}
             loading={loadingZaka}

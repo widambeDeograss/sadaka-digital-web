@@ -10,8 +10,8 @@ interface TabletopProps {
   showFilter?: boolean;
   searchTerm: string;
   onSearch: (value: string) => void;
-  tableRef: React.RefObject<HTMLTableElement>; // Reference to the AntD table
   docName?: string;
+  data: string;
 }
 
 const Tabletop: React.FC<TabletopProps> = ({
@@ -20,12 +20,12 @@ const Tabletop: React.FC<TabletopProps> = ({
   showFilter = true,
   searchTerm,
   onSearch,
-  tableRef,
+  data,
   docName = "TableData"
 }) => {
   // Export functionality using react-export-table-to-excel
   const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef,
+    currentTableRef: document.getElementById(data),
     filename: docName,
     sheet: "Sheet1"
   });

@@ -25,6 +25,7 @@ const SadakaReportTable: React.FC = () => {
   const [monthFilter, setMonthFilter] = useState<string | null>(null);
   const [showFilter, setShowFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const tableId = "data-table";
 
   // Fetch sadaka report data using react-query with error handling
   const {
@@ -89,7 +90,7 @@ const SadakaReportTable: React.FC = () => {
           inputfilter={showFilter}
           onSearch={(term: string) => setSearchTerm(term)}
           togglefilter={(value: boolean) => setShowFilter(value)}
-          searchTerm={searchTerm} data={sadaka}        />
+          searchTerm={searchTerm} data={tableId}        />
         {showFilter && (
           <div className="bg-gray-100 p-4 mt-4 rounded-lg">
             <h4 className="font-bold mb-2">Filter Options</h4>
@@ -132,6 +133,7 @@ const SadakaReportTable: React.FC = () => {
         )}
 
         <Table
+              id={tableId}
           columns={columns}
           dataSource={sadaka}
           loading={isLoading}

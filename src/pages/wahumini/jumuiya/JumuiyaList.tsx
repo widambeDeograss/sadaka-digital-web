@@ -284,6 +284,7 @@ const KandaJumuiya = () => {
               />
 
               <Table
+              id={tableId}
                 columns={kandaColumns}
                 dataSource={filteredData}
                 loading={loadingKanda}
@@ -310,6 +311,7 @@ const KandaJumuiya = () => {
           data={filteredDataJumuiya}
               />
               <Table
+              id={tableId}
                 columns={jumuiyaColumns}
                 dataSource={filteredDataJumuiya}
                 loading={loadingJumuiya}

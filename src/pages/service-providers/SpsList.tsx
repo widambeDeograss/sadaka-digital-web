@@ -8,7 +8,7 @@ import ServiceProviderModal from './AddSp.js';
 
 function SpList() {
     const [openMOdal, setopenMOdal] = useState(false);
-
+    const tableId = "data-table";
     const {
         data: sps,
         isLoading,
@@ -167,9 +167,10 @@ function SpList() {
               throw new Error("Function not implemented.");
             } } searchTerm={''} onSearch={function (_value: string): void {
               throw new Error('Function not implemented.');
-            } } data={sps}/>
+            } } data={tableId}/>
         
-            <Table columns={columns} dataSource={sps} loading={isLoading}/>
+            <Table
+              id={tableId} columns={columns} dataSource={sps} loading={isLoading}/>
           </div>
         </Card>
 

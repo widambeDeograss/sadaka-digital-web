@@ -20,6 +20,7 @@ const Wahumini = () => {
   const church = useAppSelector((state: any) => state.sp);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const tableId = "data-table";
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
@@ -251,10 +252,11 @@ const Wahumini = () => {
                 onSearch={(term: string) => setSearchTerm(term)}
                 togglefilter={() =>  {}}
                 searchTerm={searchTerm}
-                data={filteredData}
+                data={tableId}
               />
 
               <Table
+              id={tableId}
                 columns={columns}
                 dataSource={filteredData}
                 loading={isLoading}

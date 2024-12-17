@@ -22,6 +22,7 @@ const ZakaReportTable: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [zakaData, setZakaData] = useState([]);
+  const tableId = "data-table";
 
   const { isLoading: loadingzaka } = useQuery({
     queryKey: ["zakaTotals", yearFilter],
@@ -115,7 +116,7 @@ const ZakaReportTable: React.FC = () => {
           onSearch={(term: string) => setSearchTerm(term)}
           togglefilter={(value: boolean) => setShowFilter(value)}
           searchTerm={searchTerm}
-          data={filteredData}
+          data={tableId}
         />
         {showFilter && (
           <div className="bg-gray-100 p-4 mt-4 rounded-lg">
@@ -143,6 +144,7 @@ const ZakaReportTable: React.FC = () => {
           </div>
         )}
         <Table
+              id={tableId}
           columns={columns}
           dataSource={filteredData}
           loading={loadingzaka}

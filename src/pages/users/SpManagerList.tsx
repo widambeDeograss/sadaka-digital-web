@@ -17,7 +17,7 @@ import {
 
 function SpManagerList() {
   const navigate = useNavigate();
-  
+  const tableId = "data-table";
     const [openMOdal, setopenMOdal] = useState(false);
     const church = useAppSelector((state: any) => state.sp);
     const userPermissions = useAppSelector(
@@ -229,10 +229,10 @@ function SpManagerList() {
         } } searchTerm={""} onSearch={function (_value: string): void {
           throw new Error("Function not implemented.");
         } }
-        data={spManagers}
-        />
+        data={tableId}        />
         <div className="table-responsive">
-          <Table columns={columns} dataSource={spManagers} loading={isLoading}/>
+          <Table
+              id={tableId} columns={columns} dataSource={spManagers} loading={isLoading}/>
         </div>
       </Card>
       <CreateUserModal openModal={openMOdal} handleCancel={() => setopenMOdal(false)}/>

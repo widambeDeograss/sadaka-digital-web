@@ -7,7 +7,7 @@ import { fetchRoles } from '../../helpers/ApiConnectors.js';
 
 function RolesList() {
     
-
+  const tableId = "data-table";
     const {
         data: roles,
         isLoading,
@@ -64,9 +64,10 @@ function RolesList() {
               throw new Error("Function not implemented.");
             } } searchTerm={''} onSearch={function (_value: string): void {
               throw new Error('Function not implemented.');
-            } } data={[]}/>
+            } } data={tableId}/>
         
-            <Table columns={columns} dataSource={roles} loading={isLoading}/>
+            <Table
+              id={tableId} columns={columns} dataSource={roles} loading={isLoading}/>
           </div>
         </Card>
       </div>

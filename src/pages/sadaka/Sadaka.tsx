@@ -40,6 +40,7 @@ const Sadaka = () => {
   const [selectedData, setSelectedData] = useState(null);
   const [updateSadakaModal, setupdateSadakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
+  const tableId = "data-table";
   // const userPermissions = useAppSelector(
   //   (state: any) => state.user.userInfo.role.permissions
   // );
@@ -290,6 +291,7 @@ const Sadaka = () => {
                 searchTerm={searchTerm}
               /> */}
               <Table
+              id={tableId}
                 columns={columns}
                 dataSource={sadakaToday}
                 loading={isLoading}
@@ -343,7 +345,7 @@ const Sadaka = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
             searchTerm={searchTerm}
-            data={filteredData}
+            data={tableId}
           />
           {showFilter && (
             <div className="bg-gray-100 p-4 mt-4 rounded-lg">
@@ -371,6 +373,7 @@ const Sadaka = () => {
             </div>
           )}
           <Table
+              id={tableId}
             columns={columns}
             dataSource={filteredData}
             loading={loadingSadaka}

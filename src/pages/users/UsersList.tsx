@@ -13,6 +13,7 @@ import CreateUserModal from "./AddUser.js";
 function UsersList() {
   const navigate = useNavigate();
   const tableRef = useRef<HTMLTableElement>(null);
+  const tableId = "data-table";
   const [, setSelectedUserForPasswordEdit] =
     useState(null);
     const [openMOdal, setopenMOdal] = useState(false);
@@ -221,11 +222,11 @@ function UsersList() {
         } } searchTerm={""} onSearch={function (_value: string): void {
           throw new Error("Function not implemented.");
         } }
-        data={[]}
-        tableRef={tableRef}
+        data={tableId}
         />
         <div className="table-responsive">
-          <Table columns={columns} dataSource={users} loading={isLoading}  ref={tableRef} />
+          <Table
+              id={tableId} columns={columns} dataSource={users} loading={isLoading}  ref={tableRef} />
         </div>
       </Card>
       <CreateUserModal openModal={openMOdal} handleCancel={() => setopenMOdal(false)}/>

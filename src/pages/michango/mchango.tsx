@@ -26,6 +26,7 @@ const Mchango = () => {
   const params = useParams();
   // const [openModal, setOpenModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
+  const tableId = "data-table";
   // const queryClient = useQueryClient();
   const [chartData, setChartData] = useState<{
     series: { name: string; data: number[] }[];
@@ -461,7 +462,7 @@ const Mchango = () => {
           <Tabletop
             inputfilter={false}
             showFilter={false}
-            data={michango}
+            data={tableId}
             togglefilter={function (_value: boolean): void {
               throw new Error("Function not implemented.");
             }}
@@ -471,6 +472,7 @@ const Mchango = () => {
             }}
           />
           <Table
+              id={tableId}
             columns={mchangoPaymentColumns}
             dataSource={michango}
             loading={loadingmichango}
@@ -482,7 +484,7 @@ const Mchango = () => {
           <Tabletop
             inputfilter={false}
             showFilter={false}
-            data={michango}
+            data={tableId}
             togglefilter={function (_value: boolean): void {
               throw new Error("Function not implemented.");
             }}
@@ -492,6 +494,7 @@ const Mchango = () => {
             }}
           />
           <Table
+              id={tableId}
             columns={columns}
             dataSource={ahadiList}
             loading={loadingAhadi}

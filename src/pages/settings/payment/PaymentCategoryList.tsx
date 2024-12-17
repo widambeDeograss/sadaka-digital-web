@@ -16,6 +16,7 @@ const PaymentTypeList = () => {
   const [isVisible, setIsVisible] = useState(false)
   const queryClient = useQueryClient();
   const church = useAppSelector((state: any) => state.sp);
+  const tableId = "data-table";
   // const userPermissions = useAppSelector(
   //   (state: any) => state.user.userInfo.role.permissions
   // );
@@ -185,6 +186,7 @@ const PaymentTypeList = () => {
             <div className="table-responsive">
 
               <Table
+              id={tableId}
                 columns={columns}
                 dataSource={payTypes}
                 loading={isLoading}

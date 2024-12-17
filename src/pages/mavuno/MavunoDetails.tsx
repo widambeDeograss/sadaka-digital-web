@@ -26,6 +26,7 @@ import {
     const params = useParams();
     // const [openModal, setOpenModal] = useState(false);
     const church = useAppSelector((state: any) => state.sp);
+    const tableId = "data-table";
     // const queryClient = useQueryClient();
     const [chartData, setChartData] = useState<{
       series: { name: string; data: number[] }[];
@@ -309,7 +310,7 @@ import {
             <Tabletop
               inputfilter={false}
               showFilter={false}
-              data={mavunoPay}
+              data={tableId}
               togglefilter={function (_value: boolean): void {
                 throw new Error("Function not implemented.");
               }}
@@ -319,6 +320,7 @@ import {
               }}
             />
             <Table
+              id={tableId}
               columns={mchangoPaymentColumns}
               dataSource={mavunoPay}
               loading={loadingMavuno}

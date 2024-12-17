@@ -18,6 +18,7 @@ import ViewModal from "./ViewExpenditureCategory";
 const ExpenseCategoryList = () => {
   const [isVisible, setIsVisible] = useState(false)
   const church = useAppSelector((state: any) => state.sp);
+  const tableId = "data-table";
   // const userPermissions = useAppSelector(
   //   (state: any) => state.user.userInfo.role.permissions
   // );
@@ -193,6 +194,7 @@ const ExpenseCategoryList = () => {
               /> */}
 
               <Table
+              id={tableId}
                 columns={columns}
                 dataSource={expensecats}
                 loading={isLoading}

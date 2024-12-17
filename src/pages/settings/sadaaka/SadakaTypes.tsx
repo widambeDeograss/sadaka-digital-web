@@ -15,6 +15,7 @@ import SadakaTypeModal from "./AddSadakaType";
 const SadakaTypes = () => {
   const [isVisible, setIsVisible] = useState(false)
   const church = useAppSelector((state: any) => state.sp);
+  const tableId = "data-table";
   // const userPermissions = useAppSelector(
   //   (state: any) => state.user.userInfo.role.permissions
   // );
@@ -189,6 +190,7 @@ const SadakaTypes = () => {
               /> */}
 
               <Table
+              id={tableId}
                 columns={columns}
                 dataSource={sadakaTypesData}
                 loading={isLoading}

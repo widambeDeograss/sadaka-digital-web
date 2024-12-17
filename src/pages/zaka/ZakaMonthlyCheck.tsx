@@ -28,6 +28,7 @@ const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }
   const church = useAppSelector((state: any) => state.sp);
   const [loadingMessage, setLoadingMessage] = useState(false);
   const dispatch = useAppDispatch();
+  const tableId = "data-table";
 
   // Columns for the table
   const columns: ColumnsType<CardDetail> = [
@@ -186,9 +187,10 @@ const CheckZakaPresenceModal: React.FC<{ visible: boolean; onClose: () => void }
         togglefilter={(_value: boolean) => {}}
         showFilter={false}
         searchTerm={""}
-        data={cardDetails}
+        data={tableId}
       />
       <Table
+              id={tableId}
         columns={columns}
         dataSource={cardDetails}
         rowKey="card_no"

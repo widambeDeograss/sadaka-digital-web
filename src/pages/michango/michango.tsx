@@ -36,7 +36,7 @@ const MichangoList = () => {
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-
+  const tableId = "data-table";
   const { data: michango, isLoading: loadingmichango } = useQuery({
     queryKey: ["michango"],
     queryFn: async () => {
@@ -264,10 +264,11 @@ const MichangoList = () => {
            onSearch={(term: string) => setSearchTerm(term)}
            togglefilter={(_value: boolean) => {}}
            searchTerm={searchTerm}
-           data={filteredData}
+           data={tableId}
            showFilter={false}
           />
           <Table
+              id={tableId}
               columns={columns}
               dataSource={filteredData}
               bordered

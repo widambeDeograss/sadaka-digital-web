@@ -25,6 +25,7 @@ const CardNumberList = () => {
   const [filteredData, setFilteredData] = useState([]);
   const queryClient = useQueryClient();
   const [selectedCard, setselectedCard] = useState<any>(null);
+  const tableId = "data-table";
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );
@@ -285,14 +286,16 @@ const CardNumberList = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={() =>  {}}
             searchTerm={searchTerm}
-            data={filteredData}
+            data={tableId}
               />
 
               <Table
+              id={tableId}
                 columns={columns}
                 dataSource={filteredData}
                 loading={isLoading}
                 bordered
+
               />
             </div>
           </Card>

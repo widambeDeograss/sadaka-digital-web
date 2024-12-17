@@ -31,6 +31,7 @@ const Ahadi = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [payAhadiModal, setPayAhadiModal] = useState(false);
+  const tableId = "data-table";
   // const userPermissions = useAppSelector(
   //   (state: any) => state.user.userInfo.role.permissions
   // );
@@ -285,9 +286,10 @@ const Ahadi = () => {
             togglefilter={(value: boolean) => setShowFilter(value)}
             searchTerm={searchTerm}
             showFilter={false}
-            data={ahadiList}
+            data={tableId}
           />
           <Table
+              id={tableId}
             columns={columns}
             dataSource={filteredData}
             loading={loadingAhadi}
