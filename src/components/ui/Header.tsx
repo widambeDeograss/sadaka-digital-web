@@ -188,7 +188,7 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
               icon={<UserOutlined />} 
               className="bg-blue-500"
             />
-            <span className="hidden md:inline">{userDtl?.username}</span>
+            <span className="hidden md:inline text-black">{userDtl?.username}</span>
           </div>
         </Dropdown>
       </div>

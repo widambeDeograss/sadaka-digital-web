@@ -52,6 +52,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       return response;
     },
   });
+
   const { data: sadakaType } = useQuery({
     queryKey: ["sadakaTypes", church.id],
     queryFn: async () => {
@@ -485,6 +486,37 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 {formWithoutCard.formState.errors.payment_type && (
                   <p className="mt-1 text-sm text-red-600">
                     {formWithoutCard.formState.errors.payment_type.message}
+                  </p>
+                )}
+              </div>
+
+                {/* Sadaka Type */}
+                <div>
+                <label
+                  htmlFor="sadaka_type"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Sadaka
+                </label>
+                <select
+                  id="sadaka_type"
+                  {...formWithCard.register("sadaka_type")}
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithCard.formState.errors.sadaka_type
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                >
+                  <option value="">Chagua Aina ya sadaka</option>
+                  {sadakaType?.map((py: any) => (
+                    <option key={py.id} value={py.id}>
+                      {py.name}
+                    </option>
+                  ))}
+                </select>
+                {formWithCard.formState.errors.sadaka_type && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {formWithCard.formState.errors.sadaka_type.message}
                   </p>
                 )}
               </div>
