@@ -87,14 +87,14 @@ const Wahumini = () => {
       render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
-    // {
-    //   title: "Jumuiya",
-    //   dataIndex: ["jumuiya_details", "name"],
-    //   key: "category",
-    // //   sorter: (a: Expense, b: Expense) =>
-    // //     a?.category_details?.budget?.localeCompare(b?.category_details?.category_name),
-    //   render: (text: string) => <div>{text}</div>,
-    // },
+    {
+      title: "Jumuiya",
+      dataIndex: ["jumuiya_details", "name"],
+      key: "category",
+    //   sorter: (a: Expense, b: Expense) =>
+    //     a?.category_details?.budget?.localeCompare(b?.category_details?.category_name),
+      render: (text: string) => <div>{text}</div>,
+    },
     {
       title: "Email",
       dataIndex: "email",
@@ -195,11 +195,9 @@ const Wahumini = () => {
       const lowercasedTerm = searchTerm.toLowerCase();
       const filtered = wahumini.filter((item: any) => {
         return (
-          // item?.jumuiya_details?.name
-          //   .toLowerCase()
-          //   .includes(lowercasedTerm) ||
-          item?.last_name
-            .toLowerCase()
+          item?.jumuiya_details?.name?.toLowerCase()
+            .includes(lowercasedTerm) ||
+          item?.last_name?.toLowerCase()
             .includes(lowercasedTerm) ||
           item?.first_name.toLowerCase().includes(lowercasedTerm)
         );

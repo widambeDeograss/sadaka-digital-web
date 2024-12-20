@@ -7,8 +7,6 @@ import {
   message,
   Badge,
   Typography,
-  Row,
-  Col,
 } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -154,6 +152,7 @@ const CheckZakaPresenceModal: React.FC<{
     dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null,
   ) => {
     setDate(null);
+    //@ts-ignore
     setRange(dates);
     if (dates) refetch();
   };

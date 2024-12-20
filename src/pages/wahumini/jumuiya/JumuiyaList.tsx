@@ -21,6 +21,7 @@ const KandaJumuiya = () => {
   const [filteredDataJumuiya, setFilteredDataJumuiya] = useState([]);
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [editData, setEditData] = useState<any | null>(null);
+  const tableId = "kanda-jumuiya";
 
   const church = useAppSelector((state: any) => state.sp);
 
@@ -280,7 +281,7 @@ const KandaJumuiya = () => {
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={() =>  {}}
             searchTerm={searchTerm}
-            data={filteredData}
+            data={tableId}
               />
 
               <Table
@@ -308,7 +309,7 @@ const KandaJumuiya = () => {
           onSearch={(term: string) => setSearchTermJumuiya(term)}
           togglefilter={() =>  {}}
           searchTerm={searchTermJumuiya}
-          data={filteredDataJumuiya}
+          data={tableId}
               />
               <Table
               id={tableId}
