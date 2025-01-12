@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Dropdown, Menu, Table } from "antd";
+import { Button, Card, Dropdown, Menu, message, Table } from "antd";
 import Tabletop from "../../components/tables/TableTop";
 import OngezaZaka from "./OngezaZakaModal";
 import { useAppSelector } from "../../store/store-hooks";
@@ -10,12 +10,72 @@ import {
   EditOutlined,
   EyeOutlined,
   DownOutlined,
-  
+  PrinterOutlined
 } from "@ant-design/icons";
 import ViewModal from "./ViewZaka";
 import EditZaka from "./EditZaka";
 import Widgets from "./Stats";
 import CheckZakaPresenceModal from "./ZakaMonthlyCheck";
+import ReceiptDocument from "../../components/ZakaReceipt";
+import { pdf } from "@react-pdf/renderer";
+
+
+const MenuReceiptGenerator: React.FC<{ record: any }> = ({ record }) => {
+  const generatePDF = async () => {
+    
+    let url: string | null = null;
+    const loadingMessage = message.loading('Generating receipt...', 0);
+  
+    try {
+      // Generate PDF blob
+      const blob = await pdf(<ReceiptDocument data={record} />).toBlob();
+      url = URL.createObjectURL(blob);
+  
+      // Download the file
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `receipt-${record.id}-${Date.now()}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  
+      // Open in new tab
+      const pdfWindow = window.open(url, '_blank');
+      if (pdfWindow) {
+        pdfWindow.focus();
+      } else {
+        message.warning('Pop-up blocked. Please allow pop-ups to view the PDF.');
+      }
+  
+      loadingMessage();
+      message.success('Receipt generated successfully');
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      message.error('Failed to generate receipt');
+    } finally {
+      // Cleanup URL object after a short delay to ensure both operations complete
+      if (url) {
+        setTimeout(() => {
+          //@ts-ignore
+          URL.revokeObjectURL(url);
+        }, 1000);
+      }
+      
+      // Ensure loading message is cleared in case of error
+      loadingMessage();
+    }
+  };
+
+  return (
+    <Menu.Item 
+      key="generate-receipt" 
+      icon={<PrinterOutlined />} 
+      onClick={generatePDF}
+    >
+      Generate Receipt
+    </Menu.Item>
+  );
+};
 
 const Zaka = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -31,8 +91,7 @@ const Zaka = () => {
   const church = useAppSelector((state: any) => state.sp);
   const [openBahashaModal, setOpenBahashaModal] = useState(false);
   const tableId = "data-table";
-  // const queryClient = useQueryClient();
-  // const [modal, contextHolder] = Modal.useModal();
+
 
   const { isLoading: loadingZaka } = useQuery({
     queryKey: ["zaka", yearFilter],
@@ -45,6 +104,7 @@ const Zaka = () => {
       return response;
     },
   });
+
 
   const handleView = (record: any) => {
     setSelectedData(record);
@@ -79,6 +139,8 @@ const Zaka = () => {
   //     },
   //   });
   // };
+
+
   const columns = [
     {
       title: "S/No",
@@ -113,9 +175,14 @@ const Zaka = () => {
       render: (text: any) => <div>{text}</div>,
     },
     {
-      title: "Date",
+      title: "Zaka date",
       dataIndex: "date",
       render: (text: any) => <div>{text}</div>,
+    },
+    {
+      title: "Transaction date",
+      dataIndex: "inserted_at",
+      render: (text: any) => <div>{new Date(text).toDateString()}</div>,
     },
     {
       title: "",
@@ -140,14 +207,7 @@ const Zaka = () => {
               >
                 Edit
               </Menu.Item>
-              {/* <Menu.Item
-                key="3"
-                icon={<DeleteOutlined />}
-                danger
-                onClick={() => handleDelete(record?.id)}
-              >
-                Delete
-              </Menu.Item> */}
+              <MenuReceiptGenerator record={record} />
             </Menu>
           }
           trigger={["click"]}
@@ -283,6 +343,12 @@ const Zaka = () => {
         visible={openBahashaModal}
         onClose={() => setOpenBahashaModal(false)}
       />
+      {/* <ZakaReceiptModal
+      data={selectedData}
+      isOpen={viewReceipt}
+      onClose={() => setviewReceipt(false)}
+
+      /> */}
     </div>
   );
 };

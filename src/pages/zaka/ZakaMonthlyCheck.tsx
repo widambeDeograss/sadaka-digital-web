@@ -7,6 +7,8 @@ import {
   message,
   Badge,
   Typography,
+  Row,
+  Col,
 } from "antd";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -41,7 +43,7 @@ const CheckZakaPresenceModal: React.FC<{
   const dispatch = useAppDispatch();
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const tableId = "data-table";
+  const tableId = "data-table-zaka";
 
   // Columns for the table
   const columns: ColumnsType<CardDetail> = [
@@ -70,9 +72,9 @@ const CheckZakaPresenceModal: React.FC<{
           ));
         }
         return record.present ? (
-          <CheckCircleOutlined style={{ color: "green" }} />
+          <span><CheckCircleOutlined style={{ color: "green" }} /> Ametoa</span>
         ) : (
-          <CloseCircleOutlined style={{ color: "red" }} />
+          <span><CloseCircleOutlined style={{ color: "red" }} /> Hajatoa</span>
         );
       },
     },
@@ -109,7 +111,7 @@ const CheckZakaPresenceModal: React.FC<{
         return response.card_details;
       }
     },
-    enabled: (!!date || !!range) && !!church?.id, // Only run if date or range and church ID are available
+    enabled: (!!date || !!range) && !!church?.id, 
   });
 
   // Send reminders function
@@ -180,6 +182,9 @@ const CheckZakaPresenceModal: React.FC<{
     }
   }, [error]);
 
+  const totalPresent = cardDetails?.filter((card:any) => card.present).length;
+  const totalNotPresent = cardDetails?.length - totalPresent;
+
   return (
     <Modal
       title="Bahasha za zaka"
@@ -228,6 +233,31 @@ const CheckZakaPresenceModal: React.FC<{
           Bahasha mwezi: {date.format("MMMM YYYY")}
         </Title>
       )}
+
+      {date && ( 
+          <Row gutter={16} style={{ marginBottom: 16 }}>
+          <Col>
+            <Badge
+              count={totalPresent}
+              style={{ backgroundColor: "green" }}
+              overflowCount={999}
+            >
+              <CheckCircleOutlined style={{ color: "green", fontSize: 23 }} />
+            </Badge>
+            <span style={{ marginLeft: 8 }}>Zilizorudishwa</span>
+          </Col>
+          <Col>
+            <Badge
+              count={totalNotPresent || 0}
+              style={{ backgroundColor: "red" }}
+              overflowCount={999}
+            >
+              <CloseCircleOutlined style={{ color: "red", fontSize: 23 }} />
+            </Badge>
+            <span style={{ marginLeft: 8 }}>Zisizorudisha</span>
+          </Col>
+        </Row>
+       )}
 
       {range && (
         <Title level={4} style={{ textAlign: "center", marginBottom: 16 }}>
