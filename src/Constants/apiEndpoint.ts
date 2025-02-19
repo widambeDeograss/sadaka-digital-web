@@ -79,3 +79,11 @@ export const MAVUNO_LIST_CREATE = `${DataBaseUrl}/service-providers/mavuno-list-
 export const MAVUNO_RETRIEVE_UPDATE_DESTROY = `${DataBaseUrl}/service-providers/mavuno-retrieve-update-destroy/`;
 export const MAVUNO_PAYMENT_LIST_CREATE = `${DataBaseUrl}/service-providers/mavuno-payment-list-create`;
 export const MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY = `${DataBaseUrl}/service-providers/mavuno-payment-retrieve-update-destroy/`;
+
+//REPORTS
+export const WAHUMINI_STATEMENT = `${DataBaseUrl}/service-providers/reports/wahumini-statement`;
+export const REVENUE_STATEMENT = `${DataBaseUrl}/service-providers/reports/revenue-statement`;
+export const EXPENSE_STATEMENT = `${DataBaseUrl}/service-providers/reports/expenses-statement`;
+
+//SMS
+export const SEND_CUSTOM_SMS = `${DataBaseUrl}/service-providers/sms/send-custom`;

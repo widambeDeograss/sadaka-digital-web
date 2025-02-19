@@ -34,6 +34,9 @@ import AhadiPayments from '../pages/Ahadi/AhadiPayments.tsx';
 import SadakaTypes from '../pages/settings/sadaaka/SadakaTypes.tsx';
 import MavunoList from '../pages/mavuno/Mavuno.tsx';
 import MavunoDetails from '../pages/mavuno/MavunoDetails.tsx';
+import ExpenseStatementReport from '../pages/reports/expenses-reports.tsx';
+import MuhuminiStatementPage from '../pages/reports/muhumini-statement.tsx';
+import RevenueStatementReport from '../pages/reports/revenue-report.tsx';
 
 
 const AppRouter = () => {
@@ -88,6 +91,11 @@ const AppRouter = () => {
                 {path:"settings/system-package", element:<SystemPackagesList />},
                 {path:"settings/expense-categories", element:<ExpenseCategoryList />},
                 {path:"matumizi", element:<Expenses />},
+                {path:"reports/expenses", element:<ExpenseStatementReport />},
+                {path:"reports/mhumini-statement", element:<MuhuminiStatementPage />},
+                {path:"reports/revenue-statement", element:<RevenueStatementReport />},
+
+
 
             ],
         }

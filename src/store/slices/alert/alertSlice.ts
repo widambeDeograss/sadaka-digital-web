@@ -27,6 +27,9 @@ export const AlertStateSplice = createSlice({
                 case "error":
                     toast.error(message,{autoClose:duration})
                     break
+                case "info":
+                    toast.info(message, {autoClose:duration})
+                    break
                 case "warning":
                     toast.warning(message, {autoClose:duration})
                     break

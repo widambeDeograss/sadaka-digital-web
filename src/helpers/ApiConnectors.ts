@@ -196,3 +196,12 @@ export const updateMavunoPayment = (id: any, data: any) =>
   api.put(url.MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY + `${id}`, data);
 export const deleteMavunoPayment = (id: any) =>
   api.delete(url.MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY + `${id}`);
+
+
+  //REPORTS
+  export const fetchWahuminiStatement = (id: any) => api.get(url.WAHUMINI_STATEMENT, id);
+  export const fetchRevenueStatement = (id: any) => api.get(url.REVENUE_STATEMENT, id);
+  export const fetchExpenseStatement = (id: any) => api.get(url.EXPENSE_STATEMENT, id);
+
+  //SMS
+  export const sendCustomSms = (data: any) => api.create(url.SEND_CUSTOM_SMS, data);

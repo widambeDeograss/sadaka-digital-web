@@ -13,7 +13,7 @@ import {
   
 } from "react-icons/pi";
 import { GiSwapBag, GiTakeMyMoney, GiPayMoney,  } from "react-icons/gi";
-import { RiDashboardFill } from "react-icons/ri";
+import { RiDashboardFill, RiExportLine } from "react-icons/ri";
 import { FiSettings } from "react-icons/fi";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Colors } from "../../Constants/Colors";
@@ -144,6 +144,19 @@ const menuItems:MenuItem[] = [
       icon: <GiTakeMyMoney style={{ fontSize: "14px", fontWeight: "bold" }} />,
       path: "/dashboard/matumizi",
   },
+  {
+    key: "reports",
+    label: "Reports",
+    icon: <RiExportLine style={{ fontSize: "14px", fontWeight: "bold" }} />,
+    permissions:['VIEW_WAHUMINI'],
+    children: [
+        { key: "wahumini-statement", label: "Wahumini", path: "/dashboard/reports/mhumini-statement", permissions:['VIEW_WAHUMINI'], },
+        { key: "revenue", label: "Revenue", path: "/dashboard/reports/revenue-statement", permissions:['VIEW_WAHUMINI'], },
+        { key: "expences", label: "Expenses", path: "/dashboard/reports/expenses", permissions:['VIEW_WAHUMINI'], },
+        // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
+    ],
+
+},
   {
     key: "settings",
     label: "Settings",
