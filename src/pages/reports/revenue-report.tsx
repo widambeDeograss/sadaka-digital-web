@@ -1,7 +1,7 @@
 import { Card, Table, Typography, DatePicker } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "../../store/store-hooks.ts";
-import { fetchExpenseStatement, fetchRevenueStatement } from "../../helpers/ApiConnectors.ts";
+import { fetchRevenueStatement } from "../../helpers/ApiConnectors.ts";
 import Tabletop from "../../components/tables/TableTop.tsx";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
@@ -28,68 +28,144 @@ const swahiliMonths: { [key: string]: string } = {
 const RevenueStatementReport = () => {
   const church = useAppSelector((state: any) => state.sp);
   const [dates, setDates] = useState<[Dayjs, Dayjs]>([
-    dayjs().startOf('year'),
-    dayjs().endOf('year')
+    dayjs('2025-01-01'),
+    dayjs('2025-12-31')
   ]);
 
   const { data: revenueData, isLoading } = useQuery({
     queryKey: ["revenue-statement", dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')],
-    queryFn: () => {
-      const response:any =  fetchRevenueStatement({
-        church_id:   church.id,
-        start_date: dates[0].format('YYYY-MM-DD'),
-        end_date: dates[1].format('YYYY-MM-DD')});
-      
-      return response;
-     }
-     
+    queryFn: () => fetchRevenueStatement({
+      church_id: church.id,
+      start_date: dates[0].format('YYYY-MM-DD'),
+      end_date: dates[1].format('YYYY-MM-DD')
+    }),
   });
 
-  console.log(revenueData);
-  
+  // Helper function to ensure precise addition
+  const preciseAdd = (a: number, b: number): number => {
+    return parseFloat((a + b).toFixed(2));
+  };
 
-  // Generate dynamic columns based on API response
-  const columns = [
-    {
-      title: 'A',
-      dataIndex: 'revenue_type_record',
-      key: 'revenue_type_record',
-      fixed: 'left' as const,
-      width: 300,
-    },
-    ...(revenueData?.details || []).map((month: any) => ({
-      title: swahiliMonths[month.month_name] || month.month_name,
-      dataIndex: month.month_name.toLowerCase(),
-      key: month.month_name.toLowerCase(),
-      render: (value: number) => value ? `Tsh ${value.toLocaleString()}` : '-',
-    })),
-    {
-      title: 'JUMLA',
-      dataIndex: 'total',
-      key: 'total',
-      render: (value: number) => `Tsh ${value.toLocaleString()}`,
-    }
-  ];
+  // Normalize revenue_type values
+  const normalizeRevenueType = (type: string): string => {
+    const normalized = type.toLowerCase();
+    if (normalized === "michango") return "mchango";
+    if (normalized === "sadata") return "sadaka";
+    return normalized;
+  };
 
-  // Process data for table
-  const tableData = revenueData?.details?.map((category: any) => {
-    const monthValues: { [key: string]: number } = {};
-    let total = 0;
+  // Process data for monthly breakdown
+  const processMonthlyData = () => {
+    if (!revenueData?.details) return [];
 
-    revenueData.details.forEach((month: any) => {
-      const monthKey = month.month_name.toLowerCase();
-      const cat = month.find((c: any) => c.revenue_type_record === category.revenue_type_record);
-      monthValues[monthKey] = cat?.total_amount || 0;
-      total += cat?.total_amount || 0;
+    // Group data by month
+    const monthlyData: { [key: string]: any } = {};
+
+    revenueData.details.forEach((item: any) => {
+      const monthKey = item.month_name.trim();
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = {
+          month: swahiliMonths[monthKey] || monthKey,
+          mchango: 0,
+          sadaka: 0,
+          zaka: 0,
+          total: 0
+        };
+      }
+
+      const amount = parseFloat(item.total_amount);
+      const normalizedType = normalizeRevenueType(item.revenue_type);
+      monthlyData[monthKey][normalizedType] = preciseAdd(
+        monthlyData[monthKey][normalizedType],
+        amount
+      );
     });
 
-    return {
-      key: category.revenue_type_record,
-      revenue_type_record: category.revenue_type_record,
-      ...monthValues,
-      total,
-    };
-  }) || [];
+    // Calculate monthly totals and grand totals
+    let grandMchango = 0;
+    let grandSadaka = 0;
+    let grandZaka = 0;
+    let grandTotal = 0;
+
+    const sortedData = Object.values(monthlyData).map((month: any) => {
+      // Calculate monthly total
+      month.total = preciseAdd(
+        preciseAdd(month.mchango, month.sadaka),
+        month.zaka
+      );
+
+      // Add to grand totals
+      grandMchango = preciseAdd(grandMchango, month.mchango);
+      grandSadaka = preciseAdd(grandSadaka, month.sadaka);
+      grandZaka = preciseAdd(grandZaka, month.zaka);
+      grandTotal = preciseAdd(grandTotal, month.total);
+
+      return month;
+    }).sort((a, b) => 
+      new Date(`2025 ${a.month}`).getTime() - new Date(`2025 ${b.month}`).getTime()
+    );
+
+    // Add grand totals row
+    const finalData = [
+      ...sortedData,
+      {
+        month: 'Jumla',
+        mchango: grandMchango,
+        sadaka: grandSadaka,
+        zaka: grandZaka,
+        total: grandTotal,
+        isTotal: true
+      }
+    ];
+
+    return finalData;
+  };
+
+  const monthlyBreakdown = processMonthlyData();
+
+  // Generate columns for the table
+  const columns = [
+    {
+      title: 'Mwezi',
+      dataIndex: 'month',
+      key: 'month',
+      render: (text: string, record: any) => (
+        <Text strong={record.isTotal}>{text}</Text>
+      )
+    },
+    {
+      title: 'Mchango (Tsh)',
+      dataIndex: 'mchango',
+      key: 'mchango',
+      render: (value: number, record: any) => (
+        <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
+      )
+    },
+    {
+      title: 'Sadaka (Tsh)',
+      dataIndex: 'sadaka',
+      key: 'sadaka',
+      render: (value: number, record: any) => (
+        <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
+      )
+    },
+    {
+      title: 'Zaka (Tsh)',
+      dataIndex: 'zaka',
+      key: 'zaka',
+      render: (value: number, record: any) => (
+        <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
+      )
+    },
+    {
+      title: 'Jumla (Tsh)',
+      dataIndex: 'total',
+      key: 'total',
+      render: (value: number, record: any) => (
+        <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
+      )
+    }
+  ];
 
   return (
     <div>
@@ -97,7 +173,6 @@ const RevenueStatementReport = () => {
         <div className="mb-6">
           <RangePicker
             value={dates}
-            // @ts-ignore
             onChange={(values) => values && setDates(values)}
             format="YYYY-MM-DD"
             className="mb-4"
@@ -113,15 +188,9 @@ const RevenueStatementReport = () => {
             <div className="flex-1">
               <Text strong>Jumla ya miamala:</Text>
               <Text className="block text-lg">
-                Tsh {revenueData?.summary?.total_records?.toLocaleString()}
+                {revenueData?.summary?.total_records}
               </Text>
             </div>
-            {/* <div className="flex-1">
-              <Text strong>Ulinganifu wa bajeti:</Text>
-              <Text className="block text-lg" type="danger">
-                Tsh {expenseData?.summary?.total_remaining?.toLocaleString()}
-              </Text>
-            </div> */}
           </div>
         </div>
 
@@ -137,31 +206,11 @@ const RevenueStatementReport = () => {
           <Table
             id="revenue-table"
             columns={columns}
-            dataSource={tableData}
+            dataSource={monthlyBreakdown}
             loading={isLoading}
             scroll={{ x: true }}
             pagination={false}
-            summary={() => (
-              <Table.Summary fixed>
-                <Table.Summary.Row>
-                  <Table.Summary.Cell index={0} colSpan={1}>
-                    <Text strong>Jumla</Text>
-                  </Table.Summary.Cell>
-                  {(revenueData?.details || []).map((month: any, index: number) => (
-                    <Table.Summary.Cell key={month.month_name} index={index + 1}>
-                      <Text strong>
-                        Tsh {month.month_total.toLocaleString()}
-                      </Text>
-                    </Table.Summary.Cell>
-                  ))}
-                  <Table.Summary.Cell index={(revenueData?.details?.length || 0) + 1}>
-                    <Text strong>
-                      Tsh {revenueData?.summary?.total_revenue?.toLocaleString()}
-                    </Text>
-                  </Table.Summary.Cell>
-                </Table.Summary.Row>
-              </Table.Summary>
-            )}
+            rowClassName={(record) => record.isTotal ? 'total-row' : ''}
           />
         </div>
       </Card>
@@ -170,3 +219,4 @@ const RevenueStatementReport = () => {
 };
 
 export default RevenueStatementReport;
+// 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
