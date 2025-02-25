@@ -87,10 +87,10 @@ const menuItems:MenuItem[] = [
       key: "user",
       label: "Users",
       icon: <PiUsersFourBold style={{ fontSize: "14px", fontWeight: "bold" }} />,
-      permissions:['MANAGE_SPS'],
+      permissions:['VIEW_WAHUMINI'],
       children: [
           { key: "list", label: "Users", path: "/dashboard/users/list",  permissions:['ADD_USER'], },
-          { key: "spList", label: "Users", path: "/dashboard/sp-users/list",  permissions:['VIEW_SP_ADMINS'], },
+          { key: "spList", label: "Users", path: "/dashboard/sp-users/list",  permissions:['MANAGE_CHURCH_LEADERS'], },
           { key: "roles", label: "roles", path: "/dashboard/users/roles" ,  permissions:["MANAGE_ROLES"],},
           { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions",  permissions:['MANAGE_PERMISSIONS'], },
       ],
@@ -102,8 +102,6 @@ const menuItems:MenuItem[] = [
       permissions:["MANAGE_SPS"],
       children: [
           { key: "sps", label: "SpList", path: "/dashboard/sps",  permissions:["MANAGE_SPS"], },
-          // { key: "roles", label: "roles", path: "/dashboard/users/roles" },
-          // { key: "permissions", label: "Permissions", path: "/dashboard/users/permissions" },
       ],
   },
   {
