@@ -21,6 +21,7 @@ import { addAlert } from "../../store/slices/alert/alertSlice";
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
+const { confirm } = Modal;
 
 // Define the data type for table rows
 interface CardDetail {
@@ -119,6 +120,48 @@ const sendPushMessage = async (record: CardDetail) => {
     }
   };
 
+  // Function to show confirmation modal before sending individual SMS
+  const showSendConfirmation = (record: CardDetail) => {
+    if (!record?.card_no || !church?.id) {
+      dispatch(
+        addAlert({
+          title: "Error",
+          message: "Invalid parameters: Missing card_no or church ID",
+          type: "error",
+        })
+      );
+      return;
+    }
+
+    if (date && record.present) {
+      dispatch(
+        addAlert({
+          title: "Muhumini ameshatoa zaka kwa mwezi huu",
+          message: "Muhumini ameshatoa zaka kwa mwezi huu",
+          type: "info",
+        })
+      );
+      return;
+    }
+
+    const recipientName = record.mhumini_name;
+    const period = range 
+      ? `miezi kuanzia ${range[0].format("MMMM YYYY")} hadi ${range[1].format("MMMM YYYY")}`
+      : `mwezi wa ${date?.format("MMMM YYYY")}`;
+
+    confirm({
+      title: 'Tuma Ujumbe wa Ukumbusho',
+      content: `Unataka kutuma ujumbe wa ukumbusho kwa ${recipientName} (${record.card_no}) kwa ${period}?`,
+      okText: 'Tuma',
+      okType: 'default',
+      cancelText: 'Ghairi',
+      onOk() {
+        return sendPushMessage(record);
+      },
+    });
+  };
+
+
   // Columns for the table
   const columns: ColumnsType<CardDetail> = [
     { title: "Card No", dataIndex: "card_no", key: "card_no" },
@@ -160,7 +203,7 @@ const sendPushMessage = async (record: CardDetail) => {
           type="primary"
           className="bg-[#152033] text-white"
           loading={record.card_no === loadingBahasha && kumbushaLoading}
-          onClick={() => sendPushMessage(record)}
+          onClick={() => showSendConfirmation(record)}
         >
           Tuma sms
         </Button>
@@ -273,6 +316,40 @@ const sendPushMessage = async (record: CardDetail) => {
   const totalPresent = cardDetails?.filter((card:any) => card.present).length;
   const totalNotPresent = cardDetails?.length - totalPresent;
 
+// Function to show confirmation modal before sending batch SMS
+const showBatchSendConfirmation = () => {
+  if ((!date && !range) || !church) {
+    dispatch(
+      addAlert({
+        title: "Error",
+        message: "Invalid parameters: Please select a month or range",
+        type: "error",
+      })
+    );
+    return;
+  }
+
+  const notPresentCount = cardDetails?.filter((card: any) => !card.present).length || 0;
+  
+  let confirmationMessage = "";
+  if (date) {
+    confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya mwezi wa ${date.format("MMMM YYYY")}?`;
+  } else if (range) {
+    confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya miezi kuanzia ${range[0].format("MMMM YYYY")} hadi ${range[1].format("MMMM YYYY")}?`;
+  }
+
+  confirm({
+    title: 'Tuma Ukumbusho kwa Wote',
+    content: confirmationMessage,
+    okText: 'Tuma',
+    okType: 'default',
+    cancelText: 'Ghairi',
+    onOk() {
+      return fetchZakaBahashaInfoWithCheck();
+    },
+  });
+};
+
   return (
     <Modal
       title="Bahasha za zaka"
@@ -307,7 +384,7 @@ const sendPushMessage = async (record: CardDetail) => {
         {date && (
           <Button
             type="primary"
-            onClick={() => fetchZakaBahashaInfoWithCheck()}
+            onClick={showBatchSendConfirmation}
             loading={loadingMessage}
             className="bg-[#152033] text-white"
           >
@@ -348,10 +425,22 @@ const sendPushMessage = async (record: CardDetail) => {
        )}
 
       {range && (
+       <div className="flex flex-col justify-center items-center">
         <Title level={4} style={{ textAlign: "center", marginBottom: 16 }}>
           Bahasha kuanzia: {range[0].format("MMMM YYYY")} hadi{" "}
           {range[1].format("MMMM YYYY")}
         </Title>
+     
+          <Button
+            type="primary"
+            onClick={showBatchSendConfirmation}
+            loading={loadingMessage}
+            className="bg-[#152033] text-white  "
+          >
+            Tuma Kukumbusha matoleo ya zaka
+          </Button>
+   
+       </div>
       )}
 
       <Tabletop

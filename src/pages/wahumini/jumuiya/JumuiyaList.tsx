@@ -140,12 +140,12 @@ const KandaJumuiya = () => {
       render: (_text: any, record: any) => <div>{record?.jina_kiongozi}</div>,
     },
     {
-      title: "Address",
+      title: "Phone Number 1",
       dataIndex: "address",
       render: (text: any, _record: any) => <div>{text}</div>,
     },
     {
-      title: "Phone Number",
+      title: "Phone Number 2",
       dataIndex: "namba_ya_simu",
       render: (text: any, _record: any) => <div>{text}</div>,
     },

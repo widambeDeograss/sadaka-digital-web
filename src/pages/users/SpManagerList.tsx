@@ -1,7 +1,7 @@
 import  { useState } from "react";
 import {useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import {  fetchtSpManagers } from "../../helpers/ApiConnectors.js";
+import {  fetchRoles, fetchtSpManagers } from "../../helpers/ApiConnectors.js";
 import { Button, Card, Dropdown, Menu } from "antd";
 import { Table } from "antd";
 import { useAppSelector } from "../../store/store-hooks.js";
@@ -36,6 +36,22 @@ function SpManagerList() {
       //   enabled: false,
       // }
     });
+
+      const {
+        data: roles,
+      } = useQuery({
+        queryKey: ["roles"],
+        queryFn: async () => {
+          const response: any = await fetchRoles();
+          return response?.map((role: any) => ({
+            name: role.role_name,
+            value: role.id,
+          }));
+        },
+        // {
+        //   enabled: false,
+        // }
+      });
   const handleActivateDeactivate = async (record: any) => {
     if (record.status === "ACTIVE") {
       //   await userEnableDisable(record.id, "disable");
@@ -98,37 +114,39 @@ function SpManagerList() {
     },
     {
       title: "First Name",
-      dataIndex: ["sp_manager", "firstname"],
+      dataIndex: ["sp_manager_details", "firstname"],
       render: (text: any) => <div>{text}</div>,
       sorter: (a: any, b: any) => a.sp_manager.firstname.localeCompare(b.sp_manager.firstname),
     },
     {
       title: "Last Name",
-      dataIndex: ["sp_manager", "lastname"],
+      dataIndex: ["sp_manager_details", "lastname"],
       render: (text: any) => <div>{text}</div>,
       sorter: (a: any, b: any) => a.sp_manager.lastname.localeCompare(b.sp_manager.lastname),
     },
     {
-      title: "Username",
-      dataIndex: ["sp_manager", "username"],
-      render: (text: any) => <div>{text}</div>,
-      sorter: (a: any, b: any) => a.sp_manager.username.localeCompare(b.sp_manager.username),
+      title: "Role",
+      dataIndex: ["sp_manager_details", "role"],
+      render: (text: any) => {
+        const role = roles?.find((r: any) => r.value === text);
+        return <div>{role?.name}</div>;
+      },
     },
     {
       title: "Email",
-      dataIndex: ["sp_manager", "email"],
+      dataIndex: ["sp_manager_details", "email"],
       render: (text: any) => <div>{text}</div>,
       sorter: (a: any, b: any) => a.sp_manager.email.localeCompare(b.sp_manager.email),
     },
     {
       title: "Phone",
-      dataIndex: ["sp_manager", "phone"],
+      dataIndex: ["sp_manager_details", "phone"],
       render: (text: any) => <div>{text}</div>,
       sorter: (a: any, b: any) => a.sp_manager.phone.localeCompare(b.sp_manager.phone),
     },
     {
       title: <strong>Status</strong>,
-      dataIndex: ["sp_manager", "user_active"],
+      dataIndex: ["sp_manager_details", "user_active"],
       render: (text: any) => (
         <>
           {text ? (
@@ -216,11 +234,11 @@ function SpManagerList() {
   return (
     <div className="max-h-max">
       <Card
-        title={<h3 className=" text-sm text-left">Church Users </h3>}
+        title={<h3 className=" text-sm text-left"> Users </h3>}
         className="mt-5"
         extra={
             <Button onClick={() =>  setopenMOdal(true)}>
-                Add Church User
+                Add User
             </Button>
         }
       >

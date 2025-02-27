@@ -66,7 +66,7 @@ export const updateSpManager = (id: any, data: any) =>
   api.put(url.SP_MANAGERS + `${id}`, data);
 export const deleteSpManager = (id: any) =>
   api.delete(url.SP_MANAGERS + `${id}`);
-export const postSpManagers = (data: any) => api.create(url.SP_MANAGERS, data);
+export const postSpManagers = (data: any) => api.create(url.CREATE_SP_MANAGER, data);
 export const postSpRevenue = (data: any) => api.create(url.SP_REVENUES, data);
 export const postSpRevenueUpdate = (data: any) =>
   api.put(url.SP_REVENUES_UPDATE, data);
@@ -202,6 +202,7 @@ export const deleteMavunoPayment = (id: any) =>
   export const fetchWahuminiStatement = (id: any) => api.get(url.WAHUMINI_STATEMENT, id);
   export const fetchRevenueStatement = (id: any) => api.get(url.REVENUE_STATEMENT, id);
   export const fetchExpenseStatement = (id: any) => api.get(url.EXPENSE_STATEMENT, id);
+  export const fetchPaymentTypeRev =  (id: any, data:any) => api.get(url.PAYMENT_LIST_REPORT + id, data);
 
   //SMS
   export const sendCustomSms = (data: any) => api.create(url.SEND_CUSTOM_SMS, data);

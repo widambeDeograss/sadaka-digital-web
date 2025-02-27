@@ -5,6 +5,7 @@ import { fetchRevenueStatement } from "../../helpers/ApiConnectors.ts";
 import Tabletop from "../../components/tables/TableTop.tsx";
 import dayjs, { Dayjs } from "dayjs";
 import { useState } from "react";
+import RevenueByPaymentType from "./rev-payment-types.tsx";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
@@ -169,6 +170,9 @@ const RevenueStatementReport = () => {
 
   return (
     <div>
+    <Card>
+    <RevenueByPaymentType />
+    </Card>
       <Card title="RIPOTI YA MAPATO" className="mt-14">
         <div className="mb-6">
           <RangePicker

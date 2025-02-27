@@ -41,6 +41,7 @@ export default function LoginPage() {
       );
       dispatch(setUserInfo(data?.user));
       const isAdmin = data?.user?.is_top_admin;
+      const isSpManager = data?.user?.is_sp_manager;
 
       if (isAdmin) {
         const defaultPackage = {
@@ -57,7 +58,9 @@ export default function LoginPage() {
         dispatch(setCurrentSP({church_name:""}));
         dispatch(setActivePackage(defaultPackage));
         navigation("/dashboard"); 
-      } else {
+      } else if (isSpManager) {
+        
+      }  else {
         console.log(data?.user?.id);
         
         const spResponse: any = await fetchSpByAdmin(data?.user?.id);

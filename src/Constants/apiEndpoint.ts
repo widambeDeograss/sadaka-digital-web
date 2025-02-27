@@ -35,6 +35,7 @@ export const JUMUIYA_UPDATE = `${DataBaseUrl}/service-providers/jumuiya-retrieve
 export const KANDA_LIST_CREATE = `${DataBaseUrl}/service-providers/kanda-list-create`;
 export const KANDA_UPDATE = `${DataBaseUrl}/service-providers/kanda-retrieve-update-destroy/`;
 export const SP_MANAGERS = `${DataBaseUrl}/service-providers/sp-managers/`;
+export const CREATE_SP_MANAGER = `${DataBaseUrl}/service-providers/create-sp-manager`;
 export const SP_REVENUES = `${DataBaseUrl}/service-providers/revenue-list-create`
 export const SP_REVENUES_UPDATE = `${DataBaseUrl}/service-providers/revenue/update/`
 
@@ -84,6 +85,7 @@ export const MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY = `${DataBaseUrl}/service-pr
 export const WAHUMINI_STATEMENT = `${DataBaseUrl}/service-providers/reports/wahumini-statement`;
 export const REVENUE_STATEMENT = `${DataBaseUrl}/service-providers/reports/revenue-statement`;
 export const EXPENSE_STATEMENT = `${DataBaseUrl}/service-providers/reports/expenses-statement`;
+export const PAYMENT_LIST_REPORT = `${DataBaseUrl}/service-providers/revenue/`;
 
 //SMS
 export const SEND_CUSTOM_SMS = `${DataBaseUrl}/service-providers/sms/send-custom`;

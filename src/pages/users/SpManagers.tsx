@@ -1,36 +1,66 @@
 import { useState } from "react";
-import { Button, Modal, Tabs } from "antd";
-import TabPane from "antd/es/tabs/TabPane";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { fetchRoles, postSpManagers } from "../../helpers/ApiConnectors";
+import { Button, Modal, Select, Input, Form } from "antd";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { fetchRoles, fetchtJumuiya, fetchWahumini, postSpManagers } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 
+const { Option } = Select;
+
 type modalType = {
-  openModal: any;
-  handleCancel: any;
+  openModal: boolean;
+  handleCancel: () => void;
 };
 
+// user_data = {
+//   "username": request.data.get("username"),
+//   "email":request.data.get('email'),
+//   "first_name": request.data.get("first_name"),
+//   "last_name": request.data.get("last_name"),
+//   "full_name": request.data.get("full_name"),
+//   "phone": request.data.get("phone_number"),
+//   "password": request.data.get("password"),
+//   "is_sp_manager":True,
+//   "role": request.data.get("role"),
+// }
+
+// manager_data = {
+//   "church": request.data.get("church"),
+//   "inserted_by": request.data.get("inserted_by"),
+//   "updated_by": request.data.get("updated_by"),
+//   "active": request.data.get("active", True),
+// }
 const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
+  const [selectedJumuiya, setSelectedJumuiya] = useState(null);
+  const dispatch = useAppDispatch();
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
-  const [confirmLoading, ] = useState(false);
-  const dispatch = useAppDispatch();
 
-  // Yup validation schema
-  const validationSchema = Yup.object().shape({
-    username: Yup.string().required("Username is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    firstname: Yup.string().required("First name is required"),
-    lastname: Yup.string().required("Last name is required"),
-    phone: Yup.string().required("Phone number is required"),
-    password: Yup.string().required("Password is required"),
-    role: Yup.string().required("role is required"),
-    // .required("Role is required"), // Role field validation
+   const { data: jumuiyas, isLoading: loadingJumuiyas } = useQuery({
+     queryKey: ["jumuiya"],
+     queryFn: async () => {
+         const response:any = await fetchtJumuiya(`?church_id=${church.id}`);       
+       return response
+     },
+   });
+
+   console.log(selectedJumuiya);
+   
+ 
+
+ const {
+    data: wahumini,
+    isLoading,
+  } = useQuery({
+    queryKey: ["wahumini", selectedJumuiya],
+    queryFn: async () => {
+      const response: any = await fetchWahumini(`?jumuiya=${selectedJumuiya}`);
+      return response;
+    },
+    
+      enabled: selectedJumuiya ? true : false,
   });
+
 
   const {
     data: roles,
@@ -48,28 +78,10 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     // }
   });
 
-
-
-  // useForm setup with yupResolver
-  const {
-    register,
-    handleSubmit,
-
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-
-  
-
-  
+  // Mutation to add user
   const { mutate: addUserMutation, isPending: loading } = useMutation({
-    mutationFn: async( data: any) => {
-        return await postSpManagers(data);
-    },
-    onSuccess: (data) => {
-      console.log(data);
-
+    mutationFn: async (data: any) => await postSpManagers(data),
+    onSuccess: () => {
       dispatch(
         addAlert({
           title: "Success",
@@ -77,232 +89,80 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
           type: "success",
         })
       );
-    //   navigate("/");
+      handleCancel();
     },
     onError: (error) => {
-      
       dispatch(
         addAlert({
-          title: "Error adding user",
+          title: "Error",
           message: error.message,
           type: "error",
         })
       );
-    //   enqueueSnackbar("Ops.. Error on error adding usert. Try again!", {
-    //     variant: "error",
-    //   });
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onFinish = (values: any) => {
+    const mhumini =  wahumini?.find((mhumini: any) => mhumini.id === values.mhumini);
     const finalData = {
-        sp_manager: {
-          ...data,
-          is_sp_manager: true,
-        },
-        church: church.id,
-        inserted_by: user?.username,
-    }
-   
+     username: mhumini?.first_name?.toLocaleLowerCase() + mhumini?.last_name?.toLocaleLowerCase(),
+     first_name: mhumini?.first_name?.toLocaleLowerCase() ,
+     last_name:mhumini?.last_name?.toLocaleLowerCase(),
+     full_name:mhumini?.first_name + mhumini?.last_name,
+     email: mhumini?.email ?  mhumini?.email : `${mhumini?.first_name + mhumini?.last_name}@bmcmakabe.org.tz`?.toLocaleLowerCase(),
+     phone: mhumini?.phone_number,
+     password:values?.password,
+     role:values?.role,
+      church: church.id,
+      inserted_by: user?.username,
+      updated_by: user?.username,
+    };
+
+    console.log(finalData);
+    
     addUserMutation(finalData);
   };
 
   return (
-    <div>
-      <Modal
-        title={"Create User"}
-        open={openModal}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-        footer={null}
-        className="w-full max-w-4xl" // Increased modal size
-      >
-        <Tabs defaultActiveKey="1" centered>
-          <TabPane tab="User Details" key="1">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid grid-cols-2 gap-3">
-                {/* Username */}
-                <div className="">
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Username
-                  </label>
-                  <input
-                    id="username"
-                    type="text"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      errors.username ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register("username")}
-                  />
-                  {errors.username && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.username?.message}
-                    </p>
-                  )}
-                </div>
+    <Modal title="Create User" open={openModal} onCancel={handleCancel} footer={null}>
+      <Form layout="vertical" onFinish={onFinish}>
+        {/* Jumuiya Select */}
+        <Form.Item name="jumuiya" label="Jumuiya" rules={[{ required: true, message: "Please select a Jumuiya" }]}> 
+          <Select placeholder="Select Jumuiya" onChange={setSelectedJumuiya}>
+            {jumuiyas?.map((jumuiya: any) => (
+              <Option key={jumuiya.id} value={jumuiya.id}>{jumuiya.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-                {/* Email */}
-                <div className="">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="text"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      errors.email ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.email?.message}
-                    </p>
-                  )}
-                </div>
+        {/* Mhumini Select */}
+        <Form.Item name="mhumini" label="Mhumini" rules={[{ required: true, message: "Please select a Mhumini" }]}> 
+          <Select placeholder="Select Mhumini" disabled={!selectedJumuiya} >
+            {wahumini?.map((mhumini: any) => (
+              <Option key={mhumini.id} value={mhumini.id}>{mhumini.first_name} {mhumini.last_name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-                {/* First Name */}
-                <div className="">
-                  <label
-                    htmlFor="firstname"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    First Name
-                  </label>
-                  <input
-                    id="firstname"
-                    type="text"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      errors.firstname ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register("firstname")}
-                  />
-                  {errors.firstname && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.firstname?.message}
-                    </p>
-                  )}
-                </div>
+        {/* Role Select */}
+        <Form.Item name="role" label="Role" rules={[{ required: true, message: "Please select a role" }]}> 
+          <Select placeholder="Select Role">
+            {roles?.map((role: any) => (
+              <Option key={role.value} value={role.value}>{role.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-                {/* Last Name */}
-                <div className="">
-                  <label
-                    htmlFor="lastname"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Last Name
-                  </label>
-                  <input
-                    id="lastname"
-                    type="text"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      errors.lastname ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register("lastname")}
-                  />
-                  {errors.lastname && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.lastname?.message}
-                    </p>
-                  )}
-                </div>
+        {/* Password Input */}
+        <Form.Item name="password" label="Password" rules={[{ required: true, message: "Please enter a password" }]}> 
+          <Input.Password placeholder="Enter password" />
+        </Form.Item>
 
-                {/* Phone */}
-                <div className="">
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Phone
-                  </label>
-                  <input
-                    id="phone"
-                    type="text"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      errors.phone ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register("phone")}
-                  />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.phone?.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Password */}
-                <div className="">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    type="password"
-                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                      errors.password ? "border-red-500" : "border-gray-300"
-                    }`}
-                    {...register("password")}
-                  />
-                  {errors.password && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.password?.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Role Select */}
-                <div className="">
-                  <label htmlFor="role" className="block text-sm font-medium">
-                    Role
-                  </label>
-                  <select
-                  id="role"
-                  {...register("role")}
-                  className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    errors.role ? "border-red-500" : "border-gray-300"
-                  }`}
-                >
-                  <option value="">Select role</option>
-                  {roles?.map((role: any) => (
-                    <option key={role.value} value={role.value}>
-                      {role.name}
-                    </option>
-                  ))}
-                </select>
-                
-                  {errors.role && (
-                    <p className="mt-1 text-sm text-red-600">
-                      {errors.role.message}
-                    </p>
-                  )}
-                </div>
-
-            
-              </div>
-
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={loading}
-                className="font-bold bg-[#152033] text-white mt-4"
-                style={{ width: "100%" }}
-              >
-                Create User
-              </Button>
-            </form>
-          </TabPane>
-        </Tabs>
-      </Modal>
-    </div>
+        <Button type="default" htmlType="submit" loading={loading} style={{ width: "100%" }}>
+          Create User
+        </Button>
+      </Form>
+    </Modal>
   );
 };
 
