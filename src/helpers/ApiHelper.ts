@@ -68,13 +68,15 @@ axios.interceptors.response.use(
 );
 
 class APIClient {
-  get = (url: string, params?: Record<string, any>): Promise<AxiosResponse<any>> => {
+  get = (url: string, params?: Record<string, any>,  responseType?: "blob" | "json"): Promise<AxiosResponse<any>> => {
     const queryString = params
       ? Object.keys(params)
           .map((key) => `${key}=${params[key]}`)
           .join("&")
       : "";
-    return axios.get(`${url}${queryString ? `?${queryString}` : ""}`);
+    return axios.get(`${url}${queryString ? `?${queryString}` : ""}`, {
+      responseType: responseType || "json",
+    });
   };
 
   create = async (url: string, data: any): Promise<AxiosResponse<any>> => {

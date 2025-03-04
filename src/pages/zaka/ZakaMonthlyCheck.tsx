@@ -14,7 +14,11 @@ import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import type { ColumnsType } from "antd/es/table";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
-import { fetchZakBahashaInfo, resolveBahasha, sendCustomSms } from "../../helpers/ApiConnectors";
+import {
+  fetchZakBahashaInfo,
+  resolveBahasha,
+  sendCustomSms,
+} from "../../helpers/ApiConnectors";
 import { useQuery } from "@tanstack/react-query";
 import Tabletop from "../../components/tables/TableTop";
 import { addAlert } from "../../store/slices/alert/alertSlice";
@@ -30,7 +34,7 @@ interface CardDetail {
   jumuiya: string;
   kanda: string;
   monthly_presence?: Record<string, boolean>;
-  present?: boolean; 
+  present?: boolean;
 }
 
 const CheckZakaPresenceModal: React.FC<{
@@ -48,7 +52,7 @@ const CheckZakaPresenceModal: React.FC<{
   const [filteredData, setFilteredData] = useState([]);
   const tableId = "data-table-zaka";
 
-const sendPushMessage = async (record: CardDetail) => {
+  const sendPushMessage = async (record: CardDetail) => {
     if (!record?.card_no || !church?.id) {
       throw new Error("Invalid parameters: Missing card_no or church ID");
     }
@@ -57,7 +61,9 @@ const sendPushMessage = async (record: CardDetail) => {
       setloadingBahasha(record.card_no);
       setkumbushaLoading(true);
 
-      const response: any = await resolveBahasha(`${record.card_no}/?church_id=${church.id}`);
+      const response: any = await resolveBahasha(
+        `${record.card_no}/?church_id=${church.id}`
+      );
       console.log("API Response:", response);
 
       let message = "";
@@ -70,24 +76,30 @@ const sendPushMessage = async (record: CardDetail) => {
             return monthDate.format("MMMM YYYY");
           });
 
-        message = `Ndugu ${response?.mhumini_details?.first_name} ${response?.mhumini_details?.last_name}, 
-        unakumbushwa kutoa zaka yako ya miezi ya ${months.join(", ")} kwa bahasha namba ${record.card_no}. 
+        message = `Ndugu ${response?.mhumini_details?.first_name} ${
+          response?.mhumini_details?.last_name
+        }, 
+        unakumbushwa kutoa zaka yako ya miezi ya ${months.join(
+          ", "
+        )} kwa bahasha namba ${record.card_no}. 
         Mungu akubariki.`;
       } else if (date) {
         if (record.present) {
-        dispatch(
-          addAlert({
-            title: "Muhumini ameshatoa zaka kwa mwezi huu",
-            message: "Muhumini ameshatoa zaka kwa mwezi huu",
-            type:
-              "info",
-          })
-         
-        )
-        return;
+          dispatch(
+            addAlert({
+              title: "Muhumini ameshatoa zaka kwa mwezi huu",
+              message: "Muhumini ameshatoa zaka kwa mwezi huu",
+              type: "info",
+            })
+          );
+          return;
         }
-        message = `Ndugu ${response?.mhumini_details?.first_name} ${response?.mhumini_details?.last_name}, 
-        unakumbushwa kutoa zaka yako ya mwezi wa ${date.format("MMMM YYYY")}. kwa bahasha namba ${record.card_no}. 
+        message = `Ndugu ${response?.mhumini_details?.first_name} ${
+          response?.mhumini_details?.last_name
+        }, 
+        unakumbushwa kutoa zaka yako ya mwezi wa ${date.format(
+          "MMMM YYYY"
+        )}. kwa bahasha namba ${record.card_no}. 
         Mungu akubariki.`;
       }
 
@@ -145,22 +157,23 @@ const sendPushMessage = async (record: CardDetail) => {
     }
 
     const recipientName = record.mhumini_name;
-    const period = range 
-      ? `miezi kuanzia ${range[0].format("MMMM YYYY")} hadi ${range[1].format("MMMM YYYY")}`
+    const period = range
+      ? `miezi kuanzia ${range[0].format("MMMM YYYY")} hadi ${range[1].format(
+          "MMMM YYYY"
+        )}`
       : `mwezi wa ${date?.format("MMMM YYYY")}`;
 
     confirm({
-      title: 'Tuma Ujumbe wa Ukumbusho',
+      title: "Tuma Ujumbe wa Ukumbusho",
       content: `Unataka kutuma ujumbe wa ukumbusho kwa ${recipientName} (${record.card_no}) kwa ${period}?`,
-      okText: 'Tuma',
-      okType: 'default',
-      cancelText: 'Ghairi',
+      okText: "Tuma",
+      okType: "default",
+      cancelText: "Ghairi",
       onOk() {
         return sendPushMessage(record);
       },
     });
   };
-
 
   // Columns for the table
   const columns: ColumnsType<CardDetail> = [
@@ -174,7 +187,7 @@ const sendPushMessage = async (record: CardDetail) => {
       key: "monthly_presence",
       render: (
         monthlyPresence: Record<string, boolean> | undefined,
-        record: CardDetail,
+        record: CardDetail
       ) => {
         if (monthlyPresence) {
           return Object.entries(monthlyPresence).map(([month, present]) => (
@@ -189,9 +202,13 @@ const sendPushMessage = async (record: CardDetail) => {
           ));
         }
         return record.present ? (
-          <span><CheckCircleOutlined style={{ color: "green" }} /> Ametoa</span>
+          <span>
+            <CheckCircleOutlined style={{ color: "green" }} /> Ametoa
+          </span>
         ) : (
-          <span><CloseCircleOutlined style={{ color: "red" }} /> Hajatoa</span>
+          <span>
+            <CloseCircleOutlined style={{ color: "red" }} /> Hajatoa
+          </span>
         );
       },
     },
@@ -208,7 +225,7 @@ const sendPushMessage = async (record: CardDetail) => {
           Tuma sms
         </Button>
       ),
-    }
+    },
   ];
 
   // Fetch data based on single month or range selection
@@ -228,7 +245,7 @@ const sendPushMessage = async (record: CardDetail) => {
         const endMonth = range[1].month() + 1;
         const endYear = range[1].year();
         const response: any = await fetchZakBahashaInfo(
-          `?month=${startMonth}&year=${startYear}&end_month=${endMonth}&end_year=${endYear}&church_id=${church.id}&query_type=range`,
+          `?month=${startMonth}&year=${startYear}&end_month=${endMonth}&end_year=${endYear}&church_id=${church.id}&query_type=range`
         );
         setFilteredData(response?.card_details);
         return response.card_details;
@@ -236,13 +253,13 @@ const sendPushMessage = async (record: CardDetail) => {
         const month = date.month() + 1;
         const year = date.year();
         const response: any = await fetchZakBahashaInfo(
-          `?month=${month}&year=${year}&church_id=${church.id}&query_type=check`,
+          `?month=${month}&year=${year}&church_id=${church.id}&query_type=check`
         );
         setFilteredData(response?.card_details);
         return response.card_details;
       }
     },
-    enabled: (!!date || !!range) && !!church?.id, 
+    enabled: (!!date || !!range) && !!church?.id,
   });
 
   // Send reminders function
@@ -256,15 +273,32 @@ const sendPushMessage = async (record: CardDetail) => {
     const queryParams = `?month=${month}&year=${year}&church_id=${church?.id}&query_type=reminder`;
 
     try {
-      const response = await fetchZakBahashaInfo(queryParams);
-      dispatch(
-        addAlert({
-          title: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
-          message: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
-          type: "success",
-        }),
-      );
-      return response;
+      if (range) {
+        const startMonth = range[0]?.month() + 1;
+        const startYear = range[0].year();
+        const endMonth = range[1].month() + 1;
+        const endYear = range[1].year();
+        const queryParamsRange = `?month=${startMonth}&year=${startYear}&end_month=${endMonth}&end_year=${endYear}&church_id=${church.id}&query_type=range`;
+        const response = await fetchZakBahashaInfo(queryParamsRange);
+        dispatch(
+          addAlert({
+            title: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
+            message: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
+            type: "success",
+          })
+        );
+        return response;
+      } else {
+        const response = await fetchZakBahashaInfo(queryParams);
+        dispatch(
+          addAlert({
+            title: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
+            message: "Ujumbe wa ukumbusho umetumwa kwa usahihi",
+            type: "success",
+          })
+        );
+        return response;
+      }
     } catch (error) {
       console.error("Error fetching Zaka Bahasha info:", error);
       throw error;
@@ -282,7 +316,7 @@ const sendPushMessage = async (record: CardDetail) => {
 
   // Handle range selection
   const handleRangeChange = (
-    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null,
+    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
   ) => {
     setDate(null);
     //@ts-ignore
@@ -313,42 +347,47 @@ const sendPushMessage = async (record: CardDetail) => {
     }
   }, [error]);
 
-  const totalPresent = cardDetails?.filter((card:any) => card.present).length;
+  const totalPresent = cardDetails?.filter((card: any) => card.present).length;
   const totalNotPresent = cardDetails?.length - totalPresent;
 
-// Function to show confirmation modal before sending batch SMS
-const showBatchSendConfirmation = () => {
-  if ((!date && !range) || !church) {
-    dispatch(
-      addAlert({
-        title: "Error",
-        message: "Invalid parameters: Please select a month or range",
-        type: "error",
-      })
-    );
-    return;
-  }
+  // Function to show confirmation modal before sending batch SMS
+  const showBatchSendConfirmation = () => {
+    if ((!date && !range) || !church) {
+      dispatch(
+        addAlert({
+          title: "Error",
+          message: "Invalid parameters: Please select a month or range",
+          type: "error",
+        })
+      );
+      return;
+    }
 
-  const notPresentCount = cardDetails?.filter((card: any) => !card.present).length || 0;
-  
-  let confirmationMessage = "";
-  if (date) {
-    confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya mwezi wa ${date.format("MMMM YYYY")}?`;
-  } else if (range) {
-    confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya miezi kuanzia ${range[0].format("MMMM YYYY")} hadi ${range[1].format("MMMM YYYY")}?`;
-  }
+    const notPresentCount =
+      cardDetails?.filter((card: any) => !card.present).length || 0;
 
-  confirm({
-    title: 'Tuma Ukumbusho kwa Wote',
-    content: confirmationMessage,
-    okText: 'Tuma',
-    okType: 'default',
-    cancelText: 'Ghairi',
-    onOk() {
-      return fetchZakaBahashaInfoWithCheck();
-    },
-  });
-};
+    let confirmationMessage = "";
+    if (date) {
+      confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya mwezi wa ${date.format(
+        "MMMM YYYY"
+      )}?`;
+    } else if (range) {
+      confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya miezi kuanzia ${range[0].format(
+        "MMMM YYYY"
+      )} hadi ${range[1].format("MMMM YYYY")}?`;
+    }
+
+    confirm({
+      title: "Tuma Ukumbusho kwa Wote",
+      content: confirmationMessage,
+      okText: "Tuma",
+      okType: "default",
+      cancelText: "Ghairi",
+      onOk() {
+        return fetchZakaBahashaInfoWithCheck();
+      },
+    });
+  };
 
   return (
     <Modal
@@ -373,7 +412,7 @@ const showBatchSendConfirmation = () => {
         <RangePicker
           onChange={(dates, _dateStrings) =>
             handleRangeChange(
-              dates as [dayjs.Dayjs | null, dayjs.Dayjs | null] | null,
+              dates as [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
             )
           }
           size="small"
@@ -399,8 +438,8 @@ const showBatchSendConfirmation = () => {
         </Title>
       )}
 
-      {date && ( 
-          <Row gutter={16} style={{ marginBottom: 16 }}>
+      {date && (
+        <Row gutter={16} style={{ marginBottom: 16 }}>
           <Col>
             <Badge
               count={totalPresent}
@@ -422,15 +461,15 @@ const showBatchSendConfirmation = () => {
             <span style={{ marginLeft: 8 }}>Zisizorudisha</span>
           </Col>
         </Row>
-       )}
+      )}
 
       {range && (
-       <div className="flex flex-col justify-center items-center">
-        <Title level={4} style={{ textAlign: "center", marginBottom: 16 }}>
-          Bahasha kuanzia: {range[0].format("MMMM YYYY")} hadi{" "}
-          {range[1].format("MMMM YYYY")}
-        </Title>
-     
+        <div className="flex flex-col justify-center items-center">
+          <Title level={4} style={{ textAlign: "center", marginBottom: 16 }}>
+            Bahasha kuanzia: {range[0].format("MMMM YYYY")} hadi{" "}
+            {range[1].format("MMMM YYYY")}
+          </Title>
+
           <Button
             type="primary"
             onClick={showBatchSendConfirmation}
@@ -439,8 +478,7 @@ const showBatchSendConfirmation = () => {
           >
             Tuma Kukumbusha matoleo ya zaka
           </Button>
-   
-       </div>
+        </div>
       )}
 
       <Tabletop

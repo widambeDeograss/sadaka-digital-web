@@ -5,7 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ToastContainer } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
-import { fetchSpByAdmin, postLogin } from "../../helpers/ApiConnectors";
+import { fetchSpByAdmin, fetchSpPackage, fetchtSpManagers, postLogin } from "../../helpers/ApiConnectors";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 import { loginSuccess, setUserInfo } from "../../store/slices/auth/authSlice";
 import { setActivePackage, setCurrentSP } from "../../store/slices/sp/spSlice";
@@ -59,6 +59,14 @@ export default function LoginPage() {
         dispatch(setActivePackage(defaultPackage));
         navigation("/dashboard"); 
       } else if (isSpManager) {
+
+       const spManager:any =  await fetchtSpManagers(`?user=${data?.user?.id}`);  
+       const spPackage:any  = await fetchSpPackage(`?church_id=${spManager[0]?.church}`);
+       console.log(spPackage);
+       dispatch(setCurrentSP(spPackage[0]?.church_details));
+       dispatch(setActivePackage(spPackage[0] || null)); 
+
+       navigation("/");
         
       }  else {
         console.log(data?.user?.id);

@@ -20,7 +20,7 @@ const Wahumini = () => {
   const church = useAppSelector((state: any) => state.sp);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const tableId = "data-table";
+  const tableId = "wahumini";
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
   );

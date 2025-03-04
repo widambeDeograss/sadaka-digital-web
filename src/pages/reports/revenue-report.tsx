@@ -1,4 +1,4 @@
-import { Card, Table, Typography, DatePicker } from "antd";
+import { Card, Table, Typography, DatePicker, Select } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "../../store/store-hooks.ts";
 import { fetchRevenueStatement } from "../../helpers/ApiConnectors.ts";
@@ -9,6 +9,7 @@ import RevenueByPaymentType from "./rev-payment-types.tsx";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 // Swahili month names mapping
 const swahiliMonths: { [key: string]: string } = {
@@ -32,6 +33,7 @@ const RevenueStatementReport = () => {
     dayjs('2025-01-01'),
     dayjs('2025-12-31')
   ]);
+  const [selectedRevenueType, setSelectedRevenueType] = useState<string | null>(null);
 
   const { data: revenueData, isLoading } = useQuery({
     queryKey: ["revenue-statement", dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')],
@@ -62,7 +64,7 @@ const RevenueStatementReport = () => {
     // Group data by month
     const monthlyData: { [key: string]: any } = {};
 
-    revenueData.details.forEach((item: any) => {
+    revenueData?.details.forEach((item: any) => {
       const monthKey = item.month_name.trim();
       if (!monthlyData[monthKey]) {
         monthlyData[monthKey] = {
@@ -168,11 +170,16 @@ const RevenueStatementReport = () => {
     }
   ];
 
+  // Filter the details based on the selected revenue type
+  const filteredDetails = selectedRevenueType
+    ? revenueData?.details.filter((item: any) => normalizeRevenueType(item.revenue_type) === selectedRevenueType)
+    : revenueData?.details;
+
   return (
     <div>
-    <Card>
-    <RevenueByPaymentType />
-    </Card>
+      <Card>
+        <RevenueByPaymentType />
+      </Card>
       <Card title="RIPOTI YA MAPATO" className="mt-14">
         <div className="mb-6">
           <RangePicker
@@ -198,6 +205,19 @@ const RevenueStatementReport = () => {
           </div>
         </div>
 
+        <div className="mb-6">
+          <Select
+            placeholder="Chagua aina ya mapato"
+            style={{ width: 200 }}
+            onChange={(value) => setSelectedRevenueType(value)}
+            allowClear
+          >
+            <Option value="mchango">Mchango</Option>
+            <Option value="sadaka">Sadaka</Option>
+            <Option value="zaka">Zaka</Option>
+          </Select>
+        </div>
+
         <div className="table-responsive">
           <Tabletop
             inputfilter={false}
@@ -217,10 +237,27 @@ const RevenueStatementReport = () => {
             rowClassName={(record) => record.isTotal ? 'total-row' : ''}
           />
         </div>
+
+        {selectedRevenueType && (
+          <Card title={`Maelezo ya ${selectedRevenueType}`} className="mt-14">
+            <Table
+              columns={[
+                { title: 'Aina ya Mapato', dataIndex: 'revenue_type_record', key: 'revenue_type_record' },
+                { title: 'Aina ya Malipo', dataIndex: 'payment_type_name', key: 'payment_type_name' },
+                { title: 'Kiasi (Tsh)', dataIndex: 'total_amount', key: 'total_amount' },
+                { title: 'Mwezi', dataIndex: 'month_name', key: 'month_name' },
+                { title: 'Mwaka', dataIndex: 'year', key: 'year' }
+              ]}
+              dataSource={filteredDetails}
+              loading={isLoading}
+              scroll={{ x: true }}
+              // pagination={true}
+            />
+          </Card>
+        )}
       </Card>
     </div>
   );
 };
 
 export default RevenueStatementReport;
-// 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

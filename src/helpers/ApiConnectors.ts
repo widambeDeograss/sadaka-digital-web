@@ -29,7 +29,7 @@ export const postSystemPackageOffer = (data: any) =>
 export const fetchSystemPackageOffer = () => api.get(url.SYSTEM_PACKAGES_OFFER);
 export const postSpPackage = (data: any) =>
   api.create(url.ALL_SP_PACKAGES, data);
-export const fetchSpPackage = () => api.get(url.ALL_SP_PACKAGES);
+export const fetchSpPackage = (id:any) => api.get(url.ALL_SP_PACKAGES + id);
 
 //SPS
 export const postSpSetup = (data: any) => api.create(url.LIST_CREATE_SPS, data);
@@ -72,8 +72,8 @@ export const postSpRevenueUpdate = (data: any) =>
   api.put(url.SP_REVENUES_UPDATE, data);
 
 //WAHUMUNI
-export const fetchWahumini = (id: any) =>
-  api.get(url.WAHUMINI_LIST_CREATE + `${id}`);
+export const fetchWahumini = (id: any, type?:any) =>
+  api.get(url.WAHUMINI_LIST_CREATE + `${id}`,{}, type );
 export const postWahumini = (data: any) =>
   api.create(url.WAHUMINI_LIST_CREATE, data);
 export const updateMuhumini = (id: any, data: any) =>
