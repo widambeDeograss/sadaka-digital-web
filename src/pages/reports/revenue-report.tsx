@@ -37,11 +37,14 @@ const RevenueStatementReport = () => {
 
   const { data: revenueData, isLoading } = useQuery({
     queryKey: ["revenue-statement", dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')],
-    queryFn: () => fetchRevenueStatement({
-      church_id: church.id,
-      start_date: dates[0].format('YYYY-MM-DD'),
-      end_date: dates[1].format('YYYY-MM-DD')
-    }),
+    queryFn: async () => {
+      const res:any =  await fetchRevenueStatement({
+        church_id: church.id,
+        start_date: dates[0].format('YYYY-MM-DD'),
+        end_date: dates[1].format('YYYY-MM-DD')
+      })
+      return res;
+    },
   });
 
   // Helper function to ensure precise addition
@@ -184,6 +187,7 @@ const RevenueStatementReport = () => {
         <div className="mb-6">
           <RangePicker
             value={dates}
+            //@ts-ignore
             onChange={(values) => values && setDates(values)}
             format="YYYY-MM-DD"
             className="mb-4"

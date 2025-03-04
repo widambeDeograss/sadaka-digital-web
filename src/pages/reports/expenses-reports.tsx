@@ -1,4 +1,4 @@
-import { Card, Table, Typography, DatePicker } from "antd";
+import { Card, Table, Typography, DatePicker, Select } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { useAppSelector } from "../../store/store-hooks.ts";
 import { fetchExpenseStatement } from "../../helpers/ApiConnectors.ts";
@@ -8,6 +8,7 @@ import { useState } from "react";
 
 const { Text } = Typography;
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 // Swahili month names mapping
 const swahiliMonths: { [key: string]: string } = {
@@ -31,24 +32,24 @@ const ExpenseStatementReport = () => {
     dayjs().startOf('year'),
     dayjs().endOf('year')
   ]);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const { data: expenseData, isLoading } = useQuery({
     queryKey: ["expense-statement", dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')],
     queryFn: () => {
-      const response:any =  fetchExpenseStatement({
-        church_id:   church.id,
+      const response: any = fetchExpenseStatement({
+        church_id: church.id,
         start_date: dates[0].format('YYYY-MM-DD'),
-        end_date: dates[1].format('YYYY-MM-DD')});
-      
+        end_date: dates[1].format('YYYY-MM-DD')
+      });
       return response;
-     }
-     
+    }
   });
 
   // Generate dynamic columns based on API response
   const columns = [
     {
-      title: 'A',
+      title: 'Aina ya Matumizi',
       dataIndex: 'category',
       key: 'category',
       fixed: 'left' as const,
@@ -69,24 +70,43 @@ const ExpenseStatementReport = () => {
   ];
 
   // Process data for table
-  const tableData = expenseData?.monthly_data?.[0]?.categories.map((category: any) => {
-    const monthValues: { [key: string]: number } = {};
-    let total = 0;
+  const tableData = () => {
+    if (!expenseData?.monthly_data) return [];
 
-    expenseData.monthly_data.forEach((month: any) => {
-      const monthKey = month.month_name.toLowerCase();
-      const cat = month.categories.find((c: any) => c.category_name === category.category_name);
-      monthValues[monthKey] = cat?.total_amount || 0;
-      total += cat?.total_amount || 0;
+    // Get all unique categories
+    const categories = Array.from(new Set(expenseData.monthly_data.flatMap((month: any) =>
+      month.categories.map((cat: any) => cat.category_name)
+    )));
+
+    // Filter categories if a specific category is selected
+    const filteredCategories = selectedCategory
+      ? categories.filter((cat) => cat === selectedCategory)
+      : categories;
+
+    // Generate table data for each category
+    return filteredCategories.map((category) => {
+      const monthValues: { [key: string]: number } = {};
+      let total = 0;
+
+      expenseData.monthly_data.forEach((month: any) => {
+        const monthKey = month.month_name.toLowerCase();
+        const cat = month.categories.find((c: any) => c.category_name === category);
+        monthValues[monthKey] = cat?.total_amount || 0;
+        total += cat?.total_amount || 0;
+      });
+
+      return {
+        key: category,
+        category: category,
+        ...monthValues,
+        total,
+      };
     });
+  };
 
-    return {
-      key: category.category_name,
-      category: category.category_name,
-      ...monthValues,
-      total,
-    };
-  }) || [];
+  // Get unique categories for the filter dropdown
+  const categories = Array.from(new Set(expenseData?.monthly_data?.flatMap((month: any) => month.categories.map((cat: any) => cat.category_name)
+    )) as unknown as string[]);
 
   return (
     <div>
@@ -99,7 +119,22 @@ const ExpenseStatementReport = () => {
             format="YYYY-MM-DD"
             className="mb-4"
           />
-          
+
+          <div className="flex gap-4 mb-4">
+            <Select
+              placeholder="Chagua Aina ya Matumizi"
+              style={{ width: 200 }}
+              onChange={(value) => setSelectedCategory(value)}
+              allowClear
+            >
+              {categories.map((category) => (
+                <Option key={category} value={category}>
+                  {category}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
           <div className="flex gap-4">
             <div className="flex-1">
               <Text strong>Jumla ya Matumizi:</Text>
@@ -113,12 +148,7 @@ const ExpenseStatementReport = () => {
                 Tsh {expenseData?.summary?.total_budget?.toLocaleString()}
               </Text>
             </div>
-            <div className="flex-1">
-              <Text strong>Ulinganifu wa bajeti:</Text>
-              <Text className="block text-lg" type="danger">
-                Tsh {expenseData?.summary?.total_remaining?.toLocaleString()}
-              </Text>
-            </div>
+           
           </div>
         </div>
 
@@ -134,7 +164,7 @@ const ExpenseStatementReport = () => {
           <Table
             id="expense-table"
             columns={columns}
-            dataSource={tableData}
+            dataSource={tableData()}
             loading={isLoading}
             scroll={{ x: true }}
             pagination={false}
