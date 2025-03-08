@@ -15,7 +15,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 // import { makePayment } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
-import { fetchPayTypes, postAhadiPayment, postSpRevenue } from "../../helpers/ApiConnectors";
+import { fetchPayTypes, postAhadiPayment } from "../../helpers/ApiConnectors";
 
 const { Option } = Select;
 
@@ -29,18 +29,6 @@ interface PaymentFormData {
   paymentType: string;
   amount: number;
 }
-
-type RevenuePostRequest = {
-  amount: string;
-  church: number; 
-  payment_type: number; 
-  revenue_type: string;
-  revenue_type_record: string;
-  date_received: string;
-  created_by: string;
-  updated_by: string;
-};
-
 const paymentSchema = yup.object().shape({
   paymentType: yup
     .string()
@@ -84,20 +72,8 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
   const { mutate: payAhadi, isPending:isLoading } = useMutation({
     mutationFn: async (data: any) => {
       const response:any = await postAhadiPayment(data);
-      const localDate = new Date();
-      const formattedDate = localDate.toLocaleDateString("en-CA"); 
-      const revenueData:RevenuePostRequest = {
-        amount: data.amount,
-        church: church?.id,
-        payment_type: data.payment_type,
-        revenue_type_record: response?.id,
-        date_received: formattedDate,
-        created_by: user?.username,
-        updated_by: user?.username,
-        revenue_type: "Ahadi payment"
-      }
-      const revenueResponse = await postSpRevenue(revenueData);
-      return revenueResponse;
+      // const revenueResponse = await postSpRevenue(revenueData);
+      return response;
     },
     onSuccess: () => {
       dispatch(
@@ -208,6 +184,8 @@ const PaymentAhadi: React.FC<PaymentAhadiProps> = ({
               <InputNumber
                 {...field}
                 style={{ width: "100%" }}
+                formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={(value) => value ? parseFloat(value.replace(/\$\s?|(,*)/g, '')) : 0}
                 min={0}
                 placeholder="Ingiza kiasi cha malipo"
               />

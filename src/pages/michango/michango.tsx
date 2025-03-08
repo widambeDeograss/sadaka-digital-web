@@ -37,11 +37,12 @@ const MichangoList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const tableId = "data-table";
+
   const { data: michango, isLoading: loadingmichango } = useQuery({
     queryKey: ["michango"],
     queryFn: async () => {
       const response: any = await fetchMichango(`?church_id=${church.id}`);
-      console.log(response);
+
       return response;
     },
     // {
@@ -75,6 +76,7 @@ const MichangoList = () => {
       message.error("Failed to delete mchango.");
     },
   });
+
 
   const columns = [
     {
@@ -153,7 +155,7 @@ const MichangoList = () => {
           overlay={
             <Menu>
               {GlobalMethod.hasAnyPermission(
-                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                ["VIEW_MICHANGO"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -164,7 +166,7 @@ const MichangoList = () => {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                ["MANAGE_MICHANGO"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -179,7 +181,7 @@ const MichangoList = () => {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["DELETE_WAHUMINI", "VIEW_WAHUMINI"],
+                ["MANAGE_MICHANGO"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -234,6 +236,10 @@ const MichangoList = () => {
           <div className="flex justify-between flex-wrap mt-3">
             <div>
               <Button.Group className="mt-5">
+              {GlobalMethod.hasAnyPermission(
+                ["MANAGE_MICHANGO"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white"
@@ -241,6 +247,11 @@ const MichangoList = () => {
                 >
                   Ongeza michango
                 </Button>
+                  )}
+                     {GlobalMethod.hasAnyPermission(
+                ["VIEW_MICHANGO"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white"
@@ -248,6 +259,7 @@ const MichangoList = () => {
                 >
                   Ongeza changizo
                 </Button>
+                  )}
                 {/* </Radio.Button> */}
               </Button.Group>
             </div>

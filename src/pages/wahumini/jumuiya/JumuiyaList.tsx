@@ -6,11 +6,8 @@ import { useAppSelector } from "../../../store/store-hooks.ts";
 import { useQuery } from "@tanstack/react-query";
 import KandaFormModal from "./AddEditKanda.tsx";
 import JumuiyaFormModal from "./AddEditJumuiya.tsx";
-import {
-  EditOutlined,
-  DeleteOutlined,
-  DownOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, DownOutlined } from "@ant-design/icons";
+import { GlobalMethod } from "../../../helpers/GlobalMethods.ts";
 
 const KandaJumuiya = () => {
   const [openKandaModal, setOpenKandaModal] = useState(false);
@@ -22,7 +19,9 @@ const KandaJumuiya = () => {
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [editData, setEditData] = useState<any | null>(null);
   const tableId = "kanda-jumuiya";
-
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
   const church = useAppSelector((state: any) => state.sp);
 
   const { data: kanda, isLoading: loadingKanda } = useQuery({
@@ -60,7 +59,9 @@ const KandaJumuiya = () => {
     {
       title: "s/No",
       dataIndex: "sNo",
-      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => (
+        <div>{index + 1}</div>
+      ),
     },
     {
       title: "Name",
@@ -88,24 +89,34 @@ const KandaJumuiya = () => {
         <Dropdown
           overlay={
             <Menu>
+               {GlobalMethod.hasAnyPermission(
+                  ["MANAGE_JUMUIYA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
               <Menu.Item
-              icon={<EditOutlined />}
-              onClick={() => handleOpenKandaModal("edit", record)}>
+                icon={<EditOutlined />}
+                onClick={() => handleOpenKandaModal("edit", record)}
+              >
                 Edit
               </Menu.Item>
+                )}
               {/* <Menu.Item
               icon={<EyeOutlined />}
               onClick={() => handleOpenKandaModal("edit", record)}>
                 View
               </Menu.Item> */}
+                {GlobalMethod.hasAnyPermission(
+                  ["MANAGE_JUMUIYA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
               <Menu.Item
-              icon={<DeleteOutlined />}
-              danger
-              onClick={() => handleOpenKandaModal("edit", record)}
+                icon={<DeleteOutlined />}
+                danger
+                onClick={() => handleOpenKandaModal("edit", record)}
               >
                 Delete
               </Menu.Item>
-         
+                )}
             </Menu>
           }
         >
@@ -119,7 +130,9 @@ const KandaJumuiya = () => {
     {
       title: "s/No",
       dataIndex: "sNo",
-      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => (
+        <div>{index + 1}</div>
+      ),
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
@@ -141,12 +154,12 @@ const KandaJumuiya = () => {
     },
     {
       title: "Phone Number 1",
-      dataIndex: "address",
+      dataIndex: "namba_ya_simu",
       render: (text: any, _record: any) => <div>{text}</div>,
     },
     {
       title: "Phone Number 2",
-      dataIndex: "namba_ya_simu",
+      dataIndex: "address",
       render: (text: any, _record: any) => <div>{text}</div>,
     },
     {
@@ -162,35 +175,44 @@ const KandaJumuiya = () => {
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item
-                  key="edit"
-                  icon={<EditOutlined />}
-                  onClick={() => handleOpenJumuiyaModal("edit", record)}
-                >
-                  Edit
-                </Menu.Item>
-
-  
-              {/* <Menu.Item
+                {GlobalMethod.hasAnyPermission(
+                  ["MANAGE_JUMUIYA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
+                  <Menu.Item
+                    key="edit"
+                    icon={<EditOutlined />}
+                    onClick={() => handleOpenJumuiyaModal("edit", record)}
+                  >
+                    Edit
+                  </Menu.Item>
+                )}
+                {/* <Menu.Item
               icon={<EyeOutlined />}
               onClick={() => handleOpenJumuiyaModal("edit", record)}>
                 View
               </Menu.Item> */}
-              <Menu.Item
-              icon={<DeleteOutlined />}
-              danger
-              onClick={() => handleOpenKandaModal("edit", record)}
-              >
-                Delete
-              </Menu.Item>
-         
-       
+                {GlobalMethod.hasAnyPermission(
+                  ["MANAGE_JUMUIYA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
+                  <Menu.Item
+                    icon={<DeleteOutlined />}
+                    danger
+                    onClick={() => handleOpenKandaModal("edit", record)}
+                  >
+                    Delete
+                  </Menu.Item>
+                )}
               </Menu>
             }
           >
-            <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-            Actions <DownOutlined />
-          </a>
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              Actions <DownOutlined />
+            </a>
           </Dropdown>
         </div>
       ),
@@ -219,8 +241,7 @@ const KandaJumuiya = () => {
       const filtered = jumuiya.filter((item: any) => {
         return (
           item?.name?.toLowerCase()?.includes(lowercasedTerm) ||
-          item?.kanda_details?.name?.toLowerCase()
-            .includes(lowercasedTerm) ||
+          item?.kanda_details?.name?.toLowerCase().includes(lowercasedTerm) ||
           item?.jina_kiongozi?.toLowerCase()?.includes(lowercasedTerm) ||
           item?.location?.toLowerCase()?.includes(lowercasedTerm)
         );
@@ -249,6 +270,11 @@ const KandaJumuiya = () => {
           </div>
           <div>
             <Button.Group>
+            {GlobalMethod.hasAnyPermission(
+                  ["MANAGE_JUMUIYA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
+           <>
               <Button
                 type="primary"
                 className="bg-[#152033] text-white text-xs"
@@ -263,6 +289,8 @@ const KandaJumuiya = () => {
               >
                 Ongeza Jumuiya
               </Button>
+           </>
+                )}
             </Button.Group>
           </div>
         </div>
@@ -276,16 +304,16 @@ const KandaJumuiya = () => {
           >
             <div className="table-responsive">
               <Tabletop
-             showFilter={false}
-             inputfilter={false}
-            onSearch={(term: string) => setSearchTerm(term)}
-            togglefilter={() =>  {}}
-            searchTerm={searchTerm}
-            data={tableId}
+                showFilter={false}
+                inputfilter={false}
+                onSearch={(term: string) => setSearchTerm(term)}
+                togglefilter={() => {}}
+                searchTerm={searchTerm}
+                data={tableId}
               />
 
               <Table
-              id={tableId}
+                id={tableId}
                 columns={kandaColumns}
                 dataSource={filteredData}
                 loading={loadingKanda}
@@ -304,15 +332,15 @@ const KandaJumuiya = () => {
           >
             <div className="table-responsive">
               <Tabletop
-           showFilter={false}
-           inputfilter={false}
-          onSearch={(term: string) => setSearchTermJumuiya(term)}
-          togglefilter={() =>  {}}
-          searchTerm={searchTermJumuiya}
-          data={tableId}
+                showFilter={false}
+                inputfilter={false}
+                onSearch={(term: string) => setSearchTermJumuiya(term)}
+                togglefilter={() => {}}
+                searchTerm={searchTermJumuiya}
+                data={tableId}
               />
               <Table
-              id={tableId}
+                id={tableId}
                 columns={jumuiyaColumns}
                 dataSource={filteredDataJumuiya}
                 loading={loadingJumuiya}

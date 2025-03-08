@@ -18,6 +18,7 @@ import Widgets from "./Stats";
 import CheckZakaPresenceModal from "./ZakaMonthlyCheck";
 import ReceiptDocument from "../../components/ZakaReceipt";
 import { pdf } from "@react-pdf/renderer";
+import { GlobalMethod } from "../../helpers/GlobalMethods";
 
 
 const MenuReceiptGenerator: React.FC<{ record: any }> = ({ record }) => {
@@ -90,17 +91,21 @@ const Zaka = () => {
   const [updateZakaModal, setupdateZakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
   const [openBahashaModal, setOpenBahashaModal] = useState(false);
-  const tableId = "data-table";
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 100 });
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
+  const tableId = "zaka";
 
 
-  const { isLoading: loadingZaka } = useQuery({
-    queryKey: ["zaka", yearFilter],
+  const {data: zakaPaginated, isLoading: loadingZaka } = useQuery({
+    queryKey: ["zaka", pagination.current, pagination.pageSize, yearFilter],
     queryFn: async () => {
-      let query = `?church_id=${church.id}`;
+      let query = `?church_id=${church.id}&page=${pagination.current}&page_size=${pagination.pageSize}`;
       if (yearFilter) query += `&year=${yearFilter}`;
       const response: any = await fetchZaka(query);
-      setZakaData(response);
-      setFilteredData(response);
+      setZakaData(response.results);
+      setFilteredData(response.results);
       return response;
     },
   });
@@ -197,16 +202,21 @@ const Zaka = () => {
               >
                 View
               </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  setSelectedData(record);
-                  setupdateZakaModal(true);
-                }}
-              >
-                Edit
-              </Menu.Item>
+              {GlobalMethod.hasAnyPermission(
+                             ["MANAGE_SADAKA"],
+                             GlobalMethod.getUserPermissionName(userPermissions)
+                           ) && (
+                             <Menu.Item
+                               key="2"
+                               icon={<EditOutlined />}
+                               onClick={() => {
+                                setSelectedData(record);
+                                setupdateZakaModal(true);
+                               }}
+                             >
+                               Edit
+                             </Menu.Item>
+                           )}
               <MenuReceiptGenerator record={record} />
             </Menu>
           }
@@ -219,6 +229,11 @@ const Zaka = () => {
       ),
     },
   ];
+
+  const handleTableChange = (pagination: any) => {
+   
+    setPagination((prev) => ({ ...prev, current: pagination }));
+  };
 
   useEffect(() => {
     if (searchTerm) {
@@ -251,6 +266,10 @@ const Zaka = () => {
           <div className="flex justify-between flex-wrap mt-3">
             <div>
               <Button.Group className="mt-5">
+              {GlobalMethod.hasAnyPermission(
+                  ["ADD_SADAKA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white"
@@ -258,6 +277,12 @@ const Zaka = () => {
                 >
                   Ongeza Zaka
                 </Button>
+                    )}
+                      {GlobalMethod.hasAnyPermission(
+                  ["MANAGE_SADAKA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
+              <>
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white"
@@ -272,6 +297,9 @@ const Zaka = () => {
                 >
                   Fuatilia Zaka
                 </Button>
+              </>
+                 )}
+               
               </Button.Group>
             </div>
           </div>
@@ -321,6 +349,12 @@ const Zaka = () => {
             dataSource={filteredData}
             loading={loadingZaka}
             bordered
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: zakaPaginated?.count,
+              onChange: handleTableChange,
+            }}
           />
         </div>
       </Card>

@@ -8,6 +8,7 @@ interface ViewModalProps {
 }
 
 const ViewModal: React.FC<ViewModalProps> = ({ visible, onClose, data }) => {
+  
   return (
     <Modal
       title="View Full Sadaka Details"

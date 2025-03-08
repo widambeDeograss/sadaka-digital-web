@@ -132,13 +132,6 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
           />
         </Form.Item>
 
-        <Form.Item label="Address">
-          <Controller
-            control={control}
-            name="address"
-            render={({ field }) => <Input {...field} placeholder="Address" />}
-          />
-        </Form.Item>
 
         <Form.Item
           label="Leader's Name"
@@ -185,7 +178,7 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
         </Form.Item>
 
         <Form.Item
-          label="Phone Number"
+          label="Phone Number 1"
           validateStatus={errors.namba_ya_simu ? "error" : ""}
           help={errors.namba_ya_simu?.message}
         >
@@ -195,6 +188,14 @@ const AddJumuiya: React.FC<AddEditJumuiyaProps> = ({
             render={({ field }) => (
               <Input {...field} placeholder="Phone Number" />
             )}
+          />
+        </Form.Item>
+
+        <Form.Item label="Phone number 2">
+          <Controller
+            control={control}
+            name="address"
+            render={({ field }) => <Input {...field} placeholder="Address" />}
           />
         </Form.Item>
 

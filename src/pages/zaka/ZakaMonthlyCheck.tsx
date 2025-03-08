@@ -76,13 +76,15 @@ const CheckZakaPresenceModal: React.FC<{
             return monthDate.format("MMMM YYYY");
           });
 
-        message = `Ndugu ${response?.mhumini_details?.first_name} ${
+        message = `Tumsifu Yesu Kristu,\n Mpendwa ${response?.mhumini_details?.first_name} ${
           response?.mhumini_details?.last_name
-        }, 
-        unakumbushwa kutoa zaka yako ya miezi ya ${months.join(
+        }, \n
+        Unakumbushwa kurejesha bahasha  zako za  zaka  ya miezi ya ${months.join(
           ", "
         )} kwa bahasha namba ${record.card_no}. 
-        Mungu akubariki.`;
+        Mungu akubariki. \n \n
+        KAMATI YA ZAKA, PAROKIA YA BMC MAKABE.
+        `;
       } else if (date) {
         if (record.present) {
           dispatch(
@@ -94,13 +96,14 @@ const CheckZakaPresenceModal: React.FC<{
           );
           return;
         }
-        message = `Ndugu ${response?.mhumini_details?.first_name} ${
+        message = `Tumsifu Yesu Kristu,\n Mpendwa ${response?.mhumini_details?.first_name} ${
           response?.mhumini_details?.last_name
-        }, 
-        unakumbushwa kutoa zaka yako ya mwezi wa ${date.format(
+        },\n 
+        Unakumbushwa kurejesha bahasha yako ya  zaka  ya ${date.format(
           "MMMM YYYY"
         )}. kwa bahasha namba ${record.card_no}. 
-        Mungu akubariki.`;
+        Mungu akubariki.\n \n
+        KAMATI YA ZAKA, PAROKIA YA BMC MAKABE.`;
       }
 
       const postMessage: any = await sendCustomSms({

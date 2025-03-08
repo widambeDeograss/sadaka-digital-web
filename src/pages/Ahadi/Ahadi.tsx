@@ -1,5 +1,14 @@
-import  { useEffect, useState } from "react";
-import { Button, Card, Table, Typography, Progress, Dropdown, Menu, message } from "antd";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Card,
+  Table,
+  Typography,
+  Progress,
+  Dropdown,
+  Menu,
+  message,
+} from "antd";
 import OngezaAhadi from "./OngezaAhadi";
 import Tabletop from "../../components/tables/TableTop";
 import { useAppSelector } from "../../store/store-hooks";
@@ -11,12 +20,13 @@ import {
   EyeOutlined,
   DownOutlined,
   ExclamationCircleOutlined,
-  PlusCircleFilled
+  PlusCircleFilled,
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
 import EditAhadi from "./EditAhadi";
 import ViewModal from "./ViewAhadi";
 import PaymentAhadi from "./PayAhadi";
+import { GlobalMethod } from "../../helpers/GlobalMethods";
 
 const { Title } = Typography;
 
@@ -32,9 +42,9 @@ const Ahadi = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [payAhadiModal, setPayAhadiModal] = useState(false);
   const tableId = "data-table";
-  // const userPermissions = useAppSelector(
-  //   (state: any) => state.user.userInfo.role.permissions
-  // );
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
 
   const { data: ahadiList, isLoading: loadingAhadi } = useQuery({
     queryKey: ["Ahadi"],
@@ -104,7 +114,6 @@ const Ahadi = () => {
     }
   }, [searchTerm, ahadiList]);
 
-
   // Define table columns
   const columns = [
     {
@@ -123,7 +132,9 @@ const Ahadi = () => {
         </div>
       ),
       sorter: (a: any, b: any) =>
-        (a?.mhumini_details?.first_name + a.mhumini_details?.last_name).localeCompare(
+        (
+          a?.mhumini_details?.first_name + a.mhumini_details?.last_name
+        ).localeCompare(
           b?.mhumini_details?.first_name + b.mhumini_details?.last_name
         ),
     },
@@ -132,7 +143,9 @@ const Ahadi = () => {
       dataIndex: "mchango_details",
       key: "mchango",
       render: (mchango_details: any) => (
-        <div>{mchango_details ? mchango_details?.mchango_name : "Bila Mchango"}</div>
+        <div>
+          {mchango_details ? mchango_details?.mchango_name : "Bila Mchango"}
+        </div>
       ),
       sorter: (a: any, b: any) => {
         const nameA = a?.mchango_details?.mchango_name || "";
@@ -144,15 +157,20 @@ const Ahadi = () => {
       title: "Amount (Tzs)",
       dataIndex: "amount",
       key: "amount",
-      render: (amount: string) => <div>Tsh {parseFloat(amount).toLocaleString()}</div>,
+      render: (amount: string) => (
+        <div>Tsh {parseFloat(amount).toLocaleString()}</div>
+      ),
       sorter: (a: any, b: any) => parseFloat(a.amount) - parseFloat(b.amount),
     },
     {
       title: "Paid Amount (Tzs)",
       dataIndex: "paid_amount",
       key: "paid_amount",
-      render: (paid_amount: string) => <div>Tsh {parseFloat(paid_amount).toLocaleString()}</div>,
-      sorter: (a: any, b: any) => parseFloat(a.paid_amount) - parseFloat(b.paid_amount),
+      render: (paid_amount: string) => (
+        <div>Tsh {parseFloat(paid_amount).toLocaleString()}</div>
+      ),
+      sorter: (a: any, b: any) =>
+        parseFloat(a.paid_amount) - parseFloat(b.paid_amount),
     },
     {
       title: "Progress",
@@ -161,19 +179,22 @@ const Ahadi = () => {
       render: (_: any, record: any) => {
         const amount = parseFloat(record.amount);
         const paidAmount = parseFloat(record.paid_amount);
-        const percent = amount > 0 ? Math.min((paidAmount / amount) * 100, 100) : 0;
+        const percent =
+          amount > 0 ? Math.min((paidAmount / amount) * 100, 100) : 0;
         return (
           <Progress
             percent={percent}
             status={percent === 100 ? "success" : "active"}
             size="small"
-            format={(percent:any) => `${percent.toFixed(2)}%`}
+            format={(percent: any) => `${percent.toFixed(2)}%`}
           />
         );
       },
       sorter: (a: any, b: any) => {
-        const percentA = a.amount > 0 ? parseFloat(a.paid_amount) / parseFloat(a.amount) : 0;
-        const percentB = b.amount > 0 ? parseFloat(b.paid_amount) / parseFloat(b.amount) : 0;
+        const percentA =
+          a.amount > 0 ? parseFloat(a.paid_amount) / parseFloat(a.amount) : 0;
+        const percentB =
+          b.amount > 0 ? parseFloat(b.paid_amount) / parseFloat(b.amount) : 0;
         return percentA - percentB;
       },
     },
@@ -181,7 +202,9 @@ const Ahadi = () => {
       title: "Tarehe ya ahadi",
       dataIndex: "date_pledged",
       key: "date_pledged",
-      render: (date: string) => <div>{new Date(date).toLocaleDateString()}</div>,
+      render: (date: string) => (
+        <div>{new Date(date).toLocaleDateString()}</div>
+      ),
       sorter: (a: any, b: any) =>
         new Date(a.date_pledged).getTime() - new Date(b.date_pledged).getTime(),
     },
@@ -189,34 +212,50 @@ const Ahadi = () => {
       title: "Tarehe ya mwisho wa ahadi",
       dataIndex: "due_date",
       key: "due_date",
-      render: (date: string) => <div>{new Date(date).toLocaleDateString()}</div>,
+      render: (date: string) => (
+        <div>{new Date(date).toLocaleDateString()}</div>
+      ),
       sorter: (a: any, b: any) =>
         new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
     },
- 
+
     {
       title: "",
       render: (_text: any, record: any) => (
         <Dropdown
           overlay={
             <Menu>
-              <Menu.Item
-                key="1"
-                icon={<EyeOutlined />}
-                onClick={() => handleView(record)}
-              >
-                View
-              </Menu.Item>
+              {GlobalMethod.hasAnyPermission(
+                ["VIEW_AHADI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
+                <Menu.Item
+                  key="1"
+                  icon={<EyeOutlined />}
+                  onClick={() => handleView(record)}
+                >
+                  View
+                </Menu.Item>
+              )}
+                 {GlobalMethod.hasAnyPermission(
+                ["ADD_AHADI_PAYMENTS"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
               <Menu.Item
                 key="2"
                 icon={<PlusCircleFilled />}
                 onClick={() => {
                   setSelectedData(record);
-                  setPayAhadiModal(true)
+                  setPayAhadiModal(true);
                 }}
               >
                 Lipia Ahadi
               </Menu.Item>
+               )}
+                {GlobalMethod.hasAnyPermission(
+                ["MANAGE_AHADI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
               <Menu.Item
                 key="3"
                 icon={<EditOutlined />}
@@ -227,6 +266,11 @@ const Ahadi = () => {
               >
                 Edit
               </Menu.Item>
+              )}
+                  {GlobalMethod.hasAnyPermission(
+                ["MANAGE_AHADI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
               <Menu.Item
                 key="4"
                 icon={<DeleteOutlined />}
@@ -235,6 +279,7 @@ const Ahadi = () => {
               >
                 Delete
               </Menu.Item>
+                )}
             </Menu>
           }
           trigger={["click"]}
@@ -247,8 +292,6 @@ const Ahadi = () => {
     },
   ];
 
-
-
   return (
     <div className="">
       {/* <Widgets /> */}
@@ -257,11 +300,14 @@ const Ahadi = () => {
           <h3 className="text-left">
             Tarehe: <span>{new Date().toDateString()}</span>
           </h3>
-          <h3 className="text-left">
-          </h3>
+          <h3 className="text-left"></h3>
           <div className="flex justify-between flex-wrap mt-3">
             <div>
               <Button.Group className="mt-5">
+              {GlobalMethod.hasAnyPermission(
+                ["MANAGE_AHADI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white"
@@ -269,17 +315,15 @@ const Ahadi = () => {
                 >
                   Ongeza Ahadi
                 </Button>
+              )}
                 {/* Add more buttons if needed */}
               </Button.Group>
             </div>
           </div>
         </div>
       </Card>
-      <Card
-        title={<Title level={5}>Orodha ya Ahadi</Title>}
-        className="mt-5"
-      >
-           <div className="table-responsive">
+      <Card title={<Title level={5}>Orodha ya Ahadi</Title>} className="mt-5">
+        <div className="table-responsive">
           <Tabletop
             inputfilter={showFilter}
             onSearch={(term: string) => setSearchTerm(term)}
@@ -289,7 +333,7 @@ const Ahadi = () => {
             data={tableId}
           />
           <Table
-              id={tableId}
+            id={tableId}
             columns={columns}
             dataSource={filteredData}
             loading={loadingAhadi}
@@ -302,9 +346,21 @@ const Ahadi = () => {
         openModal={openModal}
         handleCancel={() => setOpenModal(false)}
       />
-      <ViewModal visible={modalVisible} onClose={ ()=> setModalVisible(false)} data={selectedData}/>
-      <EditAhadi openModal={updateAhadiModal} ahadiData={selectedData}  handleCancel={()=> setupdateAhadiModal(false) }/>
-        <PaymentAhadi ahadiId={selectedData} handleCancel={()=>  setPayAhadiModal(false)} openModal={payAhadiModal}/>
+      <ViewModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        data={selectedData}
+      />
+      <EditAhadi
+        openModal={updateAhadiModal}
+        ahadiData={selectedData}
+        handleCancel={() => setupdateAhadiModal(false)}
+      />
+      <PaymentAhadi
+        ahadiId={selectedData}
+        handleCancel={() => setPayAhadiModal(false)}
+        openModal={payAhadiModal}
+      />
     </div>
   );
 };

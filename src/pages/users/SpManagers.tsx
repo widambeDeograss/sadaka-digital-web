@@ -127,8 +127,8 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     <Modal title="Create User" open={openModal} onCancel={handleCancel} footer={null}>
       <Form layout="vertical" onFinish={onFinish}>
         {/* Jumuiya Select */}
-        <Form.Item name="jumuiya" label="Jumuiya" rules={[{ required: true, message: "Please select a Jumuiya" }]}> 
-          <Select placeholder="Select Jumuiya" onChange={setSelectedJumuiya}>
+        <Form.Item name="jumuiya" label="Jumuiya" rules={[{ required: true, message: "Please select a Jumuiya" }]} > 
+          <Select placeholder="Select Jumuiya" onChange={setSelectedJumuiya} loading={loadingJumuiyas}>
             {jumuiyas?.map((jumuiya: any) => (
               <Option key={jumuiya.id} value={jumuiya.id}>{jumuiya.name}</Option>
             ))}
@@ -137,7 +137,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
 
         {/* Mhumini Select */}
         <Form.Item name="mhumini" label="Mhumini" rules={[{ required: true, message: "Please select a Mhumini" }]}> 
-          <Select placeholder="Select Mhumini" disabled={!selectedJumuiya} >
+          <Select placeholder="Select Mhumini" disabled={!selectedJumuiya} loading={isLoading}>
             {wahumini?.map((mhumini: any) => (
               <Option key={mhumini.id} value={mhumini.id}>{mhumini.first_name} {mhumini.last_name}</Option>
             ))}

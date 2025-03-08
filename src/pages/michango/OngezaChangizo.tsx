@@ -9,11 +9,12 @@ import {
   Select,
   Spin,
   Button,
+  Input,
 } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchWahumini,
    fetchMichango,
@@ -132,6 +133,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const {
     data: wahuminiList,
@@ -194,6 +196,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
           type: "success",
         })
       );
+     queryClient.invalidateQueries({queryKey:['michango']})
       reset();
     },
     onError: (_error: any) => {
@@ -399,11 +402,9 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
                 control={control}
                 defaultValue=""
                 render={({ field }) => (
-                  <input
-                    {...field}
-                    type="text"
-                    placeholder="Ingiza maelezo"
-                    className="ant-input"
+                  <Input
+                  {...field}
+                  placeholder="Ingiza maelezo"
                   />
                 )}
               />
@@ -529,17 +530,15 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
               help={errors.remark?.message}
             >
               <Controller
-                name="remark"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="text"
-                    placeholder="Ingiza maelezo"
-                    className="ant-input"
-                  />
-                )}
+              name="remark"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <Input
+                {...field}
+                placeholder="Ingiza maelezo"
+                />
+              )}
               />
             </Form.Item>
 

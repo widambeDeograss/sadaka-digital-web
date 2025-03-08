@@ -139,7 +139,7 @@ const Wahumini = () => {
           overlay={
             <Menu>
               {GlobalMethod.hasAnyPermission(
-                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                ["VIEW_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -152,7 +152,7 @@ const Wahumini = () => {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                ["MANAGE_WAHUMINI", "EDIT_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -165,7 +165,7 @@ const Wahumini = () => {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["DELETE_WAHUMINI", "VIEW_WAHUMINI"],
+                ["DELETE_WAHUMINI", "MANAGE_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -222,6 +222,10 @@ const Wahumini = () => {
             </div>
             <div>
               <Button.Group>
+              {GlobalMethod.hasAnyPermission(
+                ["ADD_WAHUMINI", "MANAGE_WAHUMINI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white text-xs"
@@ -229,6 +233,7 @@ const Wahumini = () => {
                 >
                   Ongeza Muhumini
                 </Button>
+              )}
                 {/* </Radio.Button> */}
               </Button.Group>
             </div>

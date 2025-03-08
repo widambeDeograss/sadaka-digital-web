@@ -19,6 +19,7 @@ export const putPermissionEdit = (data: any, _id: number) =>
 export const fetchAllUsers = (params: any) => api.get(url.USERS + params);
 export const fetchRoles = () => api.get(url.ALL_ROLES);
 export const fetchPermissions = () => api.get(url.ALL_PERMISSIONS);
+export const deactivateActivateUsers = (data: any) => api.get(url.ACTIVATE_DEACTIVATE_STAFF + data);
 
 //PACKAGES
 export const postSystemPackage = (data: any) =>
@@ -104,11 +105,11 @@ export const updateKanda = (id: any, data: any) =>
 export const deleteKanda = (id: any) => api.delete(url.KANDA_UPDATE + `${id}`);
 
 //SADAKA ZAKA
-export const fetchSadaka = (id: any) =>
-  api.get(url.SADAKA_LIST_CREATE + `${id}`);
+export const fetchSadaka = (id: any, type?:any) =>
+  api.get(url.SADAKA_LIST_CREATE + `${id}`, {}, type);
 export const fetchSadakaType = (id: any) =>
   api.get(url.SADAKA_TYPE_LIST_CREATE + `${id}`);
-export const fetchZaka = (id: any) => api.get(url.ZAKA_LIST_CREATE + `${id}`);
+export const fetchZaka = (id: any, type?:any) => api.get(url.ZAKA_LIST_CREATE + `${id}`, {}, type);
 // export const fetchAhadi = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 export const postSadaka = (data: any) =>
   api.create(url.SADAKA_LIST_CREATE, data);

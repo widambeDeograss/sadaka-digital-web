@@ -322,6 +322,8 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
                   <InputNumber
                     {...field}
                     style={{ width: "100%" }}
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value ? parseFloat(value.replace(/\$\s?|(,*)/g, '')) : 0}
                     min={0}
                     placeholder="Ingiza kiasi"
                   />
@@ -470,6 +472,8 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
                   <InputNumber
                     {...field}
                     style={{ width: "100%" }}
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                    parser={(value) => value ? parseFloat(value.replace(/\$\s?|(,*)/g, '')) : 0}
                     min={0}
                     placeholder="Ingiza kiasi"
                   />

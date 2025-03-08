@@ -25,23 +25,25 @@ import {
 import modal from "antd/es/modal";
 import OngezaMavunoPayments from "./AddMavunoPayment";
 import Widgets from "./Stats";
+import { GlobalMethod } from "../../helpers/GlobalMethods";
 
 const MavunoList = () => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   const church = useAppSelector((state: any) => state.sp);
   const queryClient = useQueryClient();
-  // const userPermissions = useAppSelector(
-  //     (state: any) => state.user.userInfo.role.permissions
-  // );
+  const userPermissions = useAppSelector(
+      (state: any) => state.user.userInfo.role.permissions
+  );
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [ongezaMavunoModal, setOngezaMavunoModal] = useState(false);
+
   const { data: mavuno, isLoading: loadingMavuno } = useQuery({
     queryKey: ["mavuno"],
     queryFn: async () => {
       const response: any = await fetchMavuno(`?church_id=${church.id}`);
-      console.log(response);
+      
       return response;
     },
   });
@@ -135,7 +137,7 @@ const MavunoList = () => {
     {
       title: "Inserted At",
       dataIndex: "inserted_at",
-      render: (text: any, _record: any) => <div>{text}</div>,
+      render: (text: any, _record: any) => <div>{new Date(text).toLocaleString()}</div>,
     },
     {
       title: "Actions",
@@ -150,7 +152,10 @@ const MavunoList = () => {
               >
                 View
               </Menu.Item>
-
+    {GlobalMethod.hasAnyPermission(
+                ["MANAGE_MAVUNO"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
               <Menu.Item
                 icon={<EditOutlined />}
                 onClick={() =>
@@ -161,7 +166,11 @@ const MavunoList = () => {
               >
                 Edit
               </Menu.Item>
-
+ )}
+   {GlobalMethod.hasAnyPermission(
+                ["MANAGE_MAVUNO"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
               <Menu.Item
                 onClick={() => handleDelete(record?.id)}
                 data-bs-toggle="modal"
@@ -171,6 +180,7 @@ const MavunoList = () => {
               >
                 Delete Mavuno
               </Menu.Item>
+               )}
             </Menu>
           }
         >
@@ -212,6 +222,11 @@ const MavunoList = () => {
           <div className="flex justify-between flex-wrap mt-3">
             <div>
               <Button.Group className="mt-5">
+              {GlobalMethod.hasAnyPermission(
+                ["MANAGE_MAVUNO"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
+             <>
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white"
@@ -219,11 +234,17 @@ const MavunoList = () => {
                 >
                   Mavuno kwa jumuiya
                 </Button>
-                <Button type="primary" className="bg-[#152033] text-white"
+              
+             </>
+              )}
+              {GlobalMethod.hasAnyPermission(
+                ["ADD_MAVUNO"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (  <Button type="primary" className="bg-[#152033] text-white"
                 onClick={() => setOngezaMavunoModal(true)}
                 >
                   Ongeza Mavuno
-                </Button>
+                </Button>)}
               </Button.Group>
             </div>
           </div>

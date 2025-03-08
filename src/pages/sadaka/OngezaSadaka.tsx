@@ -21,18 +21,16 @@ type ModalProps = {
   handleCancel: () => void;
 };
 
-
 type RevenuePostRequest = {
   amount: string;
-  church: number; 
-  payment_type: number; 
+  church: number;
+  payment_type: number;
   revenue_type: string;
   revenue_type_record: string;
   date_received: string;
   created_by: string;
   updated_by: string;
 };
-
 
 const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   const queryClient = useQueryClient();
@@ -98,8 +96,8 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   // Mutation for posting Sadaka
   const { mutate: postSadakaMutation, isPending: posting } = useMutation({
     mutationFn: async (data: any) => {
-      const response:any = await postSadaka(data);
-      const revenueData:RevenuePostRequest = {
+      const response: any = await postSadaka(data);
+      const revenueData: RevenuePostRequest = {
         amount: data.sadaka_amount,
         church: church?.id,
         payment_type: data.payment_type,
@@ -107,8 +105,8 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
         date_received: data.date,
         created_by: user?.username,
         updated_by: user?.username,
-        revenue_type: "Sadaka"
-      }
+        revenue_type: "Sadaka",
+      };
       const revenueResponse = await postSpRevenue(revenueData);
       return revenueResponse;
     },
@@ -151,7 +149,9 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
     try {
       setVerifyingBahasha(true);
       setBahashaError(null);
-      const response: any = await resolveBahasha(`${no}/?church_id=${church.id}`);
+      const response: any = await resolveBahasha(
+        `${no}/?church_id=${church.id}`
+      );
       if (response.bahasha_type === "zaka") {
         dispatch(
           addAlert({
@@ -183,12 +183,12 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
   // Unified submit handler
   const onSubmit = (data: any, hasCard: boolean) => {
     console.log(data.date);
-    
+
     // Format date to YYYY-MM-DD
     if (data.date) {
       const localDate = new Date(data.date);
-  const formattedDate = localDate.toLocaleDateString("en-CA"); 
-  data.date = formattedDate;
+      const formattedDate = localDate.toLocaleDateString("en-CA");
+      data.date = formattedDate;
     }
 
     // Prepare final data
@@ -203,7 +203,6 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
       inserted_by: user?.username,
       updated_by: user?.username,
     };
-
 
     postSadakaMutation(finalData);
   };
@@ -250,7 +249,9 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 )}
                 {bahashaData && (
                   <p className="mt-1 text-sm text-green-600">
-                    Bahasha imefanikiwa kupatikana. Jina: {bahashaData?.mhumini_details?.first_name} {bahashaData?.mhumini_details?.last_name}
+                    Bahasha imefanikiwa kupatikana. Jina:{" "}
+                    {bahashaData?.mhumini_details?.first_name}{" "}
+                    {bahashaData?.mhumini_details?.last_name}
                   </p>
                 )}
               </div>
@@ -311,8 +312,8 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                   </p>
                 )}
               </div>
-                
-                {/* Sadaka Type */}
+
+              {/* Sadaka Type */}
               <div>
                 <label
                   htmlFor="sadaka_type"
@@ -343,16 +344,21 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 )}
               </div>
 
-               {/* Date */}
-               <div>
-                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+              {/* Date */}
+              <div>
+                <label
+                  htmlFor="date"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Date
                 </label>
                 <input
                   id="date"
                   type="date"
                   className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithCard.formState.errors.date ? "border-red-500" : "border-gray-300"
+                    formWithCard.formState.errors.date
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                   {...formWithCard.register("date")}
                 />
@@ -490,6 +496,7 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 )}
               </div>
 
+              {/* Sadaka Type */}
                 {/* Sadaka Type */}
                 <div>
                 <label
@@ -500,9 +507,9 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                 </label>
                 <select
                   id="sadaka_type"
-                  {...formWithCard.register("sadaka_type")}
+                  {...formWithoutCard.register("sadaka_type")}
                   className={`mt-1 block w-full px-3 py-2 border rounded-md bg-blue-gray-50 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                    formWithCard.formState.errors.sadaka_type
+                    formWithoutCard.formState.errors.sadaka_type
                       ? "border-red-500"
                       : "border-gray-300"
                   }`}
@@ -514,13 +521,13 @@ const OngezaSadaka = ({ openModal, handleCancel }: ModalProps) => {
                     </option>
                   ))}
                 </select>
-                {formWithCard.formState.errors.sadaka_type && (
+                {formWithoutCard.formState.errors.sadaka_type && (
                   <p className="mt-1 text-sm text-red-600">
-                    {formWithCard.formState.errors.sadaka_type.message}
+                    {formWithoutCard.formState.errors.sadaka_type.message}
                   </p>
                 )}
               </div>
-
+           
               {/* Remark */}
               <div className="col-span-2">
                 <label

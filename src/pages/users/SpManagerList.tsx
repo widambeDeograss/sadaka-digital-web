@@ -1,10 +1,10 @@
-import  { useState } from "react";
-import {useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import {  fetchRoles, fetchtSpManagers } from "../../helpers/ApiConnectors.js";
-import { Button, Card, Dropdown, Menu } from "antd";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchRoles, fetchtSpManagers, deactivateActivateUsers } from "../../helpers/ApiConnectors.js";
+import { Button, Card, Dropdown, Menu, Modal } from "antd"; // Import Modal
 import { Table } from "antd";
-import { useAppSelector } from "../../store/store-hooks.js";
+import { useAppDispatch, useAppSelector } from "../../store/store-hooks.js";
 import { GlobalMethod } from "../../helpers/GlobalMethods.js";
 import Tabletop from "../../components/tables/TableTop.js";
 import CreateUserModal from "./SpManagers.js";
@@ -14,95 +14,84 @@ import {
   DownOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import { addAlert } from "../../store/slices/alert/alertSlice.js";
 
 function SpManagerList() {
   const navigate = useNavigate();
   const tableId = "data-table";
-    const [openMOdal, setopenMOdal] = useState(false);
-    const church = useAppSelector((state: any) => state.sp);
-    const userPermissions = useAppSelector(
-      (state: any) => state.user.userInfo.role.permissions
-    );
-  
-  
-    const { data: spManagers, isLoading } = useQuery({
-      queryKey: ["spManagers"],
-      queryFn: async () => {
-        const response: any = await fetchtSpManagers(`?church_id=${church.id}`);
-        console.log(response);
-        return response;
-      },
-      // {
-      //   enabled: false,
-      // }
-    });
+  const [openModal, setOpenModal] = useState(false);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false); // State for confirmation modal
+  const [selectedUser, setSelectedUser] = useState(null); // State to store the selected user for deactivation
+  const church = useAppSelector((state: any) => state.sp);
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
 
-      const {
-        data: roles,
-      } = useQuery({
-        queryKey: ["roles"],
-        queryFn: async () => {
-          const response: any = await fetchRoles();
-          return response?.map((role: any) => ({
-            name: role.role_name,
-            value: role.id,
-          }));
-        },
-        // {
-        //   enabled: false,
-        // }
-      });
+  const { data: spManagers, isLoading } = useQuery({
+    queryKey: ["spManagers"],
+    queryFn: async () => {
+      const response: any = await fetchtSpManagers(`?church_id=${church.id}`);
+      console.log(response);
+      return response;
+    },
+  });
+
+  const { data: roles } = useQuery({
+    queryKey: ["roles"],
+    queryFn: async () => {
+      const response: any = await fetchRoles();
+      return response?.map((role: any) => ({
+        name: role.role_name,
+        value: role.id,
+      }));
+    },
+  });
+
   const handleActivateDeactivate = async (record: any) => {
-    if (record.status === "ACTIVE") {
-      //   await userEnableDisable(record.id, "disable");
-      //   if (response === "User Disabled successfully") {
-      //     queryClient.invalidateQueries(['users']);
-      //     dispatch(
-      //       addAlert({
-      //         title: "Success",
-      //         message: "User deactivated successfully",
-      //         type: "success",
-      //       })
-      //     )
-      //   }else{
 
-      //     dispatch(
-      //       addAlert({
-      //         title: "Success",
-      //         message: "User deactivation failed",
-      //         type: "error",
-      //       })
-      //     )
-      //   }
-    } else {
-      //   const response = await userEnableDisable(record.id, "enable");
-      //   if (response?.message === "User enabled successfully") {
-      //     queryClient.invalidateQueries(['users']);
-      //     dispatch(
-      //       addAlert({
-      //         title: "Success",
-      //         message: "User activation successfully",
-      //         type: "success",
-      //       })
-      //     )
-      //   }else{
-      //     dispatch(
-      //       addAlert({
-      //         title: "Success",
-      //         message: "User activation failed",
-      //         type: "error",
-      //       })
-      //     )
-      //   }
-    }
+      const response: any = await deactivateActivateUsers(`?id=${record.sp_manager_details.id}`);
+      if (response?.message === "Staff activated successfully" || response?.message === "Staff deactivated successfully") {
+        queryClient.invalidateQueries({ queryKey: ["spManagers"] });
+        dispatch(
+          addAlert({
+            title: "Success",
+            message: record?.sp_manager_details?.user_active ? "User deactivated successfully": "User activated successfully",
+            type: "success",
+          })
+        );
+      } else {
+        dispatch(
+          addAlert({
+            title: "Success",
+            message: "action failed",
+            type: "error",
+          })
+        );
+      }
+    
   };
 
   const handleChangePassword = (_record: any) => {
-    // setSelectedUserForPasswordEdit(record);
     const modalTrigger = document.getElementById("resetPassword");
-    console.log(modalTrigger);
-
     if (modalTrigger) modalTrigger.click();
+  };
+
+  const showConfirmModal = (record: any) => {
+    setSelectedUser(record); // Set the selected user
+    setConfirmModalVisible(true); // Show the confirmation modal
+  };
+
+  const handleConfirmDeactivate = async () => {
+    if (selectedUser) {
+      await handleActivateDeactivate(selectedUser); // Deactivate the user
+      setConfirmModalVisible(false); // Hide the confirmation modal
+    }
+  };
+
+  const handleCancelDeactivate = () => {
+    setConfirmModalVisible(false); // Hide the confirmation modal
   };
 
   const columns = [
@@ -174,7 +163,7 @@ function SpManagerList() {
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
-                icon={<EyeOutlined />}
+                  icon={<EyeOutlined />}
                   onClick={() =>
                     navigate("/usersManagement/viewUser", { state: { record } })
                   }
@@ -187,7 +176,7 @@ function SpManagerList() {
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
-                icon={<EditOutlined />}
+                  icon={<EditOutlined />}
                   onClick={() =>
                     navigate("/usersManagement/editUser", { state: { record } })
                   }
@@ -196,13 +185,14 @@ function SpManagerList() {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_USER", "EDIT_USER"],
+                ["VIEW_WAHUMINI", "EDIT_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
-                <Menu.Item onClick={() => handleActivateDeactivate(record)}
-                icon={<ExclamationCircleOutlined />}
+                <Menu.Item
+                  onClick={() => showConfirmModal(record)}
+                  icon={<ExclamationCircleOutlined />}
                 >
-                  {record.sp_manager.user_active ? "Deactivate User" : "Activate User"}
+                  {record.sp_manager_details.user_active ? "Deactivate User" : "Activate User"}
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
@@ -228,8 +218,6 @@ function SpManagerList() {
       ),
     },
   ];
-  
-  
 
   return (
     <div className="max-h-max">
@@ -237,23 +225,44 @@ function SpManagerList() {
         title={<h3 className=" text-sm text-left"> Users </h3>}
         className="mt-5"
         extra={
-            <Button onClick={() =>  setopenMOdal(true)}>
-                Add User
-            </Button>
+          <Button onClick={() => setOpenModal(true)}>
+            Add User
+          </Button>
         }
       >
-        <Tabletop inputfilter={false} togglefilter={function (_value: boolean): void {
-          throw new Error("Function not implemented.");
-        } } searchTerm={""} onSearch={function (_value: string): void {
-          throw new Error("Function not implemented.");
-        } }
-        data={tableId}        />
+        <Tabletop
+          inputfilter={false}
+          togglefilter={function (_value: boolean): void {
+            throw new Error("Function not implemented.");
+          }}
+          searchTerm={""}
+          onSearch={function (_value: string): void {
+            throw new Error("Function not implemented.");
+          }}
+          data={tableId}
+        />
         <div className="table-responsive">
           <Table
-              id={tableId} columns={columns} dataSource={spManagers} loading={isLoading}/>
+            id={tableId}
+            columns={columns}
+            dataSource={spManagers}
+            loading={isLoading}
+          />
         </div>
       </Card>
-      <CreateUserModal openModal={openMOdal} handleCancel={() => setopenMOdal(false)}/>
+      <CreateUserModal openModal={openModal} handleCancel={() => setOpenModal(false)} />
+
+      {/* Confirmation Modal */}
+      <Modal
+        title="Confirm User status change"
+        visible={confirmModalVisible}
+        onOk={handleConfirmDeactivate}
+        onCancel={handleCancelDeactivate}
+        okText="Proeed"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to change this user status?</p>
+      </Modal>
     </div>
   );
 }

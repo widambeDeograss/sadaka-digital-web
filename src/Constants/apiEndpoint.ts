@@ -3,7 +3,7 @@ import { DataBaseUrl } from "./BaseUrl";
 export const POST_LOGIN = `${DataBaseUrl}/user-management/login-user`;
 export const POST_CREATE_USER = `${DataBaseUrl}/user-management/register-user`;
 export const USERS = `${DataBaseUrl}/user-management/users`;
-// export const POST_CREATE_USER = "/auth/user-setup";
+export const ACTIVATE_DEACTIVATE_STAFF =  `${DataBaseUrl}/user-management/activate-deactivate-staff`;
 export const REFRESH_TOKEN = `${DataBaseUrl}/auth/refresh-token`;
 export const USER_INFO = "/auth/logged-in-user";
 export const ALL_USERS = `${DataBaseUrl}/users`;

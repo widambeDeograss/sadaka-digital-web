@@ -52,10 +52,10 @@ const Tabletop: React.FC<TabletopProps> = ({
 
           break;
         case "sadaka":
-          response = await fetchSadaka(id);
+          response = await fetchSadaka(id, "blob");
           break;
         case "zaka":
-          response = await fetchZaka(id);
+          response = await fetchZaka(id, "blob");
           break;
         case "michango":
           response = await fetchMichango(id);

@@ -79,7 +79,7 @@ const Mchango = () => {
     if (mchango_totals) {
       const monthlyData = months?.map((month) => {
         const foundMonth = mchango_totals?.monthly_collections?.find(
-          (data: any) => data.month === month
+          (data: any) => data?.month == month
         );
         console.log(foundMonth);
 
@@ -96,7 +96,7 @@ const Mchango = () => {
         categories: months,
       });
     }
-  }, [michango]);
+  }, [michango, params]);
 
   const { data: ahadiList, isLoading: loadingAhadi } = useQuery({
     queryKey: ["Ahadi"],

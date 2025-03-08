@@ -17,13 +17,10 @@ import { useAppSelector } from "../../store/store-hooks.ts";
 import { useQuery } from "@tanstack/react-query";
 import { fetchSadaka } from "../../helpers/ApiConnectors";
 import { useNavigate } from "react-router-dom";
-import {
-  EditOutlined,
-  EyeOutlined,
-  DownOutlined,
-} from "@ant-design/icons";
+import { EditOutlined, EyeOutlined, DownOutlined } from "@ant-design/icons";
 import ViewModal from "./ViewSadaka.tsx";
 import UpdateSadaka from "./UpdateSadaka.tsx";
+import { GlobalMethod } from "../../helpers/GlobalMethods.ts";
 
 const { Paragraph, Text } = Typography;
 const Sadaka = () => {
@@ -34,88 +31,53 @@ const Sadaka = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [SadakaData, setSadakaData] = useState([]);
   const [yearFilter, setYearFilter] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 100 });
   const navigate = useNavigate();
-  // const queryClient = useQueryClient();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [updateSadakaModal, setupdateSadakaModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
-  const tableId = "data-table";
-  // const userPermissions = useAppSelector(
-  //   (state: any) => state.user.userInfo.role.permissions
-  // );
+  const tableId = "sadaka";
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
 
   const handleView = (record: any) => {
     setSelectedData(record);
     setModalVisible(true);
   };
 
-  const {
-    data: sadakaToday,
-    isLoading,
-  } = useQuery({
+  const { data: sadakaToday, isLoading } = useQuery({
     queryKey: ["sadakaToday"],
     queryFn: async () => {
       const response: any = await fetchSadaka(
         `?church_id=${church.id}&filter=today`
       );
-      console.log(response);
-      return response?.reverse();
+      return response?.results;
     },
     enabled: true,
-    // {
-    //   enabled: false,
-    // }
   });
 
-  const {  isLoading: loadingSadaka } = useQuery({
-    queryKey: ["sadaka", yearFilter],
+  const { data: sadakaPaginated, isLoading: loadingSadaka } = useQuery({
+    queryKey: ["sadaka", yearFilter, pagination.current, pagination.pageSize],
     queryFn: async () => {
-      let query = `?church_id=${church.id}`;
+      let query = `?church_id=${church.id}&page=${pagination.current}&page_size=${pagination.pageSize}`;
       if (yearFilter) query += `&year=${yearFilter}`;
       const response: any = await fetchSadaka(query);
-      setSadakaData(response);
-      setFilteredData(response);
+      setSadakaData(response.results);
+      setFilteredData(response.results);
       return response;
     },
-    // {
-    //   enabled: false,
-    // }
   });
-
-  // const handleDelete = (SadakaId: any) => {
-  //   modal.confirm({
-  //     title: "Confirm Deletion",
-  //     icon: <ExclamationCircleOutlined />,
-  //     content: "Are you sure you want to delete this record?",
-  //     okText: "OK",
-  //     okType: "danger",
-  //     cancelText: "cancel",
-  //     onOk: () => {
-  //       deleteSadakaMutation(SadakaId);
-  //     },
-  //   });
-  // };
-
-  // const { mutate: deleteSadakaMutation } = useMutation({
-  //   mutationFn: async (SadakaId: any) => {
-  //     await deleteSadakaById(SadakaId);
-  //   },
-  //   onSuccess: () => {
-  //     message.success("Sadaka deleted successfully!");
-  //     queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
-  //   },
-  //   onError: () => {
-  //     message.error("Failed to delete Sadaka.");
-  //   },
-  // });
 
   const columns = [
     {
       title: "s/No",
 
       dataIndex: "sNo",
-      render: (_text: any, _record: any, index: number) => <div>{index + 1}</div>,
+      render: (_text: any, _record: any, index: number) => (
+        <div>{index + 1}</div>
+      ),
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
@@ -163,7 +125,7 @@ const Sadaka = () => {
       render: (text: any, _record: any) => <div>{text}</div>,
       // sorter: (a, b) => a.name.length - b.name.length,
     },
- 
+
     {
       title: "Payment type",
       dataIndex: "sadaka_amount",
@@ -191,24 +153,21 @@ const Sadaka = () => {
               >
                 View
               </Menu.Item>
-              <Menu.Item
-                key="2"
-                icon={<EditOutlined />}
-                onClick={() => {
-                  setSelectedData(record);
-                  setupdateSadakaModal(true);
-                }}
-              >
-                Edit
-              </Menu.Item>
-              {/* <Menu.Item
-                key="3"
-                icon={<DeleteOutlined />}
-                danger
-                onClick={() => handleDelete(record?.id)}
-              >
-                Delete
-              </Menu.Item> */}
+              {GlobalMethod.hasAnyPermission(
+                ["MANAGE_SADAKA"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
+                <Menu.Item
+                  key="2"
+                  icon={<EditOutlined />}
+                  onClick={() => {
+                    setSelectedData(record);
+                    setupdateSadakaModal(true);
+                  }}
+                >
+                  Edit
+                </Menu.Item>
+              )}
             </Menu>
           }
           trigger={["click"]}
@@ -244,10 +203,15 @@ const Sadaka = () => {
     }
   }, [searchTerm, SadakaData]);
 
+  const handleTableChange = (pagination: any) => {
+    console.log(pagination);
+
+    setPagination((prev) => ({ ...prev, current: pagination }));
+  };
+
   return (
     <div>
       <Widgets />
-
       <Card title={<h3 className="font-bold text-sm text-left">Sadaka</h3>}>
         <div>
           <div className="flex justify-between flex-wrap mt-5">
@@ -258,20 +222,30 @@ const Sadaka = () => {
             </div>
             <div>
               <Button.Group className="mt-5">
-                <Button
-                  type="primary"
-                  className="bg-[#152033] text-white text-xs"
-                  onClick={() => setopenMOdal(true)}
-                >
-                  Ongeza Sadaka
-                </Button>
-                <Button
-                  type="primary"
-                  className="bg-[#152033] text-white text-xs"
-                  onClick={() => navigate("/dashboard/sadaka-monthly-report")}
-                >
-                  Matoleo mwezi huu
-                </Button>
+                {GlobalMethod.hasAnyPermission(
+                  ["ADD_SADAKA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
+                  <Button
+                    type="primary"
+                    className="bg-[#152033] text-white text-xs"
+                    onClick={() => setopenMOdal(true)}
+                  >
+                    Ongeza Sadaka
+                  </Button>
+                )}
+                {GlobalMethod.hasAnyPermission(
+                  ["MANAGE_SADAKA"],
+                  GlobalMethod.getUserPermissionName(userPermissions)
+                ) && (
+                  <Button
+                    type="primary"
+                    className="bg-[#152033] text-white text-xs"
+                    onClick={() => navigate("/dashboard/sadaka-monthly-report")}
+                  >
+                    Matoleo mwezi huu
+                  </Button>
+                )}
               </Button.Group>
             </div>
           </div>
@@ -284,18 +258,13 @@ const Sadaka = () => {
             className="mt-5"
           >
             <div className="table-responsive">
-              {/* <Tabletop
-                inputfilter={false}
-                onSearch={(term: string) => setSearchTerm(term)}
-                togglefilter={(value: boolean) => setShowFilter(value)}
-                searchTerm={searchTerm}
-              /> */}
               <Table
-              id={tableId}
+                id={tableId}
                 columns={columns}
                 dataSource={sadakaToday}
                 loading={isLoading}
                 bordered
+                pagination={false}
               />
             </div>
           </Card>
@@ -307,7 +276,6 @@ const Sadaka = () => {
               <Paragraph className="lastweek" style={{ marginBottom: 24 }}>
                 this month <span className="bnb2">20%</span>
               </Paragraph>
-
               <Timeline
                 pending="Matoleo..."
                 className="timelinelist lastweek text-xs "
@@ -316,7 +284,7 @@ const Sadaka = () => {
                 {sadakaToday?.slice(0, 4).map((t: any, index: number) => (
                   <Timeline.Item color="green" key={index}>
                     <h3 className=" text-xs text-center ">
-                      {t?.bahasha_details?.mhumini_details?.first_name}-TZS
+                      {t?.bahasha_details?.mhumini_details?.first_name}-TZS{" "}
                       {t?.sadaka_amount}{" "}
                     </h3>
                     <Text>Card No: {t?.bahasha_details?.card_no}</Text>
@@ -334,7 +302,6 @@ const Sadaka = () => {
           </Card>
         </Col>
       </Row>
-
       <Card
         title={<h3 className=" text-sm text-left font-bold">Sadaka</h3>}
         className="mt-5"
@@ -364,20 +331,24 @@ const Sadaka = () => {
               <Button
                 type="primary"
                 className="mt-3 bg-[#152033] text-white"
-                onClick={() => {
-                  setShowFilter(false);
-                }}
+                onClick={() => setShowFilter(false)}
               >
                 Apply Filter
               </Button>
             </div>
           )}
           <Table
-              id={tableId}
+            id={tableId}
             columns={columns}
             dataSource={filteredData}
             loading={loadingSadaka}
             bordered
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: sadakaPaginated?.count,
+              onChange: handleTableChange,
+            }}
           />
         </div>
       </Card>
