@@ -26,7 +26,7 @@ const SpPackages = () => {
   const { data: systemPackages, isLoading: loadingSystemPackages } = useQuery({
     queryKey: ["spPackages"],
     queryFn: async () => {
-      const response: any = await fetchSpPackage();
+      const response: any = await fetchSpPackage('');
       return response;
     },
   });

@@ -44,7 +44,6 @@ const Tabletop: React.FC<TabletopProps> = ({
     const id = `?export=excel&church_id=${church.id}`;
     try {
       let response;
-      let endpoint = "";
       switch (data) {
         case "wahumini":
           response = await fetchWahumini(id, "blob");
