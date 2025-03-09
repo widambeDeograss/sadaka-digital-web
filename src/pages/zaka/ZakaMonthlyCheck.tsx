@@ -76,13 +76,13 @@ const CheckZakaPresenceModal: React.FC<{
             return monthDate.format("MMMM YYYY");
           });
 
-        message = `Tumsifu Yesu Kristu,\n Mpendwa ${response?.mhumini_details?.first_name} ${
-          response?.mhumini_details?.last_name
-        }, \n
+        message = `Tumsifu Yesu Kristu,\n Mpendwa ${
+          response?.mhumini_details?.first_name
+        } ${response?.mhumini_details?.last_name},
         Unakumbushwa kurejesha bahasha  zako za  zaka  ya miezi ya ${months.join(
           ", "
         )} kwa bahasha namba ${record.card_no}. 
-        Mungu akubariki. \n \n
+        Mungu akubariki. \n
         KAMATI YA ZAKA, PAROKIA YA BMC MAKABE.
         `;
       } else if (date) {
@@ -96,9 +96,9 @@ const CheckZakaPresenceModal: React.FC<{
           );
           return;
         }
-        message = `Tumsifu Yesu Kristu,\n Mpendwa ${response?.mhumini_details?.first_name} ${
-          response?.mhumini_details?.last_name
-        },\n 
+        message = `Tumsifu Yesu Kristu,\n Mpendwa ${
+          response?.mhumini_details?.first_name
+        } ${response?.mhumini_details?.last_name},\n 
         Unakumbushwa kurejesha bahasha yako ya  zaka  ya ${date.format(
           "MMMM YYYY"
         )}. kwa bahasha namba ${record.card_no}. 
@@ -267,13 +267,10 @@ const CheckZakaPresenceModal: React.FC<{
 
   // Send reminders function
   async function fetchZakaBahashaInfoWithCheck() {
-    if (!date || !church) {
-      throw new Error("Invalid parameters");
-    }
+    // if ((!range || date) || !church) {
+    //   throw new Error("Invalid parameters");
+    // }
     setLoadingMessage(true);
-    const month = date.month() + 1; // Adjust month to be 1-based
-    const year = date.year();
-    const queryParams = `?month=${month}&year=${year}&church_id=${church?.id}&query_type=reminder`;
 
     try {
       if (range) {
@@ -281,7 +278,7 @@ const CheckZakaPresenceModal: React.FC<{
         const startYear = range[0].year();
         const endMonth = range[1].month() + 1;
         const endYear = range[1].year();
-        const queryParamsRange = `?month=${startMonth}&year=${startYear}&end_month=${endMonth}&end_year=${endYear}&church_id=${church.id}&query_type=range`;
+        const queryParamsRange = `?month=${startMonth}&year=${startYear}&end_month=${endMonth}&end_year=${endYear}&church_id=${church.id}&query_type=rangereminder`;
         const response = await fetchZakBahashaInfo(queryParamsRange);
         dispatch(
           addAlert({
@@ -292,6 +289,11 @@ const CheckZakaPresenceModal: React.FC<{
         );
         return response;
       } else {
+        //@ts-ignore
+        const month = date.month() + 1;
+        //@ts-ignore
+        const year = date.year();
+        const queryParams = `?month=${month}&year=${year}&church_id=${church?.id}&query_type=reminder`;
         const response = await fetchZakBahashaInfo(queryParams);
         dispatch(
           addAlert({
@@ -392,6 +394,12 @@ const CheckZakaPresenceModal: React.FC<{
     });
   };
 
+  const disabledDate = (current:any) => {
+    // Disable dates that are after the current month
+    return current && current > dayjs().endOf('month');
+  };
+  
+
   return (
     <Modal
       title="Bahasha za zaka"
@@ -411,6 +419,7 @@ const CheckZakaPresenceModal: React.FC<{
           picker="month"
           placeholder="Chagua mwaka na mwezi"
           className="w-full"
+          disabledDate={disabledDate}
         />
         <RangePicker
           onChange={(dates, _dateStrings) =>
@@ -422,6 +431,7 @@ const CheckZakaPresenceModal: React.FC<{
           picker="month"
           placeholder={["Mwezi wa mwanzo", "Mwezi wa mwisho"]}
           className="w-full"
+          disabledDate={disabledDate}
         />
         {date && (
           <Button

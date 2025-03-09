@@ -24,25 +24,26 @@ const swahiliMonths: { [key: string]: string } = {
   September: "Septemba",
   October: "Oktoba",
   November: "Novemba",
-  December: "Desemba"
+  December: "Desemba",
 };
 
 const RevenueStatementReport = () => {
   const church = useAppSelector((state: any) => state.sp);
   const [dates, setDates] = useState<[Dayjs, Dayjs]>([
-    dayjs('2025-01-01'),
-    dayjs('2025-12-31')
+    dayjs("2025-01-01"),
+    dayjs("2025-12-31"),
   ]);
   const [selectedRevenueType, setSelectedRevenueType] = useState<string | null>(null);
 
+  // Fetch revenue data
   const { data: revenueData, isLoading } = useQuery({
-    queryKey: ["revenue-statement", dates[0].format('YYYY-MM-DD'), dates[1].format('YYYY-MM-DD')],
+    queryKey: ["revenue-statement", dates[0].format("YYYY-MM-DD"), dates[1].format("YYYY-MM-DD")],
     queryFn: async () => {
-      const res:any =  await fetchRevenueStatement({
+      const res: any = await fetchRevenueStatement({
         church_id: church.id,
-        start_date: dates[0].format('YYYY-MM-DD'),
-        end_date: dates[1].format('YYYY-MM-DD')
-      })
+        start_date: dates[0].format("YYYY-MM-DD"),
+        end_date: dates[1].format("YYYY-MM-DD"),
+      });
       return res;
     },
   });
@@ -57,6 +58,7 @@ const RevenueStatementReport = () => {
     const normalized = type.toLowerCase();
     if (normalized === "michango") return "mchango";
     if (normalized === "sadata") return "sadaka";
+    if (normalized.includes("ahadi")) return "ahadi"; // Exclude Ahadi
     return normalized;
   };
 
@@ -64,50 +66,58 @@ const RevenueStatementReport = () => {
   const processMonthlyData = () => {
     if (!revenueData?.details) return [];
 
-    // Group data by month
     const monthlyData: { [key: string]: any } = {};
+    let grandMchango = 0;
+    let grandSadaka = 0;
+    let grandZaka = 0;
+    let grandMavuno = 0;
+    let grandTotal = 0;
 
-    revenueData?.details.forEach((item: any) => {
+    revenueData.details.forEach((item: any) => {
+      const normalizedType = normalizeRevenueType(item.revenue_type);
+
+      // Exclude Ahadi payments
+      if (normalizedType === "ahadi") return;
+
       const monthKey = item.month_name.trim();
+      const amount = parseFloat(item.total_amount);
+
       if (!monthlyData[monthKey]) {
         monthlyData[monthKey] = {
           month: swahiliMonths[monthKey] || monthKey,
           mchango: 0,
           sadaka: 0,
           zaka: 0,
-          total: 0
+          mavuno: 0,
+          total: 0,
         };
       }
 
-      const amount = parseFloat(item.total_amount);
-      const normalizedType = normalizeRevenueType(item.revenue_type);
-      monthlyData[monthKey][normalizedType] = preciseAdd(
-        monthlyData[monthKey][normalizedType],
-        amount
-      );
+      // Handle Mavuno explicitly
+      if (normalizedType === "mavuno") {
+        monthlyData[monthKey].mavuno = preciseAdd(monthlyData[monthKey].mavuno, amount);
+        grandMavuno = preciseAdd(grandMavuno, amount);
+      } else {
+        monthlyData[monthKey][normalizedType] = preciseAdd(
+          monthlyData[monthKey][normalizedType],
+          amount
+        );
+      }
+
+      // Update totals
+      monthlyData[monthKey].total = preciseAdd(monthlyData[monthKey].total, amount);
+      grandTotal = preciseAdd(grandTotal, amount);
     });
 
-    // Calculate monthly totals and grand totals
-    let grandMchango = 0;
-    let grandSadaka = 0;
-    let grandZaka = 0;
-    let grandTotal = 0;
-
-    const sortedData = Object.values(monthlyData).map((month: any) => {
-      // Calculate monthly total
-      month.total = preciseAdd(
-        preciseAdd(month.mchango, month.sadaka),
-        month.zaka
-      );
-
-      // Add to grand totals
+    // Calculate grand totals for other types
+    Object.values(monthlyData).forEach((month: any) => {
       grandMchango = preciseAdd(grandMchango, month.mchango);
       grandSadaka = preciseAdd(grandSadaka, month.sadaka);
       grandZaka = preciseAdd(grandZaka, month.zaka);
-      grandTotal = preciseAdd(grandTotal, month.total);
+    });
 
-      return month;
-    }).sort((a, b) => 
+    // Sort data by month
+    const sortedData = Object.values(monthlyData).sort((a, b) =>
       new Date(`2025 ${a.month}`).getTime() - new Date(`2025 ${b.month}`).getTime()
     );
 
@@ -115,13 +125,14 @@ const RevenueStatementReport = () => {
     const finalData = [
       ...sortedData,
       {
-        month: 'Jumla',
+        month: "Jumla",
         mchango: grandMchango,
         sadaka: grandSadaka,
         zaka: grandZaka,
+        mavuno: grandMavuno,
         total: grandTotal,
-        isTotal: true
-      }
+        isTotal: true,
+      },
     ];
 
     return finalData;
@@ -132,51 +143,65 @@ const RevenueStatementReport = () => {
   // Generate columns for the table
   const columns = [
     {
-      title: 'Mwezi',
-      dataIndex: 'month',
-      key: 'month',
+      title: "Mwezi",
+      dataIndex: "month",
+      key: "month",
       render: (text: string, record: any) => (
         <Text strong={record.isTotal}>{text}</Text>
-      )
+      ),
     },
     {
-      title: 'Mchango (Tsh)',
-      dataIndex: 'mchango',
-      key: 'mchango',
+      title: "Mchango (Tsh)",
+      dataIndex: "mchango",
+      key: "mchango",
       render: (value: number, record: any) => (
         <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
-      )
+      ),
     },
     {
-      title: 'Sadaka (Tsh)',
-      dataIndex: 'sadaka',
-      key: 'sadaka',
+      title: "Sadaka (Tsh)",
+      dataIndex: "sadaka",
+      key: "sadaka",
       render: (value: number, record: any) => (
         <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
-      )
+      ),
     },
     {
-      title: 'Zaka (Tsh)',
-      dataIndex: 'zaka',
-      key: 'zaka',
+      title: "Zaka (Tsh)",
+      dataIndex: "zaka",
+      key: "zaka",
       render: (value: number, record: any) => (
         <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
-      )
+      ),
     },
     {
-      title: 'Jumla (Tsh)',
-      dataIndex: 'total',
-      key: 'total',
+      title: "Mavuno (Tsh)",
+      dataIndex: "mavuno",
+      key: "mavuno",
       render: (value: number, record: any) => (
         <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
-      )
-    }
+      ),
+    },
+    {
+      title: "Jumla (Tsh)",
+      dataIndex: "total",
+      key: "total",
+      render: (value: number, record: any) => (
+        <Text strong={record.isTotal}>{value.toLocaleString()}</Text>
+      ),
+    },
   ];
 
-  // Filter the details based on the selected revenue type
+  // Filter the details based on the selected revenue type (excluding Ahadi)
   const filteredDetails = selectedRevenueType
-    ? revenueData?.details.filter((item: any) => normalizeRevenueType(item.revenue_type) === selectedRevenueType)
-    : revenueData?.details;
+    ? revenueData?.details.filter(
+        (item: any) =>
+          normalizeRevenueType(item.revenue_type) === selectedRevenueType &&
+          !normalizeRevenueType(item.revenue_type).includes("ahadi")
+      )
+    : revenueData?.details?.filter(
+        (item: any) => !normalizeRevenueType(item.revenue_type).includes("ahadi")
+      );
 
   return (
     <div>
@@ -187,12 +212,12 @@ const RevenueStatementReport = () => {
         <div className="mb-6">
           <RangePicker
             value={dates}
-            //@ts-ignore
+            // @ts-ignore
             onChange={(values) => values && setDates(values)}
             format="YYYY-MM-DD"
             className="mb-4"
           />
-          
+
           <div className="flex gap-4">
             <div className="flex-1">
               <Text strong>Jumla ya mapato:</Text>
@@ -219,6 +244,7 @@ const RevenueStatementReport = () => {
             <Option value="mchango">Mchango</Option>
             <Option value="sadaka">Sadaka</Option>
             <Option value="zaka">Zaka</Option>
+            <Option value="mavuno">Mavuno</Option>
           </Select>
         </div>
 
@@ -238,7 +264,7 @@ const RevenueStatementReport = () => {
             loading={isLoading}
             scroll={{ x: true }}
             pagination={false}
-            rowClassName={(record) => record.isTotal ? 'total-row' : ''}
+            rowClassName={(record) => (record.isTotal ? "total-row" : "")}
           />
         </div>
 
@@ -246,16 +272,15 @@ const RevenueStatementReport = () => {
           <Card title={`Maelezo ya ${selectedRevenueType}`} className="mt-14">
             <Table
               columns={[
-                { title: 'Aina ya Mapato', dataIndex: 'revenue_type_record', key: 'revenue_type_record' },
-                { title: 'Aina ya Malipo', dataIndex: 'payment_type_name', key: 'payment_type_name' },
-                { title: 'Kiasi (Tsh)', dataIndex: 'total_amount', key: 'total_amount' },
-                { title: 'Mwezi', dataIndex: 'month_name', key: 'month_name' },
-                { title: 'Mwaka', dataIndex: 'year', key: 'year' }
+                { title: "Aina ya Mapato", dataIndex: "revenue_type_record", key: "revenue_type_record" },
+                { title: "Aina ya Malipo", dataIndex: "payment_type_name", key: "payment_type_name" },
+                { title: "Kiasi (Tsh)", dataIndex: "total_amount", key: "total_amount" },
+                { title: "Mwezi", dataIndex: "month_name", key: "month_name" },
+                { title: "Mwaka", dataIndex: "year", key: "year" },
               ]}
               dataSource={filteredDetails}
               loading={isLoading}
               scroll={{ x: true }}
-              // pagination={true}
             />
           </Card>
         )}

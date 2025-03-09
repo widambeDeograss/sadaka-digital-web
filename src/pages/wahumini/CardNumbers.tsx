@@ -164,7 +164,7 @@ const CardNumberList = () => {
           overlay={
             <Menu>
               {GlobalMethod.hasAnyPermission(
-                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                ["EDIT_WAHUMINI"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -178,7 +178,7 @@ const CardNumberList = () => {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["VIEW_WAHUMINI", "EDIT_WAHUMINI"],
+                ["MANAGE_BAHAASHA"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -191,7 +191,7 @@ const CardNumberList = () => {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["DELETE_WAHUMINI", "VIEW_WAHUMINI"],
+                ["MANAGE_BAHAASHA"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item
@@ -258,6 +258,10 @@ const CardNumberList = () => {
             </div>
             <div>
               <Button.Group>
+              {GlobalMethod.hasAnyPermission(
+                ["MANAGE_MAVUNO"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white text-xs"
@@ -265,6 +269,7 @@ const CardNumberList = () => {
                 >
                   Ongeza Bahasha
                 </Button>
+                   )}
                 {/* </Radio.Button> */}
               </Button.Group>
             </div>

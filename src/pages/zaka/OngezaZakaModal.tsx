@@ -54,6 +54,9 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
     date: Yup.date()
       .typeError("Date is invalid")
       .required("Date is required"),
+      date_received: Yup.date()
+      .typeError("Date is invalid")
+      .required("Date is required"),
     payment_type: Yup.number()
       .typeError("Payment type must be a number")
       .required("Payment type is required"),
@@ -89,7 +92,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
         church: church?.id,
         payment_type: data.payment_type,
         revenue_type_record: response?.id,
-        date_received: data.date,
+        date_received: data.date_received,
         created_by: user?.username,
         updated_by: user?.username,
         revenue_type: "Zaka"
@@ -170,8 +173,10 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
     // Format date to YYYY-MM-DD
     if (data.date) {
       const localDate = new Date(data.date);
+      const localDateR = new Date(data.date_received);
       const formattedDate = localDate.toLocaleDateString("en-CA"); 
       data.date = formattedDate;
+      data.date_received = localDateR.toLocaleDateString("en-CA");
     }
 
     // Prepare final data
@@ -182,6 +187,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       church: church?.id,
       payment_type: data.payment_type,
       date: data.date,
+      date_received:data.date_received,
       inserted_by: user?.username,
       updated_by: user?.username,
     };
@@ -281,7 +287,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
               {/* Date */}
               <div>
                 <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-                  Tarehe
+                  Tarehe ya mwezi wa zaka
                 </label>
                 <input
                   id="date"
@@ -294,6 +300,27 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
                 {formWithCard.formState.errors.date && (
                   <p className="mt-1 text-sm text-red-600">
                     {formWithCard.formState.errors.date.message}
+                  </p>
+                )}
+              </div>
+
+
+              {/* Date */}
+              <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                  Tarehe 
+                </label>
+                <input
+                  id="date_received"
+                  type="date"
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithCard.formState.errors.date_received ? "border-red-500" : "border-gray-300"
+                  }`}
+                  {...formWithCard.register("date_received")}
+                />
+                {formWithCard.formState.errors.date_received && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {formWithCard.formState.errors.date_received.message}
                   </p>
                 )}
               </div>
@@ -376,7 +403,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
               {/* Date */}
               <div>
                 <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-                  Tarehe
+                  Tarehe ya mwezi za zaka
                 </label>
                 <input
                   id="date"
@@ -389,6 +416,26 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
                 {formWithoutCard.formState.errors.date && (
                   <p className="mt-1 text-sm text-red-600">
                     {formWithoutCard.formState.errors.date.message}
+                  </p>
+                )}
+              </div>
+
+                    {/* Date */}
+                    <div>
+                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+                  Tarehe 
+                </label>
+                <input
+                  id="date_received"
+                  type="date"
+                  className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                    formWithCard.formState.errors.date_received ? "border-red-500" : "border-gray-300"
+                  }`}
+                  {...formWithCard.register("date_received")}
+                />
+                {formWithCard.formState.errors.date_received && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {formWithCard.formState.errors.date_received.message}
                   </p>
                 )}
               </div>

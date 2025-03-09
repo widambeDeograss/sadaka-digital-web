@@ -185,7 +185,7 @@ function SpManagerList() {
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
-                ["VIEW_WAHUMINI", "EDIT_USER"],
+                ["ADD_SP_MANAGERS"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Menu.Item

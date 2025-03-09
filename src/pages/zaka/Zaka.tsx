@@ -186,7 +186,7 @@ const Zaka = () => {
     },
     {
       title: "Transaction date",
-      dataIndex: "inserted_at",
+      dataIndex: "date_received",
       render: (text: any) => <div>{new Date(text).toDateString()}</div>,
     },
     {
@@ -203,7 +203,7 @@ const Zaka = () => {
                 View
               </Menu.Item>
               {GlobalMethod.hasAnyPermission(
-                             ["MANAGE_SADAKA"],
+                             ["MANAGE_ZAKA"],
                              GlobalMethod.getUserPermissionName(userPermissions)
                            ) && (
                              <Menu.Item
@@ -267,7 +267,7 @@ const Zaka = () => {
             <div>
               <Button.Group className="mt-5">
               {GlobalMethod.hasAnyPermission(
-                  ["ADD_SADAKA"],
+                  ["ADD_ZAKA"],
                   GlobalMethod.getUserPermissionName(userPermissions)
                 ) && (
                 <Button
@@ -279,7 +279,7 @@ const Zaka = () => {
                 </Button>
                     )}
                       {GlobalMethod.hasAnyPermission(
-                  ["MANAGE_SADAKA"],
+                  ["MANAGE_ZAKA"],
                   GlobalMethod.getUserPermissionName(userPermissions)
                 ) && (
               <>

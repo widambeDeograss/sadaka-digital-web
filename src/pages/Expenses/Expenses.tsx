@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
 import ViewModal from "./ViewExpence";
+import { GlobalMethod } from "../../helpers/GlobalMethods";
 
 const { Title } = Typography;
 
@@ -56,9 +57,9 @@ const Expenses = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const tableId = "data-table";
-  // const userPermissions = useAppSelector(
-  //   (state: any) => state.user.userInfo.role.permissions
-  // );
+  const userPermissions = useAppSelector(
+    (state: any) => state.user.userInfo.role.permissions
+  );
 
   const {
     data: expenses,
@@ -185,6 +186,10 @@ const Expenses = () => {
               >
                 View
               </Menu.Item>
+              {GlobalMethod.hasAnyPermission(
+                              ["MANAGE_EXPENSES"],
+                              GlobalMethod.getUserPermissionName(userPermissions)
+                            ) && (
               <Menu.Item
                 key="2"
                 icon={<EditOutlined />}
@@ -195,6 +200,11 @@ const Expenses = () => {
               >
                 Edit
               </Menu.Item>
+               )}
+                     {GlobalMethod.hasAnyPermission(
+                              ["MANAGE_EXPENSES"],
+                              GlobalMethod.getUserPermissionName(userPermissions)
+                            ) && (
               <Menu.Item
                 key="3"
                 icon={<DeleteOutlined />}
@@ -203,6 +213,7 @@ const Expenses = () => {
               >
                 Delete
               </Menu.Item>
+                )}
             </Menu>
           }
           trigger={["click"]}
@@ -245,6 +256,10 @@ const Expenses = () => {
           </h3>
           <div className="flex justify-between flex-wrap mt-3">
             <div>
+            {GlobalMethod.hasAnyPermission(
+                ["ADD_EXPENSES"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
               <Button.Group className="mt-5">
                 <Button
                   type="primary"
@@ -255,6 +270,7 @@ const Expenses = () => {
                 </Button>
                 {/* Add more buttons if needed */}
               </Button.Group>
+                 )}
             </div>
           </div>
         </div>
