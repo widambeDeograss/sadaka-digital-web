@@ -171,7 +171,7 @@ const MavunoDetails = () => {
       dataIndex: ["payment_type_details", "name"],
     },
     {
-      title: "Muhumini",
+      title: "Muumini",
       dataIndex: ["mhumini_details", "first_name"],
       render: (_: any, record: any) =>
         `${record.mhumini_details.first_name} ${record.mhumini_details.last_name}`,

@@ -71,7 +71,7 @@ const UpdateMuhumini = () => {
       dispatch(
         addAlert({
           title: "Success",
-          message: "Muhumini updated successfully",
+          message: "Muumini updated successfully",
           type: "success",
         })
       );
@@ -80,7 +80,7 @@ const UpdateMuhumini = () => {
     onError: (error) => {
       dispatch(
         addAlert({
-          title: "Error updating muhumini",
+          title: "Error updating muumini",
           message: error.message,
           type: "error",
         })
@@ -117,7 +117,7 @@ const UpdateMuhumini = () => {
 
   return (
     <div className="mx-auto bg-white p-8 shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Update Muhumini</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Update Muumini</h2>
       <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
         {/* First Name */}
         <Form.Item
@@ -300,7 +300,7 @@ const UpdateMuhumini = () => {
             className="w-full bg-[#152033]"
             loading={isPending}
           >
-            Update Muhumini
+            Update Muumini
           </Button>
         </Form.Item>
       </Form>

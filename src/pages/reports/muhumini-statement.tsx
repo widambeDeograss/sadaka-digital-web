@@ -105,12 +105,12 @@ const MuhuminiStatementPage = () => {
 
   return (
     <Card className="mt-14">
-      <Title level={4}>RIPOTI YA MUHUMINI</Title>
+      <Title level={4}>RIPOTI YA MUUMINI</Title>
 
       <div className="flex gap-4 mb-6 flex-wrap">
         <div className="flex-1 min-w-[300px]">
           <Select
-            placeholder="Chagua Muhumini"
+            placeholder="Chagua Muumini"
             className="w-full"
             loading={loadingWahumini}
             onChange={(value) => setSelectedMuhumini(value)}

@@ -32,8 +32,8 @@ interface EditAhadiProps {
 const schema = yup.object().shape({
   wahumini: yup
     .number()
-    .typeError("Muhumini ni lazima uachaguliwe")
-    .required("Muhumini ni lazima uachaguliwe"),
+    .typeError("Muumini ni lazima uachaguliwe")
+    .required("Muumini ni lazima uachaguliwe"),
   mchango: yup
     .number()
     .typeError("Mchango ni lazima uachaguliwe")
@@ -161,7 +161,7 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
-          <label>Muhumini</label>
+          <label>Muumini</label>
           {loadWahumini ? (
             <Spin />
           ) : (
@@ -169,7 +169,7 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
               name="wahumini"
               control={control}
               render={({ field }) => (
-                <Select {...field} placeholder="Chagua Muhumini" className="w-full">
+                <Select {...field} placeholder="Chagua Muumini" className="w-full">
                   {wahumini?.map((wahumini: any) => (
                     <Option key={wahumini.id} value={wahumini.id}>
                       {wahumini.first_name} {wahumini.last_name}

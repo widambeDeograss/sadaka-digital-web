@@ -210,7 +210,7 @@ const UpdateSadakaModal = ({ openModal, handleCancel, sadakaData }: ModalProps) 
       width={700}
     >
       <Tabs defaultActiveKey={sadakaData?.bahasha ? "1" : "2"} centered>
-        <TabPane tab="Muhumini" key="1">
+        <TabPane tab="Muumini" key="1">
         <form onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}>
             <div className="grid grid-cols-2 gap-4">
               {/* Card Number */}

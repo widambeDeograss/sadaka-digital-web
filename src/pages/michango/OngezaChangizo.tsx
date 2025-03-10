@@ -100,8 +100,8 @@ const schemaWithMuhumini = yup.object().shape({
     .required("Kiasi ni lazima"),
   mhumini: yup
     .number()
-    .typeError("Muhumini ni lazima")
-    .required("Muhumini ni lazima"),
+    .typeError("Muumini ni lazima")
+    .required("Muumini ni lazima"),
   remark: yup.string().required("Maelezo ni lazima"),
   payment_type: yup.number()
   .typeError("Payment type must be a number")
@@ -255,7 +255,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
       width={600}
     >
       <Tabs activeKey={activeTab} onChange={handleTabChange}>
-        <TabPane tab="Kwa Muhumini" key="with">
+        <TabPane tab="Kwa Muumini" key="with">
           <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
             {/* Mchango Select Field */}
             <Form.Item
@@ -353,9 +353,9 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
               )}
             </Form.Item>
 
-            {/* Muhumini Select Field */}
+            {/* Muumini Select Field */}
             <Form.Item
-              label="Muhumini"
+              label="Muumini"
             //   validateStatus={errors.mhumini ? "error" : ""}
             //   help={errors.mhumini?.message}
             >
@@ -370,7 +370,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
                     <Select
                       {...field}
                       showSearch
-                      placeholder="Chagua Muhumini"
+                      placeholder="Chagua Muumini"
                       optionFilterProp="children"
                       filterOption={(input, option) =>
                         option?.children
@@ -425,7 +425,7 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
           </Form>
         </TabPane>
 
-        <TabPane tab="Bila Muhumini" key="without">
+        <TabPane tab="Bila Muumini" key="without">
           <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
             {/* Mchango Select Field */}
             <Form.Item

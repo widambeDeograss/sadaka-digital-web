@@ -99,7 +99,7 @@ const EditMchango = () => {
 
   return (
     <Card
-    // title="Update Muhumini"
+    // title="Update Muumini"
     className=" mb-10"
 >
     <div className=" mb-10">

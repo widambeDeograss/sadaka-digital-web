@@ -70,11 +70,11 @@ const CardNumberList = () => {
       await deleteBahasha(ID);
     },
     onSuccess: () => {
-      message.success("Muhumini deleted successfully!");
+      message.success("Muumini deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["bahasha"] });
     },
     onError: () => {
-      message.error("Failed to delete muhumini.");
+      message.error("Failed to delete muumini.");
     },
   });
 

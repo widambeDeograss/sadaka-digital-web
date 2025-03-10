@@ -59,11 +59,11 @@ const Wahumini = () => {
       await deleteMuhumini(ID);
     },
     onSuccess: () => {
-      message.success("Muhumini deleted successfully!");
+      message.success("Muumini deleted successfully!");
       queryClient.invalidateQueries({ queryKey: ["Sadaka"] });
     },
     onError: () => {
-      message.error("Failed to delete muhumini.");
+      message.error("Failed to delete muumini.");
     },
   });
 
@@ -175,7 +175,7 @@ const Wahumini = () => {
                   data-bs-target="#resetPassword"
                   danger
                 >
-                  Delete Muhumini
+                  Delete Muumini
                 </Menu.Item>
               )}
             </Menu>
@@ -210,7 +210,7 @@ const Wahumini = () => {
   return (
     <div>
       <Card
-        title={<h3 className="font-bold text-sm text-left">Wahumini</h3>}
+        title={<h3 className="font-bold text-sm text-left">Waumini</h3>}
         className=""
       >
         <div>
@@ -231,7 +231,7 @@ const Wahumini = () => {
                   className="bg-[#152033] text-white text-xs"
                   onClick={() => navigate("/dashboard/wahumini/ongeza")}
                 >
-                  Ongeza Muhumini
+                  Ongeza Muumini
                 </Button>
               )}
                 {/* </Radio.Button> */}
@@ -246,7 +246,7 @@ const Wahumini = () => {
           <Card
             bordered={false}
             //   className="criclebox tablespace mb-24"
-            title="Wahumini"
+            title="Waumini"
           >
             <div className="table-responsive">
               <Tabletop

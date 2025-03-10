@@ -80,7 +80,7 @@ const OngezaMchango = () => {
 
   return (
     <Card
-    // title="Ongeza Muhumini"
+    // title="Ongeza Muumini"
     className=" mb-10"
 >
     <div className=" mb-10">

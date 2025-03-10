@@ -1,7 +1,7 @@
 const eChart = {
     series: [
       {
-        name: "Wahumini",
+        name: "Waumini",
         data: [450, 200, 100, 220, 500, 100, 400, 230, 500],
         color: "#fff",
       },

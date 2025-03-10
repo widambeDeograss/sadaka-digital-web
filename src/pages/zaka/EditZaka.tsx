@@ -59,7 +59,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
     remark: Yup.string().optional(),
   };
 
-  // Validation schema for the "Muhumini" tab (with card number)
+  // Validation schema for the "Muumini" tab (with card number)
   const validationSchemaWithCard = Yup.object().shape({
     ...baseSchema,
     cardNumber: Yup.string().required("Card number is required"),
@@ -213,8 +213,8 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
       width={700}
     >
       <Tabs defaultActiveKey="1" centered>
-        {/* Tab for "Muhumini" (with card number) */}
-        <TabPane tab="Muhumini" key="1">
+        {/* Tab for "Muumini" (with card number) */}
+        <TabPane tab="Muumini" key="1">
           <form onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}>
             <div className="grid grid-cols-2 gap-4">
               {/* Card Number */}

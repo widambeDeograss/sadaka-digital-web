@@ -51,8 +51,8 @@ interface FormDataWithoutMchango {
 const schemaWithMchango = yup.object().shape({
   wahumini: yup
     .number()
-    .typeError("Muhumini ni lazima uachaguliwe")
-    .required("Muhumini ni lazima uachaguliwe"),
+    .typeError("Muumini ni lazima uachaguliwe")
+    .required("Muumini ni lazima uachaguliwe"),
   mchango: yup
     .number()
     .typeError("Mchango ni lazima uachaguliwe")
@@ -76,8 +76,8 @@ const schemaWithMchango = yup.object().shape({
 const schemaWithoutMchango = yup.object().shape({
   wahumini: yup
     .number()
-    .typeError("Muhumini ni lazima uachaguliwe")
-    .required("Muhumini ni lazima uachaguliwe"),
+    .typeError("Muumini ni lazima uachaguliwe")
+    .required("Muumini ni lazima uachaguliwe"),
   amount: yup
     .number()
     .typeError("Kiasi lazima kiwe namba")
@@ -224,10 +224,10 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
         {/* Tab 1: Ahadi Mchango */}
         <TabPane tab="Ahadi Mchango" key="withMchango">
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Muhumini Select Field */}
+            {/* Muumini Select Field */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
-                Muhumini
+                Muumini
               </label>
               {loadWahumini ? (
                 <Spin />
@@ -240,7 +240,7 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
                     <Select
                       {...field}
                       showSearch
-                      placeholder="Chagua Muhumini"
+                      placeholder="Chagua Muumini"
                       optionFilterProp="children"
                       className="w-full"
                       filterOption={(input, option) =>
@@ -416,10 +416,10 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
         {/* Tab 2: Ahadi Bila Mchango */}
         <TabPane tab="Ahadi Bila Mchango" key="withoutMchango">
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Muhumini Select Field */}
+            {/* Muumini Select Field */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
-                Muhumini
+                Muumini
               </label>
               {loadWahumini ? (
                 <Spin />
@@ -432,7 +432,7 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
                     <Select
                       {...field}
                       showSearch
-                      placeholder="Chagua Muhumini"
+                      placeholder="Chagua Muumini"
                        className="w-full"
                       optionFilterProp="children"
                       filterOption={(input, option) =>

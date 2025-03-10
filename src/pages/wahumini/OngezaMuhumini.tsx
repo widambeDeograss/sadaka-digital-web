@@ -57,14 +57,14 @@ const OngezaMuhumini = () => {
       console.log(data);
       dispatch(addAlert({
         title: "Success",
-        message: "Muhumini added successfully",
+        message: "Muumini added successfully",
         type: "success",
       }));
       reset(); // Reset the form on successful submission
     },
     onError: (error) => {
       dispatch(addAlert({
-        title: "Error adding muhumini",
+        title: "Error adding muumini",
         message: error.message,
         type: "error",
       }));
@@ -96,7 +96,7 @@ const OngezaMuhumini = () => {
 
   return (
     <div className="mx-auto bg-white p-8 shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center">Ongeza Muhumini</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Ongeza Muumini</h2>
       <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
         {/* First Name */}
         <Form.Item
@@ -270,7 +270,7 @@ const OngezaMuhumini = () => {
         {/* Submit Button */}
         <Form.Item>
           <Button type="primary" htmlType="submit" className="w-full bg-[#152033]" loading={isPending}>
-            Ongeza Muhumini
+            Ongeza Muumini
           </Button>
         </Form.Item>
       </Form>

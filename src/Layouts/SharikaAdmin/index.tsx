@@ -117,13 +117,13 @@ const menuItems:MenuItem[] = [
   },
   {
       key: "wahumini",
-      label: "Wahumini",
+      label: "Waumini",
       icon: <UsergroupAddOutlined style={{ fontSize: "14px", fontWeight: "bold" }} />,
       permissions:['VIEW_WAHUMINI'],
       children: [
-          { key: "waliopo", label: "Wahumini waliopo", path: "/dashboard/wahumini/waliopo", permissions:['VIEW_WAHUMINI'], },
+          { key: "waliopo", label: "Waumini waliopo", path: "/dashboard/wahumini/waliopo", permissions:['VIEW_WAHUMINI'], },
           { key: "kanda", label: "Jumuiya", path: "/dashboard/wahumini/kanda-jumuiya", permissions:['VIEW_WAHUMINI'], },
-          { key: "ongezaWahumini", label: "Ongeza Muhumini", path: "/dashboard/wahumini/ongeza", permissions:['VIEW_WAHUMINI'], },
+          { key: "ongezaWahumini", label: "Ongeza Muumini", path: "/dashboard/wahumini/ongeza", permissions:['VIEW_WAHUMINI'], },
           { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
       ],
 
@@ -148,7 +148,7 @@ const menuItems:MenuItem[] = [
     icon: <RiExportLine style={{ fontSize: "14px", fontWeight: "bold" }} />,
     permissions:['VIEW_WAHUMINI'],
     children: [
-        { key: "wahumini-statement", label: "Wahumini", path: "/dashboard/reports/mhumini-statement", permissions:['VIEW_WAHUMINI'], },
+        { key: "wahumini-statement", label: "Waumini", path: "/dashboard/reports/mhumini-statement", permissions:['VIEW_WAHUMINI'], },
         { key: "revenue", label: "Revenue", path: "/dashboard/reports/revenue-statement", permissions:['VIEW_WAHUMINI'], },
         { key: "expences", label: "Expenses", path: "/dashboard/reports/expenses", permissions:['VIEW_WAHUMINI'], },
         // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },

@@ -125,7 +125,7 @@ const Ahadi = () => {
     {
       title: "Name",
       dataIndex: "mhumini_details",
-      key: "wahumini",
+      key: "waumini",
       render: (mhumini_details: any) => (
         <div>
           {mhumini_details?.first_name} {mhumini_details?.last_name}

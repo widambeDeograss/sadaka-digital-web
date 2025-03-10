@@ -38,7 +38,7 @@ const church = useAppSelector((state: any) => state.sp)
           <Row gutter={16} align="middle">
             <Col span={12}>
               <Statistic
-                title="Total Wahumini"
+                title="Total Waumini"
                 value={total_wahumini}
                 valueStyle={{
                   fontSize: "medium",

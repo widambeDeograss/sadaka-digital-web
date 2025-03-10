@@ -241,8 +241,8 @@ const Muhumini = () => {
                 ))}
             </Row>
 
-            <Card title="Matoleo ya Muhumini">
-                <h3 className="text-sm font-bold text-left">JINA LA MUHUMINI: <span className="text-gray-800">
+            <Card title="Matoleo ya Muumini">
+                <h3 className="text-sm font-bold text-left">JINA LA MUUMINI: <span className="text-gray-800">
                   {muhumi_details?.first_name} {muhumi_details?.last_name}
                   
                   </span></h3>

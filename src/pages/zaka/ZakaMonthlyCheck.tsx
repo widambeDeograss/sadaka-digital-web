@@ -89,8 +89,8 @@ const CheckZakaPresenceModal: React.FC<{
         if (record.present) {
           dispatch(
             addAlert({
-              title: "Muhumini ameshatoa zaka kwa mwezi huu",
-              message: "Muhumini ameshatoa zaka kwa mwezi huu",
+              title: "Muumini ameshatoa zaka kwa mwezi huu",
+              message: "Muumini ameshatoa zaka kwa mwezi huu",
               type: "info",
             })
           );
@@ -151,8 +151,8 @@ const CheckZakaPresenceModal: React.FC<{
     if (date && record.present) {
       dispatch(
         addAlert({
-          title: "Muhumini ameshatoa zaka kwa mwezi huu",
-          message: "Muhumini ameshatoa zaka kwa mwezi huu",
+          title: "Muumini ameshatoa zaka kwa mwezi huu",
+          message: "Muumini ameshatoa zaka kwa mwezi huu",
           type: "info",
         })
       );
@@ -181,7 +181,7 @@ const CheckZakaPresenceModal: React.FC<{
   // Columns for the table
   const columns: ColumnsType<CardDetail> = [
     { title: "Card No", dataIndex: "card_no", key: "card_no" },
-    { title: "Muhumini Name", dataIndex: "mhumini_name", key: "mhumini_name" },
+    { title: "Muumini Name", dataIndex: "mhumini_name", key: "mhumini_name" },
     { title: "Jumuiya", dataIndex: "jumuiya", key: "jumuiya" },
     { title: "Kanda", dataIndex: "kanda", key: "kanda" },
     {
@@ -373,11 +373,11 @@ const CheckZakaPresenceModal: React.FC<{
 
     let confirmationMessage = "";
     if (date) {
-      confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya mwezi wa ${date.format(
+      confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa waumini ${notPresentCount} ambao hawajarudisha zaka ya mwezi wa ${date.format(
         "MMMM YYYY"
       )}?`;
     } else if (range) {
-      confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa wahumini ${notPresentCount} ambao hawajarudisha zaka ya miezi kuanzia ${range[0].format(
+      confirmationMessage = `Unataka kutuma ujumbe wa ukumbusho kwa waumini ${notPresentCount} ambao hawajarudisha zaka ya miezi kuanzia ${range[0].format(
         "MMMM YYYY"
       )} hadi ${range[1].format("MMMM YYYY")}?`;
     }

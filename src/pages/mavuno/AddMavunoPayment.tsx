@@ -29,7 +29,7 @@ const schema = yup.object().shape({
     .typeError("Kiasi lazima kiwe namba")
     .positive("Kiasi lazima kiwe chanya")
     .required("Kiasi ni lazima"),
-  mhumini: yup.number().nullable().typeError("Muhumini lazima awe namba"),
+  mhumini: yup.number().nullable().typeError("Muumini lazima awe namba"),
   payment_type: yup
     .number()
     .typeError("Aina ya Malipo lazima ichaguliwe")
@@ -182,12 +182,12 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
       width={700}
     >
       <Tabs defaultActiveKey="1">
-        {/* Tab: With Muhumini */}
-        <TabPane tab="With Muhumini" key="1">
+        {/* Tab: With Muumini */}
+        <TabPane tab="With Muumini" key="1">
           <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
-            {/* Muhumini Field */}
+            {/* Muumini Field */}
             <Form.Item
-              label="Muhumini"
+              label="Muumini"
               validateStatus={errors.mhumini ? "error" : ""}
               help={errors.mhumini?.message}
             >
@@ -201,7 +201,7 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
                     <Select
                       {...field}
                       showSearch
-                      placeholder="Chagua Muhumini"
+                      placeholder="Chagua Muumini"
                       optionFilterProp="children"
                       allowClear
                     >
@@ -228,8 +228,8 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
           </Form>
         </TabPane>
 
-        {/* Tab: Without Muhumini */}
-        <TabPane tab="Without Muhumini" key="2">
+        {/* Tab: Without Muumini */}
+        <TabPane tab="Without Muumini" key="2">
           <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
             {/* Common Fields */}
             <CommonFormFields
