@@ -15,7 +15,7 @@ import {
   Typography,
   Divider,
   Space,
-  Progress,
+  // Progress,
 } from "antd";
 import {
   FacebookOutlined,
@@ -32,7 +32,7 @@ import {
   GlobalOutlined,
   BankOutlined,
   CalendarOutlined,
-  CrownOutlined,
+  // CrownOutlined,
 } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../store/store-hooks";
 import { updateSp } from "../helpers/ApiConnectors";
@@ -351,7 +351,7 @@ const ChurchProfile = () => {
             </Card>
 
             <Col xs={24} md={24} className="mt-3">
-              <InfoCard title="Package Details" icon={CrownOutlined}>
+              {/* <InfoCard title="Package Details" icon={CrownOutlined}>
                 <Space direction="vertical" size={16} style={{ width: "100%" }}>
                   <div>
                     <Text type="secondary">Current Package</Text>
@@ -375,7 +375,7 @@ const ChurchProfile = () => {
                     <Paragraph strong>{daysRemaining} days</Paragraph>
                   </div>
                 </Space>
-              </InfoCard>
+              </InfoCard> */}
             </Col>
           </Col>
 

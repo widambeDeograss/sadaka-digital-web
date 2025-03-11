@@ -146,11 +146,11 @@ const menuItems:MenuItem[] = [
     key: "reports",
     label: "Reports",
     icon: <RiExportLine style={{ fontSize: "14px", fontWeight: "bold" }} />,
-    permissions:['VIEW_WAHUMINI'],
+    permissions:['MANAGE_REPORTS'],
     children: [
-        { key: "wahumini-statement", label: "Waumini", path: "/dashboard/reports/mhumini-statement", permissions:['VIEW_WAHUMINI'], },
-        { key: "revenue", label: "Revenue", path: "/dashboard/reports/revenue-statement", permissions:['VIEW_WAHUMINI'], },
-        { key: "expences", label: "Expenses", path: "/dashboard/reports/expenses", permissions:['VIEW_WAHUMINI'], },
+        { key: "wahumini-statement", label: "Waumini", path: "/dashboard/reports/mhumini-statement", permissions:['MANAGE_REPORTS_MUUMINI'], },
+        { key: "revenue", label: "Revenue", path: "/dashboard/reports/revenue-statement", permissions:['MANAGE_REPORTS_REVENUE'], },
+        { key: "expences", label: "Expenses", path: "/dashboard/reports/expenses", permissions:['	MANAGE_REPORTS_EXPENSES'], },
         // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
     ],
 
