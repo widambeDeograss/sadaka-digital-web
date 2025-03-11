@@ -11,7 +11,7 @@ type modalType = {
   openModal: boolean;
   handleCancel: () => void;
 };
-
+Select
 // user_data = {
 //   "username": request.data.get("username"),
 //   "email":request.data.get('email'),
@@ -68,7 +68,8 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     queryKey: ["roles"],
     queryFn: async () => {
       const response: any = await fetchRoles();
-      return response?.map((role: any) => ({
+      const filtered =  response?.filter((role: any) => role.role_name !== "SYSTEM_TOP_ADMIN");
+      return filtered?.map((role: any) => ({
         name: role.role_name,
         value: role.id,
       }));
@@ -128,7 +129,16 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
       <Form layout="vertical" onFinish={onFinish}>
         {/* Jumuiya Select */}
         <Form.Item name="jumuiya" label="Jumuiya" rules={[{ required: true, message: "Please select a Jumuiya" }]} > 
-          <Select placeholder="Select Jumuiya" onChange={setSelectedJumuiya} loading={loadingJumuiyas}>
+          <Select placeholder="Select Jumuiya" onChange={setSelectedJumuiya} loading={loadingJumuiyas}
+           optionFilterProp="children"
+           showSearch
+           filterOption={(input, option) =>
+             (option?.children?.toString() || '')
+               .toLowerCase()
+               .includes(input.toLowerCase())
+           }
+           notFoundContent="Hajapatikana"
+          >
             {jumuiyas?.map((jumuiya: any) => (
               <Option key={jumuiya.id} value={jumuiya.id}>{jumuiya.name}</Option>
             ))}
@@ -137,7 +147,16 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
 
         {/* Mhumini Select */}
         <Form.Item name="mhumini" label="Mhumini" rules={[{ required: true, message: "Please select a Mhumini" }]}> 
-          <Select placeholder="Select Mhumini" disabled={!selectedJumuiya} loading={isLoading}>
+          <Select placeholder="Select Mhumini" disabled={!selectedJumuiya} loading={isLoading}
+           optionFilterProp="children"
+           showSearch
+           filterOption={(input, option) =>
+             (option?.children?.toString() || '')
+               .toLowerCase()
+               .includes(input.toLowerCase())
+           }
+           notFoundContent="Hajapatikana"
+          >
             {wahumini?.map((mhumini: any) => (
               <Option key={mhumini.id} value={mhumini.id}>{mhumini.first_name} {mhumini.last_name}</Option>
             ))}
