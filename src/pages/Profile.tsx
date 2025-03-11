@@ -123,12 +123,12 @@ const ChurchProfile = () => {
     </div>
   );
 
-  const daysRemaining = Math.ceil(
-    (new Date(church.active_package?.package_end_date).getTime() -
-      new Date().getTime()) /
-      (1000 * 60 * 60 * 24)
-  );
-  const subscriptionProgress = (daysRemaining / 365) * 100;
+  // const daysRemaining = Math.ceil(
+  //   (new Date(church.active_package?.package_end_date).getTime() -
+  //     new Date().getTime()) /
+  //     (1000 * 60 * 60 * 24)
+  // );
+  // const subscriptionProgress = (daysRemaining / 365) * 100;
 
   const InfoCard = ({ title, icon: Icon, children }: any) => (
     <Card
