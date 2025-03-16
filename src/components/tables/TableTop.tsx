@@ -71,7 +71,6 @@ const Tabletop: React.FC<TabletopProps> = ({
       }
 
       if (response) {
-        // Handle the binary response (e.g., download the file)
         //@ts-ignore
         const url = window.URL.createObjectURL(new Blob([response]));
         const link = document.createElement("a");

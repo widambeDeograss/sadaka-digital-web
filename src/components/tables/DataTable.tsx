@@ -12,7 +12,7 @@ interface DatatableProps<T> extends TableProps<T> {
 
   
 function onShowSizeChange(_current:any, _pageSize:any) {
-    // console.log(current, pageSize);
+    
   }
 
 const Datatable = <T extends { id: React.Key }>({
