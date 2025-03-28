@@ -230,6 +230,8 @@ function SpManagerList() {
           </Button>
         }
       >
+   
+        <div className="table-responsive">
         <Tabletop
           inputfilter={false}
           togglefilter={function (_value: boolean): void {
@@ -241,7 +243,6 @@ function SpManagerList() {
           }}
           data={tableId}
         />
-        <div className="table-responsive">
           <Table
             id={tableId}
             columns={columns}

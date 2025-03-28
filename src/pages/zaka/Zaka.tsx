@@ -285,7 +285,7 @@ const Zaka = () => {
               <>
                 <Button
                   type="primary"
-                  className="bg-[#152033] text-white"
+                  className="bg-[#152033] text-white hidden sm:hidden lg:block "
                   onClick={() => setOpenBahashaModal(true)}
                 >
                   Fuatilia Bahasha

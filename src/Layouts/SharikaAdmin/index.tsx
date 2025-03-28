@@ -150,7 +150,7 @@ const menuItems:MenuItem[] = [
     children: [
         { key: "wahumini-statement", label: "Waumini", path: "/dashboard/reports/mhumini-statement", permissions:['MANAGE_REPORTS_MUUMINI'], },
         { key: "revenue", label: "Revenue", path: "/dashboard/reports/revenue-statement", permissions:['MANAGE_REPORTS_REVENUE'], },
-        { key: "expences", label: "Expenses", path: "/dashboard/reports/expenses", permissions:['	MANAGE_REPORTS_EXPENSES'], },
+        { key: "expences", label: "Expenses", path: "/dashboard/reports/expenses", permissions:['MANAGE_REPORTS_EXPENSES'], },
         // { key: "bahasha", label: "Bahasha", path: "/dashboard/wahumini/bahasha", permissions:['VIEW_WAHUMINI'], },
     ],
 
@@ -333,7 +333,7 @@ const Main: React.FC = () => {
       />
       
       <Content 
-        className="rounded-3xl shadow-sm p-6 m-4 "
+        className="rounded-3xl shadow-sm m-4 "
         style={{ 
           minHeight: 'calc(100vh - 120px)',
         }}

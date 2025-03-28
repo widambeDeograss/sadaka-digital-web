@@ -82,6 +82,12 @@ const ExpenseCategoryList = () => {
       sorter: (a: any, b: any) => a.sNo.length - b.sNo.length,
     },
     {
+      title: "Account Code",
+      dataIndex: "updated_by",
+      render: (text: any, _record: any) => <div>{text}</div>,
+      // sorter: (a, b) => a.name.length - b.name.length,
+    },
+    {
       title: "Name",
       dataIndex: "category_name",
       render: (text: any, _record: any) => <div>{text}</div>,
@@ -97,7 +103,7 @@ const ExpenseCategoryList = () => {
     {
         title: "created at",
         dataIndex: "inserted_at",
-        render: (text: any, _record: any) => <div>{text}</div>,
+        render: (text: any, _record: any) => <div>{new Date(text).toLocaleDateString()}</div>,
         // sorter: (a, b) => a.capacity.length - b.capacity.length,
       },
 

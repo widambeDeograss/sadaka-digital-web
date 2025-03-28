@@ -180,7 +180,7 @@ const AddExpenseModal: React.FC<AddExpenseModalProps> = ({ openModal, handleCanc
                 >
                   {expensecats?.map((category: any) => (
                     <Option key={category.id} value={category.id}>
-                      {category.category_name}
+                      {category.category_name}-{category.updated_by}
                     </Option>
                   ))}
                 </Select>

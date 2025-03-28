@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Input, Dropdown, Badge, Avatar, Menu, AutoComplete } from 'antd';
-import { ChevronsLeft, ChevronsRight, Bell } from 'lucide-react';
+import { Input, Dropdown, Avatar, Menu, AutoComplete } from 'antd';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useAppSelector } from '../../store/store-hooks';
 import { useNavigate } from 'react-router-dom';
@@ -121,6 +121,9 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
     </Menu>
   );
 
+  console.log(notificationsMenu);
+  
+
   return (
     <header 
       className="sticky top-0 z-50 w-full border-b bg-white"
@@ -165,7 +168,7 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
 
       {/* Right Section */}
       <div className="flex items-center gap-4">
-        <Dropdown 
+        {/* <Dropdown 
           overlay={notificationsMenu} 
           trigger={['click']}
           placement="bottomRight"
@@ -175,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
               <Bell className="w-5 h-5" />
             </div>
           </Badge>
-        </Dropdown>
+        </Dropdown> */}
 
         <Dropdown 
           overlay={profileMenu} 

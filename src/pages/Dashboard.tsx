@@ -7,7 +7,7 @@ import { BiCard, BiMoney } from "react-icons/bi";
 import { FaHandsBound } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query"; 
 import { useAppSelector } from "../store/store-hooks.ts";
-import { fetchDashboard } from "../helpers/ApiConnectors.ts";
+import { fetchDashboard, fetchtSpManagers } from "../helpers/ApiConnectors.ts";
 
 const textColor = "black"; 
 
@@ -22,12 +22,21 @@ const church = useAppSelector((state: any) => state.sp)
     },
 });
 
+const { data: spManagers } = useQuery({
+    queryKey: ["spManagers"],
+    queryFn: async () => {
+      const response: any = await fetchtSpManagers(`?church_id=${church.id}`);
+      console.log(response);
+      return response;
+    },
+  });
+
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: Unable to fetch data</div>;
 
   // Extract statistics from the API response
-  const { total_wahumini, total_card_numbers, total_revenue, total_jumuiya } =
+  const { total_wahumini, total_card_numbers, total_jumuiya } =
     data || {};
 
   return (
@@ -130,6 +139,50 @@ const church = useAppSelector((state: any) => state.sp)
           <Row gutter={16} align="middle">
             <Col span={12}>
               <Statistic
+                title="Total users"
+                value={`${spManagers?.length}`}
+                valueStyle={{
+                  fontSize: "medium",
+                  fontWeight: "bold",
+                  color: textColor,
+                }}
+              />
+            </Col>
+            <Col span={12}>
+              <div
+                style={{
+                  borderRadius: "50%",
+                  height: "45px",
+                  maxWidth: "45px",
+                  backgroundColor: Colors.secondary,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginLeft: "40px",
+                }}
+              >
+                <BiMoney className="text-white font-bold" />
+              </div>
+            </Col>
+          </Row>
+          <p
+              style={{
+                color: "gray.400",
+                fontSize: "xx-small",
+                display: "inline-flex",
+                justifyContent: "space-between",
+                marginTop: "10px",
+              }}
+          >
+              
+            <span className="ml-10">Total all time</span>
+          </p>
+        </Card>
+
+        {/* <Card style={{ minHeight: "125px", minWidth: "83px" }}>
+          <Row gutter={16} align="middle">
+            <Col span={12}>
+              <Statistic
                 title="Total Revenue"
                 value={`${total_revenue}`}
                 valueStyle={{
@@ -170,7 +223,7 @@ const church = useAppSelector((state: any) => state.sp)
                 </span>
             <span className="ml-10">This year</span>
           </p>
-        </Card>
+        </Card> */}
 
         <Card style={{ minHeight: "125px", minWidth: "83px" }}>
           <Row gutter={16} align="middle">

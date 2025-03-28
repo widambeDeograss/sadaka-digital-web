@@ -1,7 +1,7 @@
 // src/components/Expenses.tsx
 
 import  { useEffect, useState } from "react";
-import { Button, Card, Table, Typography, Progress, message, Dropdown, Menu } from "antd";
+import { Button, Card, Table, Typography, message, Dropdown, Menu } from "antd";
 import AddExpenseModal from "./AddExpModal";
 import Tabletop from "../../components/tables/TableTop";
 import Widgets from "./Stats";
@@ -118,6 +118,14 @@ const Expenses = () => {
       render: (_: any, __: any, index: number) => <div>{index + 1}</div>,
     },
     {
+      title: "Account Code",
+      dataIndex: ["category_details", "updated_by"],
+      key: "category",
+      sorter: (a: Expense, b: Expense) =>
+        a?.category_details?.category_name?.localeCompare(b?.category_details?.updated_by),
+      render: (text: string) => <div>{text}</div>,
+    },
+    {
       title: "Category",
       dataIndex: ["category_details", "category_name"],
       key: "category",
@@ -155,24 +163,24 @@ const Expenses = () => {
         new Date(a.date).getTime() - new Date(b.date).getTime(),
       render: (text: string) => <div>{new Date(text).toLocaleDateString()}</div>,
     },
-    {
-      title: "Progress",
-      key: "progress",
-      render: (_: any, record: Expense) => {
-        const budget = record?.category_details?.budget;
-        const spent = parseFloat(record.amount);
-        const percent = Math.min((spent / budget) * 100, 100);
+    // {
+    //   title: "Progress",
+    //   key: "progress",
+    //   render: (_: any, record: Expense) => {
+    //     const budget = record?.category_details?.budget;
+    //     const spent = parseFloat(record.amount);
+    //     const percent = Math.min((spent / budget) * 100, 100);
 
-        return (
-          <Progress
-            percent={percent}
-            status={percent === 100 ? "success" : "active"}
-            size="small"
-            format={(percent:any) => `${percent.toFixed(2)}%`}
-          />
-        );
-      },
-    },
+    //     return (
+    //       <Progress
+    //         percent={percent}
+    //         status={percent === 100 ? "success" : "active"}
+    //         size="small"
+    //         format={(percent:any) => `${percent.toFixed(2)}%`}
+    //       />
+    //     );
+    //   },
+    // },
     {
       title: "",
       render: (_text: any, record: any) => (

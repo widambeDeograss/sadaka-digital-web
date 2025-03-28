@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, Table, Typography, DatePicker, Select, Button } from 'antd';
+import { Card, Table, Typography, DatePicker, Select, Button, Form } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import { useAppSelector } from '../../store/store-hooks';
-import { fetchWahumini,fetchWahuminiStatement } from '../../helpers/ApiConnectors';
+import { useAppDispatch, useAppSelector } from '../../store/store-hooks';
+import { fetchWahumini,fetchWahuminiStatement, retrieveMuumini, sendCustomSms } from '../../helpers/ApiConnectors';
+import { addAlert } from '../../store/slices/alert/alertSlice';
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -34,6 +35,12 @@ const MuhuminiStatementPage = () => {
   const [selectedMuhumini, setSelectedMuhumini] = useState<number | null>(null);
   const [dates, setDates] = useState<[Dayjs, Dayjs]>([dayjs().subtract(1, 'month'), dayjs()]);
   const [statementData, setStatementData] = useState<MuhuminiStatement | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+
+  console.log(selectedMuhumini);
+  
+  
 
   // Fetch list of Wahumini
   const { data: wahumini, isLoading: loadingWahumini } = useQuery({
@@ -43,6 +50,53 @@ const MuhuminiStatementPage = () => {
          return response;
     },
   });
+
+  const { data: record } = useQuery({
+    queryKey: ['record', selectedMuhumini],
+    queryFn: async () => {
+         const response: any = await retrieveMuumini(selectedMuhumini);
+         return response;
+    },
+
+    // enabled: !selectedMuhumini,
+  });
+
+  console.log(record);
+
+   const sendPushMessage = async (message:string) => {
+     console.log(record);
+    
+  
+      try {
+      
+        setIsLoading(true);
+
+        const postMessage: any = await sendCustomSms({
+          phone: record?.phone_number,
+          message: message,
+        });
+  
+        if (postMessage?.message === "Message sent successfully") {
+          dispatch(
+            addAlert({
+              title: "Ujumbe umetumwa kwa usahihi",
+              message: "Ujumbe umetumwa kwa usahihi",
+              type: "success",
+            })
+          );
+        }
+      } catch (error) {
+        dispatch(
+          addAlert({
+            title: "Ujumbe  haujatuma, jaribu tena baaadaye",
+            message: "Ujumbe haujatuma, jaribu tena baaadaye",
+            type: "error",
+          })
+        );
+      } finally {
+       setIsLoading(false);
+      }
+    };
 
   // Fetch statement handler
   const handleGetStatement = async () => {
@@ -103,11 +157,16 @@ const MuhuminiStatementPage = () => {
     },
   ];
 
+  const handleSendMuuminiMessage = async (values:{message:string}) => {
+   console.log(values);
+    sendPushMessage(values.message);
+  }
+
   return (
     <Card className="mt-14">
       <Title level={4}>RIPOTI YA MUUMINI</Title>
 
-      <div className="flex gap-4 mb-6 flex-wrap">
+      <div className="flex gap-4 mb-6 flex-wrap table-responsive">
         <div className="flex-1 min-w-[300px]">
           <Select
             placeholder="Chagua Muumini"
@@ -165,7 +224,7 @@ const MuhuminiStatementPage = () => {
             <p>Jumuiya: {statementData.jumuiya_name}</p>
             <p>Kanda: {statementData.kanda_name}</p>
           </div>
-
+          <div className="table-responsive">
           <Table
             columns={columns}
             dataSource={statementData.contributions}
@@ -192,6 +251,7 @@ const MuhuminiStatementPage = () => {
               </Table.Summary>
             )}
           />
+          </div>
 
           <div className="mt-4 text-right">
             <p className="font-bold">
@@ -202,8 +262,47 @@ const MuhuminiStatementPage = () => {
               {dayjs(dates[1]).format('DD/MM/YYYY')}
             </p>
           </div>
+
+         
         </div>
       )}
+{
+  record && (
+    <div>
+    <p className='p-8'>
+     <strong>Tuma ujumbe kwa muumini: {record?.first_name} {record?.last_name}</strong>
+     <br />
+     Phone: {record?.phone_number}
+     </p>
+     <Form
+    onFinish={(values) => {
+      handleSendMuuminiMessage(values);
+    }}
+    layout="vertical"
+    className="mt-4"
+     >
+
+        <Form.Item
+        label="Ujumbe"
+        name="message"
+        rules={[{ required: true, message: 'Ujumbe ni lazima!' }]}
+        >
+          <textarea className="w-full h-32 p-2 border rounded-lg" placeholder="Ujumbe" />
+    
+        </Form.Item>
+
+        <Button type="primary" htmlType="submit" className='bg-[#152033] text-white'
+        loading={isLoading}
+        disabled={isLoading}
+        >Tuma Ujumbe</Button>
+
+     </Form>
+ 
+  </div>
+  )
+}
+
+
     </Card>
   );
 };

@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 const schema = yup.object().shape({
   name: yup.string().required("Expense Category name is required"),
   budget: yup.number().required("Budget is required"),
+  accode: yup.string().required("Account code is required"),
 });
 
 const ExpenseCategoryModal = ({ visible, onClose, expenseCategory, isEditing }:any) => {
@@ -29,6 +30,8 @@ const ExpenseCategoryModal = ({ visible, onClose, expenseCategory, isEditing }:a
     if (isEditing && expenseCategory) {
       setValue("name", expenseCategory.category_name);
       setValue("budget", expenseCategory.budget);
+      setValue("accode", expenseCategory
+      .updated_by); 
     }
   }, [isEditing, expenseCategory, setValue]);
 
@@ -71,7 +74,7 @@ const ExpenseCategoryModal = ({ visible, onClose, expenseCategory, isEditing }:a
       category_name: data.name,
       church: church?.id,
       inserted_by: user?.username,
-      updated_by: user?.username,
+      updated_by: data.accode,
     };
     mutation.mutate(finalData);
   };
@@ -84,6 +87,23 @@ const ExpenseCategoryModal = ({ visible, onClose, expenseCategory, isEditing }:a
       footer={null}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="">
+          
+
+          <label htmlFor="accode" className="block text-sm font-medium text-gray-700">
+            Account Code
+          </label>
+          <input
+            id="name"
+            type="text"
+            className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+              errors.accode ? "border-red-500" : "border-gray-300"
+            }`}
+            {...register("accode")}
+          />
+          {errors.accode && <p className="mt-1 text-sm text-red-600">{errors.accode.message}</p>}
+        </div>
+
         <div className="">
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Name

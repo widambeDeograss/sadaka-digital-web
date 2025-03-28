@@ -259,7 +259,7 @@ const KandaJumuiya = () => {
           <h3 className="font-bold text-sm text-left">Kanda na Jumuiya</h3>
         }
       >
-        <div className="flex justify-between mt-3">
+        <div className="flex justify-between mt-3 table-responsive">
           <div>
             <h3 className="text-left font-bold text-xs">
               Jumla Kanda: <span>{kanda?.length}</span>

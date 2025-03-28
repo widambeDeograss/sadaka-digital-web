@@ -79,6 +79,9 @@ export const postWahumini = (data: any) =>
   api.create(url.WAHUMINI_LIST_CREATE, data);
 export const updateMuhumini = (id: any, data: any) =>
   api.put(url.WAHUMINI_UPDATE_DISTROY + id, data);
+export const retrieveMuumini = (id: any) => {
+  return api.get(url.WAHUMINI_UPDATE_DISTROY + id);
+};
 export const deleteMuhumini = (id: any) =>
   api.delete(url.WAHUMINI_UPDATE_DISTROY + id);
 export const postBahasha = (data: any) =>
