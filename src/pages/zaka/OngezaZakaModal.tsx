@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal, Tabs, message, Spin } from "antd";
+import { Button, Modal, Tabs, message, Spin, Descriptions } from "antd";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -35,6 +35,9 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
   const [bahashaData, setBahashaData] = useState<any>(null);
   const [verifyingBahasha, setVerifyingBahasha] = useState<boolean>(false);
   const [bahashaError, setBahashaError] = useState<string | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingData, setPendingData] = useState<any>(null);
+
 
   // Fetch Payment Types based on church ID
   const { data: payTypes } = useQuery({
@@ -126,6 +129,10 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       );
       message.error("Failed to add Zaka.");
     },
+    onSettled: () => {
+      setShowConfirmModal(false);
+      setPendingData(null);
+    },
   });
 
   // Handler to resolve Bahasha (card number)
@@ -191,8 +198,15 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       inserted_by: user?.username,
       updated_by: user?.username,
     };
+    setPendingData(finalData);
+    setShowConfirmModal(true);
+    // postZakaMutation(finalData);
+  };
 
-    postZakaMutation(finalData);
+  const handleConfirmSubmit = () => {
+    if (pendingData) {
+      postZakaMutation(pendingData);
+    }
   };
 
   return (
@@ -462,6 +476,44 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
           </form>
         </TabPane>
       </Tabs>
+
+      <Modal
+        title="Thibitisha Taarifa"
+        open={showConfirmModal}
+        onOk={handleConfirmSubmit}
+        onCancel={() => setShowConfirmModal(false)}
+        okText="Thibitisha"
+        cancelText="Rudi"
+        confirmLoading={posting}
+      >
+        {pendingData && (
+          <Descriptions column={1} bordered>
+            <Descriptions.Item label="Kiasi">
+              {pendingData.zaka_amount}
+            </Descriptions.Item>
+            <Descriptions.Item label="Aina ya Malipo">
+              {payTypes?.find((py: any) => py.id === pendingData.payment_type)?.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Tarehe ya Mwezi wa Zaka">
+              {pendingData.date}
+            </Descriptions.Item>
+            <Descriptions.Item label="Tarehe">
+              {pendingData.date_received}
+            </Descriptions.Item>
+            {pendingData.collected_by && (
+              <Descriptions.Item label="Maelezo">
+                {pendingData.collected_by}
+              </Descriptions.Item>
+            )}
+            {pendingData.bahasha && bahashaData && (
+              <Descriptions.Item label="Jina la Mhumini">
+                {bahashaData.mhumini_details?.first_name}{" "}
+                {bahashaData.mhumini_details?.last_name}
+              </Descriptions.Item>
+            )}
+          </Descriptions>
+        )}
+      </Modal>
     </Modal>
   );
 };
