@@ -116,7 +116,7 @@ export default function LoginPage() {
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
             className="w-32 h-32 mb-6 rounded-full shadow-lg"
           />
-          <h1 className="text-3xl font-bold mb-4 text-center">Sadaka Digital</h1>
+          <h1 className="text-3xl font-bold mb-4 text-center">BMC MAKABE DIGITAL</h1>
           <p className="text-sm text-center opacity-80">
             Empowering digital church management with seamless solutions
           </p>
