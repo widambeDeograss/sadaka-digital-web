@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Card, Dropdown, Menu, message, Table } from "antd";
-import Tabletop from "../../components/tables/TableTop";
 import OngezaZaka from "./OngezaZakaModal";
 import { useAppSelector } from "../../store/store-hooks";
 import {  useQuery } from "@tanstack/react-query";
@@ -19,6 +18,7 @@ import CheckZakaPresenceModal from "./ZakaMonthlyCheck";
 import ReceiptDocument from "../../components/ZakaReceipt";
 import { pdf } from "@react-pdf/renderer";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
+import ZakaTableTop from "../../components/table-exports/zaka-table-top";
 
 
 const MenuReceiptGenerator: React.FC<{ record: any }> = ({ record }) => {
@@ -83,7 +83,7 @@ const Zaka = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
-  const [zakaData, setZakaData] = useState([]);
+  // const [zakaData, setZakaData] = useState([]);
   const [yearFilter, setYearFilter] = useState<string | null>(null);
   const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
@@ -99,12 +99,12 @@ const Zaka = () => {
 
 
   const {data: zakaPaginated, isLoading: loadingZaka } = useQuery({
-    queryKey: ["zaka", pagination.current, pagination.pageSize, yearFilter],
+    queryKey: ["zaka", pagination.current, pagination.pageSize, yearFilter, searchTerm],
     queryFn: async () => {
-      let query = `?church_id=${church.id}&page=${pagination.current}&page_size=${pagination.pageSize}`;
+      let query = `?church_id=${church.id}&page=${pagination.current}&page_size=${pagination.pageSize}&search=${searchTerm}`;
       if (yearFilter) query += `&year=${yearFilter}`;
       const response: any = await fetchZaka(query);
-      setZakaData(response.results);
+      // setZakaData(response.results);
       setFilteredData(response.results);
       return response;
     },
@@ -235,25 +235,25 @@ const Zaka = () => {
     setPagination((prev) => ({ ...prev, current: pagination }));
   };
 
-  useEffect(() => {
-    if (searchTerm) {
-      const lowercasedTerm = searchTerm.toLowerCase();
-      const filtered = zakaData.filter((item: any) => {
-        return (
-          item?.bahasha_details?.mhumini_details?.first_name
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.bahasha_details?.mhumini_details?.last_name
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
-        );
-      });
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(zakaData);
-    }
-  }, [searchTerm, zakaData]);
+  // useEffect(() => {
+  //   if (searchTerm) {
+  //     const lowercasedTerm = searchTerm.toLowerCase();
+  //     const filtered = zakaData.filter((item: any) => {
+  //       return (
+  //         item?.bahasha_details?.mhumini_details?.first_name
+  //           .toLowerCase()
+  //           .includes(lowercasedTerm) ||
+  //         item?.bahasha_details?.mhumini_details?.last_name
+  //           .toLowerCase()
+  //           .includes(lowercasedTerm) ||
+  //         item?.bahasha_details?.card_no.toLowerCase().includes(lowercasedTerm)
+  //       );
+  //     });
+  //     setFilteredData(filtered);
+  //   } else {
+  //     setFilteredData(zakaData);
+  //   }
+  // }, [searchTerm, zakaData]);
 
   return (
     <div className="">
@@ -267,7 +267,7 @@ const Zaka = () => {
             <div>
               <Button.Group className="mt-5">
               {GlobalMethod.hasAnyPermission(
-                  ["ADD_ZAKA"],
+                  ["VIEW_WAHUMINI"],
                   GlobalMethod.getUserPermissionName(userPermissions)
                 ) && (
                 <Button
@@ -279,7 +279,7 @@ const Zaka = () => {
                 </Button>
                     )}
                       {GlobalMethod.hasAnyPermission(
-                  ["MANAGE_ZAKA"],
+                  ["VIEW_WAHUMINI"],
                   GlobalMethod.getUserPermissionName(userPermissions)
                 ) && (
               <>
@@ -311,12 +311,12 @@ const Zaka = () => {
         className="mt-5"
       >
         <div className="table-responsive">
-          <Tabletop
+          <ZakaTableTop
             inputfilter={showFilter}
             onSearch={(term: string) => setSearchTerm(term)}
             togglefilter={(value: boolean) => setShowFilter(value)}
             searchTerm={searchTerm}
-            data={tableId}
+            // data={tableId}
           />
           {showFilter && (
             <div className="bg-gray-100 p-4 mt-4 rounded-lg">

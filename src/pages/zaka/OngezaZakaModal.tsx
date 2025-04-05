@@ -117,6 +117,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       formWithCard.reset();
       formWithoutCard.reset();
       setBahashaData(null);
+      setShowConfirmModal(false);
       setBahashaError(null);
     },
     onError: (_error: any) => {
@@ -177,6 +178,8 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
 
   // Unified submit handler
   const onSubmit = (data: any, hasCard: boolean) => {
+    console.log("==================================");
+    
     // Format date to YYYY-MM-DD
     if (data.date) {
       const localDate = new Date(data.date);
@@ -210,6 +213,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
   };
 
   return (
+  <>
     <Modal
       title="Ongeza Zaka"
       open={openModal}
@@ -365,7 +369,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
 
         {/* Tab for "Bila Namba ya Kadi" (without card number) */}
         <TabPane tab="Bila Namba ya Kadi" key="2">
-          <form onSubmit={formWithoutCard.handleSubmit((data) => onSubmit(data, false))}>
+        <form onSubmit={formWithCard.handleSubmit((data) => onSubmit(data, true))}>
             <div className="grid grid-cols-2 gap-4">
               {/* Amount */}
               <div>
@@ -469,6 +473,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
             </div>
             <div className="mt-4">
               <Button type="primary" htmlType="submit" loading={posting}      className="font-bold bg-[#152033] text-white mt-4"
+              
               style={{ width: "100%" }} >
                 Ongeza
               </Button>
@@ -477,20 +482,29 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
         </TabPane>
       </Tabs>
 
-      <Modal
+   
+    </Modal>
+    <Modal
         title="Thibitisha Taarifa"
         open={showConfirmModal}
         onOk={handleConfirmSubmit}
         onCancel={() => setShowConfirmModal(false)}
         okText="Thibitisha"
         cancelText="Rudi"
+        okButtonProps={{ className: "bg-[#152033] text-white" }}
         confirmLoading={posting}
       >
         {pendingData && (
           <Descriptions column={1} bordered>
             <Descriptions.Item label="Kiasi">
-              {pendingData.zaka_amount}
+            Tsh. {pendingData.zaka_amount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </Descriptions.Item>
+            {pendingData.bahasha && bahashaData && (
+              <Descriptions.Item label="BAHASHA">
+                {bahashaData?.card_no}
+              </Descriptions.Item>
+            )}
+        
             <Descriptions.Item label="Aina ya Malipo">
               {payTypes?.find((py: any) => py.id === pendingData.payment_type)?.name}
             </Descriptions.Item>
@@ -500,9 +514,9 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
             <Descriptions.Item label="Tarehe">
               {pendingData.date_received}
             </Descriptions.Item>
-            {pendingData.collected_by && (
-              <Descriptions.Item label="Maelezo">
-                {pendingData.collected_by}
+            {pendingData.bahasha && bahashaData && (
+              <Descriptions.Item label="Jumuiya">
+                {bahashaData?.mhumini_details?.jumuiya_details?.name}
               </Descriptions.Item>
             )}
             {pendingData.bahasha && bahashaData && (
@@ -514,7 +528,7 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
           </Descriptions>
         )}
       </Modal>
-    </Modal>
+  </>
   );
 };
 

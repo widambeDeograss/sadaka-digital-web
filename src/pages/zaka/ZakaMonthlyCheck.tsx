@@ -20,8 +20,8 @@ import {
   sendCustomSms,
 } from "../../helpers/ApiConnectors";
 import { useQuery } from "@tanstack/react-query";
-import Tabletop from "../../components/tables/TableTop";
 import { addAlert } from "../../store/slices/alert/alertSlice";
+import Tabletop from "../../components/table-exports/zaka-monthly-check";
 
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
@@ -75,15 +75,12 @@ const CheckZakaPresenceModal: React.FC<{
             const monthDate = range[0].clone().month(parseInt(month) - 1);
             return monthDate.format("MMMM YYYY");
           });
-
-        message = `Tumsifu Yesu Kristu,\n Mpendwa ${
+          // kwa bahasha namba ${record.card_no}
+        message = `Kristu,\nMpendwa ${
           response?.mhumini_details?.first_name
-        } ${response?.mhumini_details?.last_name},
-        Unakumbushwa kurejesha bahasha  zako za  zaka  ya miezi ya ${months.join(
+        } ${response?.mhumini_details?.last_name},Unakumbushwa kurejesha bahasha zako za zaka ya miezi ya ${months.join(
           ", "
-        )} kwa bahasha namba ${record.card_no}. 
-        Mungu akubariki. \n
-        KAMATI YA ZAKA, PAROKIA YA BMC MAKABE.
+        )}.\nMungu akubariki.\nMawasiliano: 0677050574\nPAROKIA YA BMC MAKABE.
         `;
       } else if (date) {
         if (record.present) {
@@ -96,14 +93,11 @@ const CheckZakaPresenceModal: React.FC<{
           );
           return;
         }
-        message = `Tumsifu Yesu Kristu,\n Mpendwa ${
+        message = `Kristu,\nMpendwa ${
           response?.mhumini_details?.first_name
-        } ${response?.mhumini_details?.last_name},\n 
-        Unakumbushwa kurejesha bahasha yako ya  zaka  ya ${date.format(
+        } ${response?.mhumini_details?.last_name}, Unakumbushwa kurejesha bahasha yako ya zaka ya ${date.format(
           "MMMM YYYY"
-        )}. kwa bahasha namba ${record.card_no}. 
-        Mungu akubariki.\n \n
-        KAMATI YA ZAKA, PAROKIA YA BMC MAKABE.`;
+        )}.\nMungu akubariki.\nMawasiliano: 0677050574\nPAROKIA YA BMC MAKABE.`;
       }
 
       const postMessage: any = await sendCustomSms({
@@ -185,7 +179,7 @@ const CheckZakaPresenceModal: React.FC<{
     { title: "Jumuiya", dataIndex: "jumuiya", key: "jumuiya" },
     { title: "Kanda", dataIndex: "kanda", key: "kanda" },
     {
-      title: "Presence",
+      title: "Matoleo ya Zaka",
       dataIndex: "monthly_presence",
       key: "monthly_presence",
       render: (
@@ -216,7 +210,7 @@ const CheckZakaPresenceModal: React.FC<{
       },
     },
     {
-      title: "Actions",
+      title: "",
       key: "actions",
       render: (_text, record) => (
         <Button
@@ -336,7 +330,7 @@ const CheckZakaPresenceModal: React.FC<{
         return (
           item?.card_no?.toLowerCase().includes(lowercasedTerm) ||
           item?.mhumini_name?.toLowerCase().includes(lowercasedTerm) ||
-          item?.Kanda?.toLowerCase().includes(lowercasedTerm) ||
+          item?.kanda?.toLowerCase().includes(lowercasedTerm) ||
           item?.jumuiya?.toLowerCase().includes(lowercasedTerm)
         );
       });
@@ -496,12 +490,14 @@ const CheckZakaPresenceModal: React.FC<{
 
       <Tabletop
         inputfilter={false}
-        onSearch={(term: string) => setSearchTerm(term)}
+        onChangeSearch={(term: string) => setSearchTerm(term)}
         togglefilter={(_value: boolean) => {}}
-        showFilter={false}
-        searchTerm={searchTerm}
-        data={tableId}
+       docTitle="Bahasha za zaka"
+       header={columns.map((col) => col.title)}
+       data={filteredData}
+       searchQuery={searchTerm}   
       />
+
       <Table
         id={tableId}
         columns={columns}
@@ -509,6 +505,7 @@ const CheckZakaPresenceModal: React.FC<{
         rowKey="card_no"
         loading={isLoading}
       />
+
     </Modal>
   );
 };

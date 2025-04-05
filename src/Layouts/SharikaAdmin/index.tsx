@@ -263,8 +263,8 @@ const Main: React.FC = () => {
           className="h-10 w-10 mr-2 rounded-full shadow-lg" 
         />
         {!collapsed && (
-          <h3 className="logo-text text-lg text-white font-bold">
-            Sadaka Digital
+          <h3 className="logo-text text-lg text-white font-bold mt-1">
+            BMC MAKABE
           </h3>
         )}
       </div>
@@ -344,7 +344,7 @@ const Main: React.FC = () => {
       <Footer 
         className="text-center bg-transparent text-gray-600"
       >
-        Sadaka Digital ©{new Date().getFullYear()} Created by EVD solutions
+        BMC Makabe Digital ©{new Date().getFullYear()} Created by EVD solutions
       </Footer>
     </Layout>
 
