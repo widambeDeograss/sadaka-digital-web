@@ -79,7 +79,7 @@ const MenuReceiptGenerator: React.FC<{ record: any }> = ({ record }) => {
 };
 
 const Zaka = () => {
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -267,7 +267,7 @@ const Zaka = () => {
             <div>
               <Button.Group className="mt-5">
               {GlobalMethod.hasAnyPermission(
-                  ["VIEW_WAHUMINI"],
+                  ["ADD_ZAKA"],
                   GlobalMethod.getUserPermissionName(userPermissions)
                 ) && (
                 <Button
@@ -279,7 +279,7 @@ const Zaka = () => {
                 </Button>
                     )}
                       {GlobalMethod.hasAnyPermission(
-                  ["VIEW_WAHUMINI"],
+                  ["MANAGE_ZAKA"],
                   GlobalMethod.getUserPermissionName(userPermissions)
                 ) && (
               <>

@@ -4,11 +4,14 @@ import CountUp from 'react-countup';
 import { fetchSadataZakaStats } from '../../helpers/ApiConnectors';
 import { useAppSelector } from '../../store/store-hooks';
 import { useQuery } from '@tanstack/react-query';
+import { GlobalMethod } from '../../helpers/GlobalMethods';
 
 const Widgets = () => {
 
     const church = useAppSelector((state: any) => state.sp);
-
+    const userPermissions = useAppSelector(
+        (state: any) => state.user.userInfo.role.permissions
+      );
     const {
         data: zaka_totals,
         isLoading,
@@ -79,6 +82,10 @@ const Widgets = () => {
                     <p className="text-slate-500 dark:text-zink-200">Jumla mwezi huu</p>
                 </div>
             </div>
+                {GlobalMethod.hasAnyPermission(
+                                         ["MANAGE_ZAKA"],
+                                         GlobalMethod.getUserPermissionName(userPermissions)
+                                       ) && (
             <div className="">
                 <div className="text-center bg-white text-black py-4">
                     <div className="flex items-center justify-center mx-auto text-red-500 bg-red-100 rounded-full  w-12 h-12  dark:bg-red-500/20">
@@ -88,6 +95,8 @@ const Widgets = () => {
                     <p className="text-slate-500 dark:text-zink-200">Jumla</p>
                 </div>
             </div>
+            )}
+           
             </div>
         </React.Fragment>
     );
