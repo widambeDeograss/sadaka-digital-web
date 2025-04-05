@@ -92,11 +92,11 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
       );
       handleCancel();
     },
-    onError: (error) => {
+    onError: (_error) => {
       dispatch(
         addAlert({
           title: "Error",
-          message: error.message,
+          message: "USER SELECTED ALREADY EXIST OR MISSING PHONE NUMBER",
           type: "error",
         })
       );
@@ -110,7 +110,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
      first_name: mhumini?.first_name?.toLocaleLowerCase() ,
      last_name:mhumini?.last_name?.toLocaleLowerCase(),
      full_name:mhumini?.first_name + mhumini?.last_name,
-     email: mhumini?.email ?  mhumini?.email : `${mhumini?.first_name + mhumini?.last_name}@bmcmakabe.org.tz`?.toLocaleLowerCase(),
+     email: mhumini?.email ?  mhumini?.email : `${mhumini?.last_name}@bmcmakabe.org.tz`?.toLocaleLowerCase(),
      phone: mhumini?.phone_number,
      password:values?.password,
      role:values?.role,

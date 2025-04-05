@@ -29,10 +29,55 @@ const Tabletop: React.FC<TabletopProps> = ({
   searchQuery,
   onChangeSearch,
   data,
-  header,
-  docTitle="",
+  docTitle = "",
   topFilter = false
 }) => {
+  // Function to transform data for export based on its structure
+  const transformDataForExport = (originalData: any[]) => {
+    return originalData?.map(item => {
+      const transformedItem: any = {
+        "Card No": item.card_no,
+        "Muumini Name": item.mhumini_name,
+        "Jumuiya": item.jumuiya,
+        "Kanda": item.kanda
+      };
+
+      // Handle both data structures
+      if (item.monthly_presence) {
+        // Monthly presence structure
+        Object.entries(item.monthly_presence).forEach(([month, present]) => {
+          transformedItem[`Mwezi ${month}`] = present ? "Ametoa" : "Hajatoa";
+        });
+      } else {
+        // Single presence structure
+        transformedItem["Hali"] = item.present ? "Ametoa" : "Hajatoa";
+      }
+
+      return transformedItem;
+    });
+  };
+
+  const transformHeadersForExport = () => {
+    const baseHeaders = [
+      "Card No",
+      "Muumini Name",
+      "Jumuiya",
+      "Kanda"
+    ];
+  
+    // Check if we have monthly presence data
+    if (data?.length > 0 && data[0]?.monthly_presence) {
+      const months = Object.keys(data[0].monthly_presence);
+      const monthHeaders = months.map(month => `Mwezi ${month}`);
+      return [...baseHeaders, ...monthHeaders];
+    }
+  
+    return [...baseHeaders, "Hali"];
+  };
+
+  const exportData = transformDataForExport(data);
+  const exportHeaders = transformHeadersForExport();
+
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-white rounded-lg shadow-sm mb-4">
       {/* Search and Filter Section */}
@@ -74,12 +119,12 @@ const Tabletop: React.FC<TabletopProps> = ({
 
       {/* Export Buttons Section */}
       <div className="flex gap-2 w-full md:w-auto justify-end">
-        <ReactTooltip place="top"  />
+        <ReactTooltip place="top" />
         
         {/* PDF Export */}
         <ExportAsPdf
-          data={data}
-          headers={[...header].slice(0, 20)}
+          data={exportData}
+          headers={exportHeaders}
           headerStyles={{ fillColor: "red", font: "times", fontSize: 8 }}
           styles={{ font: "times", fontSize: 8 }}
           margin={{ left: 1, right: 1, bottom: 0 }}
@@ -100,11 +145,9 @@ const Tabletop: React.FC<TabletopProps> = ({
         </ExportAsPdf>
 
         {/* Excel Export */}
-    
         <ExportAsExcel
-          data={data}
-          headers={[...header]}
-        //   title=""
+          data={exportData}
+          headers={exportHeaders}
           fileName={docTitle}
         >
           {(props) => (
@@ -121,8 +164,8 @@ const Tabletop: React.FC<TabletopProps> = ({
 
         {/* Print */}
         <PrintDocument
-          data={data}
-          headers={[...header].slice(0, 20)}
+          data={exportData}
+          headers={exportHeaders}
           headerStyles={{ fillColor: "red", font: "times", fontSize: 4 }}
           styles={{ font: "times", fontSize: 4 }}
           margin={{ left: 1, right: 1, bottom: 0 }}
