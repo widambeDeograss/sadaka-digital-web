@@ -79,7 +79,7 @@ const MenuReceiptGenerator: React.FC<{ record: any }> = ({ record }) => {
 };
 
 const Zaka = () => {
-  const [openModal, setOpenModal] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);

@@ -80,11 +80,23 @@ export default function LoginPage() {
       }
     
     },
-    onError: (_error) => {
+    onError: (_error:any) => {
+      console.log(_error);
+      if (_error?.toString().includes("401")) {
+        dispatch(
+          addAlert({
+            title: "Login error",
+            message: "Invalid email or password",
+            type: "error",
+          })
+        );
+        return;
+        
+      }
       dispatch(
         addAlert({
           title: "Login error",
-          message: "Ops.. Error on sign in. Try again!",
+          message: "Error on sign in. Check your and Try again!",
           type: "error",
         })
       );
@@ -118,7 +130,7 @@ export default function LoginPage() {
           />
           <h1 className="text-3xl font-bold mb-4 text-center">BMC MAKABE DIGITAL</h1>
           <p className="text-sm text-center opacity-80">
-            Empowering digital church management with seamless solutions
+            Empowering digital management with seamless solutions
           </p>
         </div>
 
