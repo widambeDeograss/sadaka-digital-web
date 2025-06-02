@@ -303,14 +303,14 @@ const Main: React.FC = () => {
             <div style={{ marginLeft: '15px', color: 'white' }}>
               <h2 style={{ 
                 margin: 0, 
-                fontSize: '22px', 
+                fontSize: '18px', 
                 fontWeight: '700',
                 background: 'linear-gradient(45deg, #fff, #e0e6ff)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                letterSpacing: '0.5px'
+                letterSpacing: '0.2px'
               }}>
-                Sadaka
+                BMC MAKABE
               </h2>
               <p style={{ 
                 margin: 0, 
@@ -332,8 +332,9 @@ const Main: React.FC = () => {
           style={{
             backgroundColor: 'transparent',
             border: 'none',
-            fontSize: '14px',
+            fontSize: '15px',
             fontWeight: '500',
+          textAlign: 'left',
           }}
           className="enhanced-menu"
           onClick={({ key }) => {
@@ -450,7 +451,7 @@ const Main: React.FC = () => {
             margin: '0 20px',
             boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
           }}>
-            Sadaka Digital ©{new Date().getFullYear()} | Crafted with ❤️ by EVD Solutions
+            BMC MAKABE DIGITAL ©{new Date().getFullYear()} | Crafted with by VM Solutions
           </div>
         </Footer>
       </Layout>
