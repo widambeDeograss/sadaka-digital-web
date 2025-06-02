@@ -4,19 +4,17 @@ import {
   UsergroupAddOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
-import { Menu, Layout } from "antd";
+import { Menu, Layout, Badge } from "antd";
 import {
   PiChurchBold,
   PiHandsPrayingFill,
   PiHandshakeBold,
   PiUsersFourBold,
-  
 } from "react-icons/pi";
-import { GiSwapBag, GiTakeMyMoney, GiPayMoney,  } from "react-icons/gi";
+import { GiSwapBag, GiTakeMyMoney, GiPayMoney } from "react-icons/gi";
 import { RiDashboardFill, RiExportLine } from "react-icons/ri";
 import { FiSettings } from "react-icons/fi";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Colors } from "../../Constants/Colors";
 import logo from "../../assets/church.png";
 import Header from "../../components/ui/Header";
 import { useAppSelector } from "../../store/store-hooks";
@@ -24,7 +22,6 @@ import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { ToastContainer } from "react-toastify";
 import useWindowSize from "../../hooks/useWindowSize";
 import NoActivePackageModal from "../Admin/NoActivePackage";
-import { motion } from "framer-motion";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -35,7 +32,9 @@ interface MenuItem {
   path?: string;
   permissions: string[];
   children?: MenuItem[];
+  badge?: number;
 }
+
 
 const menuItems:MenuItem[] = [
   {
@@ -176,11 +175,10 @@ const Main: React.FC = () => {
   const userPermissions = useAppSelector(
     (state: any) => state?.user?.userInfo?.role.permissions || []
   );
-  const activePackage =  useAppSelector((state:any) =>  state.sp.active_package)
+  const activePackage = useAppSelector((state: any) => state.sp.active_package);
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  
   // Update collapsed state based on window size
   useEffect(() => {
     setCollapsed(size.width < 768);
@@ -227,130 +225,286 @@ const Main: React.FC = () => {
     return [];
   }, [pathname, filteredMenuItems]);
 
+  // Custom styles for the enhanced sidebar
+  const siderStyle: React.CSSProperties = {
+    background: 'linear-gradient(135deg, #152033 0%, #3E5C76 100%)',
+    boxShadow: '4px 0 20px rgba(0, 0, 0, 0.1)',
+    borderRadius: collapsed ? '0 20px 20px 0' : '0 25px 25px 0',
+    position: 'fixed',
+    zIndex: 1000,
+    left: 0,
+    top: 0,
+    bottom: 0,
+    overflowY: 'auto',
+    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+  };
+
+  const contentStyle: React.CSSProperties = {
+    background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+    borderRadius: '20px',
+    margin: '20px',
+    padding: '30px',
+    minHeight: 'calc(100vh - 180px)',
+    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+    backdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+  };
+
   return (
-
-  <Layout className="bg-transparent">
-  <ToastContainer />
-
-    <Sider
-      collapsible
-      collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
-      width={250}
-      breakpoint="lg"
-      collapsedWidth={80}
-      style={{
-        backgroundColor: Colors.primary,
-        // height: "100vh",
-        overflowY:"scroll",
-        position: "fixed",
-        zIndex:1000,
-        left: 0,
-        top: 0,
-        bottom: 0,
-        background: "linear-gradient(to bottom right, #152033, #3E5C76)",
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06)",
-      }}
-      // className="fixed left-0 top-0 bottom-0 z-50 bg-gradient-to-br from-blue-600 to-purple-700 shadow-2xl overflow-y-scroll"
-    >
-      <div className="logo-container p-6 flex justify-center items-center">
-        <motion.img 
-          src={logo} 
-          alt="Logo" 
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="h-10 w-10 mr-2 rounded-full shadow-lg" 
-        />
-        {!collapsed && (
-          <h3 className="logo-text text-lg text-white font-bold mt-1">
-            BMC MAKABE
-          </h3>
-        )}
-      </div>
-      <Menu
-        mode="inline"
+    <Layout style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
+      <ToastContainer />
+      
+      {/* Enhanced Sidebar */}
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
         theme="dark"
-        forceSubMenuRender={true}
-        selectedKeys={selectedKeys}
-        className="bg-transparent border-none menu-items text-base text-left"
-        onClick={({ key }) => {
-          const selectedItem = menuItems.find(
-            (item) => item.key === key || item.children?.some((child) => child.key === key)
-          );
-          if (selectedItem) {
-            if (selectedItem.path) {
-              navigate(selectedItem.path);
-            } else if (selectedItem.children) {
-              const child = selectedItem.children.find((child) => child.key === key);
-              if (child && child.path) {
-                navigate(child.path);
+        width={280}
+        breakpoint="lg"
+        collapsedWidth={80}
+        style={siderStyle}
+        trigger={null}
+      >
+        {/* Logo Section with Animation */}
+        <div 
+          className="logo-container" 
+          style={{
+            padding: collapsed ? '20px 10px' : '30px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            marginBottom: '20px',
+            transition: 'all 0.3s ease',
+          }}
+        >
+          <div 
+            style={{
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '15px',
+              padding: '10px',
+              backdropFilter: 'blur(10px)',
+              transform: collapsed ? 'scale(0.8)' : 'scale(1)',
+              transition: 'transform 0.3s ease',
+            }}
+          >
+            <img 
+              src={logo} 
+              alt="Logo" 
+              style={{
+                height: collapsed ? '35px' : '45px',
+                width: collapsed ? '35px' : '45px',
+                transition: 'all 0.3s ease',
+              }}
+            />
+          </div>
+          {!collapsed && (
+            <div style={{ marginLeft: '15px', color: 'white' }}>
+              <h2 style={{ 
+                margin: 0, 
+                fontSize: '22px', 
+                fontWeight: '700',
+                background: 'linear-gradient(45deg, #fff, #e0e6ff)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '0.5px'
+              }}>
+                Sadaka
+              </h2>
+              <p style={{ 
+                margin: 0, 
+                fontSize: '14px', 
+                opacity: 0.8,
+                fontWeight: '300'
+              }}>
+                Digital Platform
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Enhanced Menu */}
+        <Menu
+          mode="inline"
+          theme="dark"
+          selectedKeys={selectedKeys}
+          style={{
+            backgroundColor: 'transparent',
+            border: 'none',
+            fontSize: '14px',
+            fontWeight: '500',
+          }}
+          className="enhanced-menu"
+          onClick={({ key }) => {
+            const selectedItem = menuItems.find(
+              (item) => item.key === key || item.children?.some((child) => child.key === key)
+            );
+            if (selectedItem) {
+              if (selectedItem.path) {
+                navigate(selectedItem.path);
+              } else if (selectedItem.children) {
+                const child = selectedItem.children.find((child) => child.key === key);
+                if (child && child.path) {
+                  navigate(child.path);
+                }
               }
             }
-          }
-        }}
-      >
-        {filteredMenuItems.map((item) => 
-          item.children && item.children.length > 0 ? (
-            <Menu.SubMenu
-              key={item.key}
-              title={item.label}
-              icon={item.icon}
-              className="hover:bg-white/10 transition-all duration-300"
-            >
-              {item.children.map((child) => (
-                <Menu.Item 
-                  key={child.key} 
-                  className="hover:bg-white/20 transition-all duration-300"
+          }}
+        >
+          {filteredMenuItems.map((item) => {
+            if (item.children && item.children.length > 0) {
+              return (
+                <Menu.SubMenu
+                  key={item.key}
+                  title={
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {item.icon}
+                      <span>{item.label}</span>
+                      {item.badge && !collapsed && (
+                        <Badge count={item.badge} size="small" style={{ marginLeft: 'auto' }} />
+                      )}
+                    </span>
+                  }
+                  style={{
+                    margin: '4px 12px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                  }}
                 >
-                  {child.label}
-                </Menu.Item>
-              ))}
-            </Menu.SubMenu>
-          ) : (
-            <Menu.Item 
-              key={item.key} 
-              icon={item.icon}
-              className="hover:bg-white/10 transition-all duration-300"
-            >
-              {item.label}
-            </Menu.Item>
-          )
-        )}
-      </Menu>
-    </Sider>
-    
-    <Layout
-      className="site-layout"
-      style={{
-        marginLeft: collapsed ? 80 : 250,
-        transition: "margin-left 0.2s",
-      }}
-    >
-      <Header
-        toggle={() => setCollapsed(!collapsed)}
-        collapsed={collapsed}
-      />
-      
-      <Content 
-        className="rounded-3xl shadow-sm m-4 "
-        style={{ 
-          minHeight: 'calc(100vh - 120px)',
+                  {item.children.map((child) => (
+                    <Menu.Item 
+                      key={child.key}
+                      style={{
+                        margin: '2px 0',
+                        borderRadius: '8px',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <span style={{ paddingLeft: '8px' }}>{child.label}</span>
+                    </Menu.Item>
+                  ))}
+                </Menu.SubMenu>
+              );
+            }
+            return (
+              <Menu.Item 
+                key={item.key} 
+                icon={item.icon}
+                style={{
+                  margin: '4px 12px',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: '45px',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                  <span style={{ flex: 1 }}>{item.label}</span>
+                  {item.badge && !collapsed && (
+                    <Badge count={item.badge} size="small" />
+                  )}
+                </span>
+              </Menu.Item>
+            );
+          })}
+        </Menu>
+      </Sider>
+
+      {/* Main Layout */}
+      <Layout
+        style={{
+          marginLeft: collapsed ? 80 : 280,
+          minHeight: '100vh',
+          transition: 'margin-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+          backgroundColor: 'transparent',
         }}
       >
-        <Outlet />
-      </Content>
-      
-      <Footer 
-        className="text-center bg-transparent text-gray-600"
-      >
-        BMC Makabe Digital ©{new Date().getFullYear()} Created by EVD solutions
-      </Footer>
+        <Header
+          toggle={() => setCollapsed(!collapsed)}
+          collapsed={collapsed}
+        />
+        
+        {/* Enhanced Content Area */}
+        <Content style={contentStyle}>
+          <Outlet />
+        </Content>
+
+        {/* Enhanced Footer */}
+        <Footer
+          style={{
+            textAlign: 'center',
+            background: 'transparent',
+            color: '#666',
+            fontSize: '13px',
+            padding: '20px',
+            fontWeight: '500',
+          }}
+        >
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '15px',
+            padding: '15px',
+            margin: '0 20px',
+            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+          }}>
+            Sadaka Digital ©{new Date().getFullYear()} | Crafted with ❤️ by EVD Solutions
+          </div>
+        </Footer>
+      </Layout>
+
+      {/* Modal */}
+      {!activePackage.is_active && <NoActivePackageModal />}
+
+      {/* @ts-ignore */}
+      <style jsx>{`
+        .enhanced-menu .ant-menu-item:hover,
+        .enhanced-menu .ant-menu-submenu-title:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          transform: translateX(5px);
+        }
+        
+        .enhanced-menu .ant-menu-item-selected {
+          background: rgba(255, 255, 255, 0.15) !important;
+          border-left: 4px solid #ffffff;
+          transform: translateX(5px);
+        }
+        
+        .enhanced-menu .ant-menu-submenu-selected .ant-menu-submenu-title {
+          background: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        .enhanced-menu .ant-menu-item,
+        .enhanced-menu .ant-menu-submenu-title {
+          color: rgba(255, 255, 255, 0.9) !important;
+          transition: all 0.2s ease !important;
+        }
+        
+        .enhanced-menu .ant-menu-submenu-arrow {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+        
+        .enhanced-menu::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .enhanced-menu::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 10px;
+        }
+        
+        .enhanced-menu::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 10px;
+        }
+        
+        .enhanced-menu::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.5);
+        }
+      `}</style>
     </Layout>
-
-    {!activePackage.is_active && <NoActivePackageModal />}
-  </Layout>
-
   );
 };
 

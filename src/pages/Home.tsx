@@ -96,7 +96,7 @@ const Home: React.FC = () => {
     (state: any) => state.sp?.active_package?.is_active
   );
   const userPermissions = useAppSelector(
-    (state: any) => state.user.userInfo.role.permissions
+    (state: any) => state.user.userInfo?.role.permissions
   );
 
   return (
