@@ -1,5 +1,5 @@
 // src/components/EditAhadi.tsx
-import React, {  useEffect } from "react";
+import React, {  useEffect, useState } from "react";
 import {
   Modal,
   InputNumber,
@@ -62,14 +62,26 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
   const dispatch = useAppDispatch();
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
+      const [searchTerm, setSearchTerm] = useState<string>(''); 
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+    
+    
+      useEffect(() => {
+        const timeout = setTimeout(() => {
+          setDebouncedSearchTerm(searchTerm);
+        }, 500); // 500ms debounce
+      
+        return () => clearTimeout(timeout);
+      }, [searchTerm]);
 
-  const { data: wahumini, isLoading: loadWahumini } = useQuery({
-    queryKey: ["wahumini"],
-    queryFn: async () => {
-      const response:any = await fetchWahumini(`?church_id=${church.id}`);
-      return response;
-    },
-  });
+      const { data: wahumini, isLoading: loadingWahumini } = useQuery({
+        queryKey: ['wahumini', debouncedSearchTerm],
+        queryFn: async () => {
+          const response: any = await fetchWahumini(`?church_id=${church?.id}&search=${debouncedSearchTerm}`);
+          return response?.results || []; 
+        },
+        enabled: !!church?.id,
+      });
 
   const { data: michango, isLoading: loadingMichango } = useQuery({
     queryKey: ["michango"],
@@ -162,14 +174,21 @@ const EditAhadi: React.FC<EditAhadiProps> = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
           <label>Muumini</label>
-          {loadWahumini ? (
+          {loadingWahumini ? (
             <Spin />
           ) : (
             <Controller
               name="wahumini"
               control={control}
               render={({ field }) => (
-                <Select {...field} placeholder="Chagua Muumini" className="w-full">
+                <Select {...field} 
+                showSearch
+                placeholder="Chagua Mhumini"
+                onSearch={(value) => setSearchTerm(value)} 
+                filterOption={false} 
+                notFoundContent="Hajapatikana"
+                className="w-full"
+                >
                   {wahumini?.map((wahumini: any) => (
                     <Option key={wahumini.id} value={wahumini.id}>
                       {wahumini.first_name} {wahumini.last_name}

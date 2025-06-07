@@ -7,6 +7,7 @@ import { fetchWahumini, postBahasha } from "../../helpers/ApiConnectors";
 import { useAppDispatch, useAppSelector } from "../../store/store-hooks";
 import { addAlert } from "../../store/slices/alert/alertSlice";
 import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 
 const { Option } = Select;
 
@@ -14,6 +15,17 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
   const dispatch = useAppDispatch();
+    const [searchTerm, setSearchTerm] = useState<string>(''); 
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+  
+  
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        setDebouncedSearchTerm(searchTerm);
+      }, 500); // 500ms debounce
+    
+      return () => clearTimeout(timeout);
+    }, [searchTerm]);
 
   const schema = yup.object().shape({
     mhumini: yup.string().required("Mhumini is required."),
@@ -29,16 +41,13 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
     resolver: yupResolver(schema),
   });
 
-  // Fetch Wahumini list using React Query
-  const {
-    data: wahumini,
-    isLoading,
-  } = useQuery({
-    queryKey: ["wahumini"],
+  const { data: wahumini, isLoading: loadingWahumini } = useQuery({
+    queryKey: ['wahumini', debouncedSearchTerm],
     queryFn: async () => {
-      const response: any =await fetchWahumini(`?church_id=${church.id}`);
-      return response;
+      const response: any = await fetchWahumini(`?church_id=${church?.id}&search=${debouncedSearchTerm}`);
+      return response?.results || []; 
     },
+    enabled: !!church?.id,
   });
 
   const onSubmit = async (data: any) => {
@@ -118,7 +127,7 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
           validateStatus={errors.mhumini ? "error" : ""}
           help={errors.mhumini?.message}
         >
-          {isLoading ? (
+          {loadingWahumini ? (
             <Spin />
           ) : (
             <Controller
@@ -129,13 +138,8 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
                   {...field}
                   showSearch
                   placeholder="Chagua Mhumini"
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option?.children
-                      .toString()
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
+                  onSearch={(value) => setSearchTerm(value)} 
+                  filterOption={false} 
                   notFoundContent="Hajapatikana"
                 >
                   {wahumini?.map((item: any) => (

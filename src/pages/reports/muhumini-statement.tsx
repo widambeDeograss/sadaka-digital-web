@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card, Table, Typography, DatePicker, Select, Button, Form } from 'antd';
 import type { Dayjs } from 'dayjs';
@@ -37,18 +37,27 @@ const MuhuminiStatementPage = () => {
   const [statementData, setStatementData] = useState<MuhuminiStatement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const [searchTerm, setSearchTerm] = useState<string>(''); 
+const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
 
-  console.log(selectedMuhumini);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms debounce
+  
+    return () => clearTimeout(timeout);
+  }, [searchTerm]);
   
   
 
-  // Fetch list of Wahumini
   const { data: wahumini, isLoading: loadingWahumini } = useQuery({
-    queryKey: ['wahumini'],
+    queryKey: ['wahumini', debouncedSearchTerm],
     queryFn: async () => {
-         const response: any = await fetchWahumini(`?church_id=${church?.id}`);
-         return response;
+      const response: any = await fetchWahumini(`?church_id=${church?.id}&search=${debouncedSearchTerm}`);
+      return response?.results || []; 
     },
+    enabled: !!church?.id,
   });
 
   const { data: record } = useQuery({
@@ -175,13 +184,14 @@ const MuhuminiStatementPage = () => {
             onChange={(value) => setSelectedMuhumini(value)}
             showSearch
             optionFilterProp="children"
+            onSearch={(value) => setSearchTerm(value)} 
             filterOption={(input, option) =>
                 (option?.children?.toString() ?? '').toLowerCase().includes(input.toLowerCase())
               }
           >
             {wahumini?.map((m: any) => (
               <Option key={m.id} value={m.id}>
-                {m.first_name} {m.last_name} - {m.jumuiya_name}
+                {m.first_name} {m.last_name} - {m.jumuiya_details?.name} ({m.phone_number})
               </Option>
             ))}
           </Select>

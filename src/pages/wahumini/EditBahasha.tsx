@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, Input, Form, Select, Spin } from "antd";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,6 +19,17 @@ const EditCardModal = ({ visible, onClose, bahashaData }: ModalProps) => {
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
   const dispatch = useAppDispatch();
+      const [searchTerm, setSearchTerm] = useState<string>(''); 
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+    
+    
+      useEffect(() => {
+        const timeout = setTimeout(() => {
+          setDebouncedSearchTerm(searchTerm);
+        }, 500); // 500ms debounce
+      
+        return () => clearTimeout(timeout);
+      }, [searchTerm]);
 
   const schema = yup.object().shape({
     mhumini: yup.string().required("Mhumini is required."),
@@ -42,16 +53,13 @@ const EditCardModal = ({ visible, onClose, bahashaData }: ModalProps) => {
      reset(bahashaData);
   }}, [bahashaData, reset]);
 
-  // Fetch Wahumini list using React Query
-  const {
-    data: wahumini,
-    isLoading,
-  } = useQuery({
-    queryKey: ["wahumini"],
+  const { data: wahumini, isLoading: loadingWahumini } = useQuery({
+    queryKey: ['wahumini', debouncedSearchTerm],
     queryFn: async () => {
-      const response: any =await fetchWahumini(`?church_id=${church.id}`);
-      return response;
+      const response: any = await fetchWahumini(`?church_id=${church?.id}&search=${debouncedSearchTerm}`);
+      return response?.results || []; 
     },
+    enabled: !!church?.id,
   });
 
   const onSubmit = async (data: any) => {
@@ -114,7 +122,7 @@ const EditCardModal = ({ visible, onClose, bahashaData }: ModalProps) => {
           validateStatus={errors.mhumini ? "error" : ""}
           help={errors.mhumini?.message}
         >
-          {isLoading ? (
+          {loadingWahumini ? (
             <Spin />
           ) : (
             <Controller
@@ -125,18 +133,8 @@ const EditCardModal = ({ visible, onClose, bahashaData }: ModalProps) => {
                   {...field}
                   showSearch
                   placeholder="Chagua Mhumini"
-                  optionFilterProp="children"
-                  filterOption={(input, option) => {
-                    const optionChildren =
-                      typeof option?.children === "string"
-                        ? option.children
-                        : "";
-                    return (
-                      optionChildren
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    );
-                  }}
+                  onSearch={(value) => setSearchTerm(value)} 
+                  filterOption={false} 
                 >
                   {wahumini?.map((item: any) => (
                     <Option key={item.id} value={item.id}>

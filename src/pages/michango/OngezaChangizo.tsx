@@ -1,6 +1,6 @@
 // src/components/OngezaChagizo.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Tabs,
@@ -134,20 +134,26 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
   const user = useAppSelector((state: any) => state.user.userInfo);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+    const [searchTerm, setSearchTerm] = useState<string>(''); 
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+    
+    
+      useEffect(() => {
+        const timeout = setTimeout(() => {
+          setDebouncedSearchTerm(searchTerm);
+        }, 500); // 500ms debounce
+      
+        return () => clearTimeout(timeout);
+      }, [searchTerm]);
 
-  const {
-    data: wahuminiList,
-    isLoading: isLoadingWahumini,
-  } = useQuery({
-    queryKey: ["wahumini"],
-    queryFn: async () => {
-      const response: any =await fetchWahumini(`?church_id=${church.id}`);
-      return response;
-    },
-    // {
-    //   enabled: false,
-    // }
-  });
+      const { data: wahuminiList, isLoading: isLoadingWahumini } = useQuery({
+        queryKey: ['wahumini', debouncedSearchTerm],
+        queryFn: async () => {
+          const response: any = await fetchWahumini(`?church_id=${church?.id}&search=${debouncedSearchTerm}`);
+          return response?.results || []; 
+        },
+        enabled: !!church?.id,
+      });
 
   const { data: mchangoList, isLoading: isLoadingMchango } = useQuery({
     queryKey: ["michango"],
@@ -276,12 +282,8 @@ const OngezaChagizo: React.FC<OngezaChagizoProps> = ({
                       showSearch
                       placeholder="Chagua Mchango"
                       optionFilterProp="children"
-                      filterOption={(input, option) =>
-                        option?.children
-                          .toString()
-                          .toLowerCase()
-                          .includes(input.toLowerCase())
-                      }
+                      filterOption={false}
+                      onSearch={(value) => setSearchTerm(value)}
                       notFoundContent="Hajapatikana"
                     >
                       {mchangoList?.map((mchango: Mchango) => (
