@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchRoles, fetchtSpManagers, deactivateActivateUsers } from "../../helpers/ApiConnectors.js";
 import { Button, Card, Dropdown, Menu, Modal } from "antd"; // Import Modal
@@ -9,15 +9,12 @@ import { GlobalMethod } from "../../helpers/GlobalMethods.js";
 import Tabletop from "../../components/tables/TableTop.js";
 import CreateUserModal from "./SpManagers.js";
 import {
-  EditOutlined,
-  EyeOutlined,
   DownOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { addAlert } from "../../store/slices/alert/alertSlice.js";
 
 function SpManagerList() {
-  const navigate = useNavigate();
   const tableId = "data-table";
   const [openModal, setOpenModal] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false); // State for confirmation modal
@@ -73,10 +70,10 @@ function SpManagerList() {
     
   };
 
-  const handleChangePassword = (_record: any) => {
-    const modalTrigger = document.getElementById("resetPassword");
-    if (modalTrigger) modalTrigger.click();
-  };
+  // const handleChangePassword = (_record: any) => {
+  //   const modalTrigger = document.getElementById("resetPassword");
+  //   if (modalTrigger) modalTrigger.click();
+  // };
 
   const showConfirmModal = (record: any) => {
     setSelectedUser(record); // Set the selected user
@@ -158,7 +155,7 @@ function SpManagerList() {
         <Dropdown
           overlay={
             <Menu>
-              {GlobalMethod.hasAnyPermission(
+              {/* {GlobalMethod.hasAnyPermission(
                 ["VIEW_SP_ADMINS", "VIEW_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
@@ -170,8 +167,8 @@ function SpManagerList() {
                 >
                   View
                 </Menu.Item>
-              )}
-              {GlobalMethod.hasAnyPermission(
+              )} */}
+              {/* {GlobalMethod.hasAnyPermission(
                 ["ADD_SP_MANAGERS", "EDIT_USER"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
@@ -183,7 +180,7 @@ function SpManagerList() {
                 >
                   Edit
                 </Menu.Item>
-              )}
+              )} */}
               {GlobalMethod.hasAnyPermission(
                 ["ADD_SP_MANAGERS"],
                 GlobalMethod.getUserPermissionName(userPermissions)
@@ -195,7 +192,7 @@ function SpManagerList() {
                   {record.sp_manager_details.user_active ? "Deactivate User" : "Activate User"}
                 </Menu.Item>
               )}
-              {GlobalMethod.hasAnyPermission(
+              {/* {GlobalMethod.hasAnyPermission(
                 ["ADD_SP_MANAGERS"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
@@ -207,7 +204,7 @@ function SpManagerList() {
                 >
                   Change Password
                 </Menu.Item>
-              )}
+              )} */}
             </Menu>
           }
         >

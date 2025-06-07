@@ -7,6 +7,7 @@ import {
   PiBuildingApartmentBold,
   PiChurchBold,
   PiCardholder,
+  PiFileArchive,
 } from "react-icons/pi";
 import { GiSwapBag, GiPayMoney } from "react-icons/gi";
 import { RiDashboardFill } from "react-icons/ri";
@@ -97,6 +98,15 @@ const NavCardData = [
     permissions: ["VIEW_WAHUMINI"],
     bgColor: "bg-pink-50",
     description: "Manage envelopes",
+  },
+  {
+    id: 10,
+    name: "Reports",
+    to: "/dashboard/reports/mhumini-statement",
+    icon: <PiFileArchive className="text-green-900" />,
+    permissions: ["MANAGE_REPORTS"],
+    bgColor: "bg-pink-50",
+    description: "Manage reports",
   },
 ];
 

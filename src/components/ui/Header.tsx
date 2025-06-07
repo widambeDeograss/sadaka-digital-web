@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Input, Dropdown, Avatar, Menu, AutoComplete, Badge, Button } from 'antd';
-import { ChevronsLeft, ChevronsRight, Bell, Search, Moon, Sun } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, Bell, Search } from 'lucide-react';
 import { UserOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useAppSelector } from '../../store/store-hooks';
 import { useNavigate } from 'react-router-dom';
@@ -53,7 +53,6 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggle, collapsed }) => {
   const [searchValue, setSearchValue] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
   const navigate = useNavigate();
   const userDtl = useAppSelector((state: any) => state?.user?.userInfo);
 

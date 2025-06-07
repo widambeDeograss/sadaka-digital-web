@@ -219,7 +219,7 @@ const ChurchProfile = () => {
                 {church.church_name}
               </Title>
               <div style={{ marginTop: 16 }}>
-                <Tag color="blue">{church.church_category}</Tag>
+                {/* <Tag color="blue">{church.church_category}</Tag> */}
                 <Tag color="green">
                   Active Package:{" "}
                   {church.active_package?.package_details?.package_name}
@@ -232,6 +232,7 @@ const ChurchProfile = () => {
                 icon={<EditOutlined />}
                 onClick={handleEdit}
                 size="large"
+                 disabled
               >
                 Edit Profile
               </Button>

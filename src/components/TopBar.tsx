@@ -48,9 +48,9 @@ const logout = () => {
             </div>
             <div className="hidden sm:block">
               <h3 className="text-white font-bold text-xs md:text-sm leading-tight">
-                Sadaka
+                BMC
                 <br />
-                <span className="text-blue-200 text-xs">Digital</span>
+                <span className="text-blue-200 text-xs">MAKABE</span>
               </h3>
             </div>
           </motion.div>

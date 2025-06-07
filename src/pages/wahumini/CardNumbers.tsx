@@ -236,7 +236,7 @@ const CardNumberList = () => {
           <div className="flex justify-between mt-3">
             <div>
               <h3 className="text-left font-bold text-xs">
-                Jumla ya Bahasha: <span>{bahasha?.length}</span>
+                Jumla ya Bahasha: <span>{bahasha?.count}</span>
               </h3>
             </div>
             <div>

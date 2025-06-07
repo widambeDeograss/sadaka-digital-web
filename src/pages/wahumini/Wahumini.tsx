@@ -225,7 +225,7 @@ const Wahumini = () => {
           <div className="flex justify-between mt-3">
             <div>
               <h3 className="text-left font-bold text-xs">
-                Jumla Wahumini: <span>{wahumini?.length}</span>
+                Jumla Wahumini: <span>{wahumini?.count}</span>
               </h3>
             </div>
             <div>
