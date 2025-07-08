@@ -259,7 +259,7 @@ const CardNumberList = () => {
             <div>
               <Button.Group>
               {GlobalMethod.hasAnyPermission(
-                ["MANAGE_MAVUNO"],
+                ["MANAGE_BAHAASHA"],
                 GlobalMethod.getUserPermissionName(userPermissions)
               ) && (
                 <Button
