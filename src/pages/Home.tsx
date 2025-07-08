@@ -7,6 +7,7 @@ import {
   PiBuildingApartmentBold,
   PiChurchBold,
   PiCardholder,
+  PiFileArchive,
 } from "react-icons/pi";
 import { GiSwapBag, GiPayMoney } from "react-icons/gi";
 import { RiDashboardFill } from "react-icons/ri";
@@ -24,6 +25,7 @@ const NavCardData = [
     icon: <RiDashboardFill className="text-blue-600" />,
     permissions: ["VIEW_DASHBOARD"],
     bgColor: "bg-blue-50",
+    description: "Overview of activities",
   },
   {
     id: 2,
@@ -32,6 +34,7 @@ const NavCardData = [
     icon: <PiChurchBold className="text-green-600" />,
     permissions: [""],
     bgColor: "bg-green-50",
+    description: "Manage profile",
   },
   {
     id: 3,
@@ -40,6 +43,7 @@ const NavCardData = [
     icon: <UsergroupAddOutlined className="text-purple-600" />,
     permissions: ["VIEW_WAHUMINI"],
     bgColor: "bg-purple-50",
+    description: "Manage church members",
   },
   {
     id: 4,
@@ -48,6 +52,7 @@ const NavCardData = [
     icon: <PiHandsPrayingFill className="text-yellow-600" />,
     permissions: ["VIEW_SADAKA"],
     bgColor: "bg-yellow-50",
+    description: "Manage donations",
   },
   {
     id: 5,
@@ -56,6 +61,7 @@ const NavCardData = [
     icon: <PiBuildingApartmentBold className="text-red-600" />,
     permissions: ["VIEW_MICHANGO"],
     bgColor: "bg-red-50",
+    description: "Manage construction projects",
   },
   {
     id: 6,
@@ -64,6 +70,7 @@ const NavCardData = [
     icon: <GiSwapBag className="text-indigo-600" />,
     permissions: ["VIEW_ZAKA"],
     bgColor: "bg-indigo-50",
+    description: "Manage tithes",
   },
   {
     id: 7,
@@ -72,6 +79,7 @@ const NavCardData = [
     icon: <PiHandshakeBold className="text-pink-600" />,
     permissions: ["VIEW_MICHANGO"],
     bgColor: "bg-pink-50",
+    description: "Manage contributions",
   },
   {
     id: 8,
@@ -80,6 +88,7 @@ const NavCardData = [
     icon: <GiPayMoney className="text-yellow-900" />,
     permissions: ["VIEW_EXPENCES"],
     bgColor: "bg-pink-50",
+    description: "Manage expenses",
   },
   {
     id: 9,
@@ -88,6 +97,16 @@ const NavCardData = [
     icon: <PiCardholder className="text-green-900" />,
     permissions: ["VIEW_WAHUMINI"],
     bgColor: "bg-pink-50",
+    description: "Manage envelopes",
+  },
+  {
+    id: 10,
+    name: "Reports",
+    to: "/dashboard/reports/mhumini-statement",
+    icon: <PiFileArchive className="text-green-900" />,
+    permissions: ["MANAGE_REPORTS"],
+    bgColor: "bg-pink-50",
+    description: "Manage reports",
   },
 ];
 
@@ -134,6 +153,7 @@ const Home: React.FC = () => {
                 })}
                 id={item.id}
                 to={item.to}
+                description={item.description}
               />
             </motion.div>
           ))}
@@ -146,3 +166,5 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+

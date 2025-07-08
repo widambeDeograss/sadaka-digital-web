@@ -201,10 +201,10 @@ const ReceiptDocument: React.FC<{ data: ReceiptData }> = ({ data }) => (
         </View>
       </View>
 
-      <View style={styles.signature}>
+      {/* <View style={styles.signature}>
         <Text>Imekusanywa na:</Text>
         <Text style={{ marginTop: mmToPoints(1) }}>{data?.collected_by}</Text>
-      </View>
+      </View> */}
 
       <View style={styles.footer}>
         <Text>Ahsante kwa kuchangia</Text>

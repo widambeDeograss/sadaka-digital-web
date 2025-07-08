@@ -168,7 +168,7 @@ const Mchango = () => {
     {
       title: "Name",
       dataIndex: ["mhumini_details", "first_name"],
-      render: (_: any, record: any) => `${record.mhumini_details.first_name} ${record.mhumini_details.last_name}`,
+      render: (_: any, record: any) => `${record?.mhumini_details?.first_name} ${record?.mhumini_details?.last_name}`,
     },
     {
       title: "Payment type",
@@ -177,7 +177,7 @@ const Mchango = () => {
     {
       title: "Muumini",
       dataIndex: ["mhumini_details", "first_name"],
-      render: (_: any, record: any) => `${record.mhumini_details.first_name} ${record.mhumini_details.last_name}`,
+      render: (_: any, record: any) => `${record?.mhumini_details?.first_name} ${record?.mhumini_details?.last_name}`,
     },
     {
       title: "Amount Paid",
@@ -244,9 +244,9 @@ const Mchango = () => {
       ),
       sorter: (a: any, b: any) =>
         (
-          a?.mhumini_details?.first_name + a.mhumini_details?.last_name
+          a?.mhumini_details?.first_name + a?.mhumini_details?.last_name
         ).localeCompare(
-          b?.mhumini_details?.first_name + b.mhumini_details?.last_name
+          b?.mhumini_details?.first_name + b?.mhumini_details?.last_name
         ),
     },
     {

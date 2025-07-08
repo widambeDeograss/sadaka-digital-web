@@ -55,7 +55,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     queryKey: ["wahumini", selectedJumuiya],
     queryFn: async () => {
       const response: any = await fetchWahumini(`?jumuiya=${selectedJumuiya}`);
-      return response;
+      return response.results || []; // Ensure it returns an array
     },
     
       enabled: selectedJumuiya ? true : false,
@@ -68,7 +68,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
     queryKey: ["roles"],
     queryFn: async () => {
       const response: any = await fetchRoles();
-      const filtered =  response?.filter((role: any) => role.role_name !== "SYSTEM_TOP_ADMIN");
+      const filtered =  response?.filter((role: any) => role.role_name !== "SYSTEM_TOP_ADMIN" && role.role_name !== "SYSTEM_ADMIN");
       return filtered?.map((role: any) => ({
         name: role.role_name,
         value: role.id,
@@ -110,7 +110,7 @@ const CreateUserModal = ({ openModal, handleCancel }: modalType) => {
      first_name: mhumini?.first_name?.toLocaleLowerCase() ,
      last_name:mhumini?.last_name?.toLocaleLowerCase(),
      full_name:mhumini?.first_name + mhumini?.last_name,
-     email: mhumini?.email ?  mhumini?.email : `${mhumini?.last_name}@bmcmakabe.org.tz`?.toLocaleLowerCase(),
+     email: mhumini?.email ?  mhumini?.email : `${mhumini?.last_name}@bmcmakabe.or.tz`?.toLocaleLowerCase(),
      phone: mhumini?.phone_number,
      password:values?.password,
      role:values?.role,

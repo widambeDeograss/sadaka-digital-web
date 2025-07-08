@@ -4,7 +4,7 @@ import { deleteBahasha, fetchBahasha } from "../../helpers/ApiConnectors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { useAppSelector } from "../../store/store-hooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CreateCardNumberModal from "./AddCardModal";
 import {
   EditOutlined,
@@ -22,6 +22,7 @@ const CardNumberList = () => {
   const [showEditModal, setshowEditModal] = useState(false);
   const church = useAppSelector((state: any) => state.sp);
   const [searchTerm, setSearchTerm] = useState("");
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 100 });
   const [filteredData, setFilteredData] = useState([]);
   const queryClient = useQueryClient();
   const [selectedCard, setselectedCard] = useState<any>(null);
@@ -35,10 +36,11 @@ const CardNumberList = () => {
     data: bahasha,
     isLoading,
   } = useQuery({
-    queryKey: ["bahasha"],
+    queryKey: ["bahasha", searchTerm, pagination.current, pagination.pageSize],
     queryFn: async () => {
-      const response: any = await fetchBahasha(`?church_id=${church.id}`);
-      console.log(response);
+      let query = `?church_id=${church.id}&page=${pagination.current}&page_size=${pagination.pageSize}&search=${searchTerm}`;
+      const response: any = await fetchBahasha(query);
+      setFilteredData(response.results);
       return response;
     },
     // {
@@ -215,30 +217,11 @@ const CardNumberList = () => {
     },
   ];
 
+  const handleTableChange = (pagination: any) => {
+   
+    setPagination((prev) => ({ ...prev, current: pagination }));
+  };
 
-  useEffect(() => {
-    if (searchTerm) {
-      const lowercasedTerm = searchTerm.toLowerCase();
-      const filtered = bahasha.filter((item: any) => {
-        return (
-          item?.mhumini_details?.jumuiya_details?.name
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.card_no
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.bahasha_type
-            .toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.mhumini_details?.first_name?.toLowerCase().includes(lowercasedTerm)||
-          item?.mhumini_details?.last_name?.toLowerCase().includes(lowercasedTerm)
-        );
-      });
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(bahasha);
-    }
-  }, [searchTerm, bahasha]);
 
   
   return (
@@ -253,7 +236,7 @@ const CardNumberList = () => {
           <div className="flex justify-between mt-3">
             <div>
               <h3 className="text-left font-bold text-xs">
-                Jumla ya Bahasha: <span>{bahasha?.length}</span>
+                Jumla ya Bahasha: <span>{bahasha?.count}</span>
               </h3>
             </div>
             <div>
@@ -300,7 +283,12 @@ const CardNumberList = () => {
                 dataSource={filteredData}
                 loading={isLoading}
                 bordered
-
+                pagination={{
+                  current: pagination.current,
+                  pageSize: pagination.pageSize,
+                  total: bahasha?.count,
+                  onChange: handleTableChange,
+                }}
               />
             </div>
           </Card>

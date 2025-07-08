@@ -219,12 +219,12 @@ const RevenueStatementReport = () => {
           />
 
           <div className="flex gap-4">
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <Text strong>Jumla ya mapato:</Text>
               <Text className="block text-lg">
                 Tsh {revenueData?.summary?.total_revenue?.toLocaleString()}
               </Text>
-            </div>
+            </div> */}
             <div className="flex-1">
               <Text strong>Jumla ya miamala:</Text>
               <Text className="block text-lg">

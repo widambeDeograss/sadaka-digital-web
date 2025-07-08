@@ -1,21 +1,18 @@
 import React from "react";
-import { Card, Col, Row, Statistic, Skeleton, Alert, Typography } from "antd";
+import { Card, Col, Row, Skeleton, Alert, Typography } from "antd";
 import { Colors } from "../Constants/Colors.ts";
 import EChart from "../components/chart/bChart.tsx";
 import LineChart from "../components/chart/lineChart.tsx";
 import { 
-  UsersIcon, 
   CreditCard, 
   Users, 
-  DollarSign,
   TrendingUp,
   Activity
 } from "lucide-react";
-import { BiCard, BiMoney } from "react-icons/bi";
 import { FaHandsBound } from "react-icons/fa6";
 import { useQuery } from "@tanstack/react-query"; 
 import { useAppSelector } from "../store/store-hooks.ts";
-import { fetchDashboard, fetchtSpManagers } from "../helpers/ApiConnectors.ts";
+import { fetchDashboard, fetchtKanda } from "../helpers/ApiConnectors.ts";
 
 const { Title } = Typography;
 
@@ -111,14 +108,14 @@ const Dashboard: React.FC = () => {
     },
   });
 
-  const { data: spManagers } = useQuery({
-    queryKey: ["spManagers"],
-    queryFn: async () => {
-      const response: any = await fetchtSpManagers(`?church_id=${church.id}`);
-      console.log(response);
-      return response;
-    },
-  });
+    const { data: kanda } = useQuery({
+      queryKey: ["kanda"],
+      queryFn: async () => {
+        const response: any = await fetchtKanda(`?church_id=${church.id}`);
+        return response;
+      },
+    });
+
 
   // Define statistics configuration
   const statisticsConfig = [
@@ -156,8 +153,8 @@ const Dashboard: React.FC = () => {
       }
     },
     {
-      title: "Service Providers",
-      value: spManagers?.length || 0,
+      title: "Total kanda",
+      value: kanda?.length || 0,
       icon: <Activity className="w-5 h-5" />,
       color: "#fa8c16",
       trend: {

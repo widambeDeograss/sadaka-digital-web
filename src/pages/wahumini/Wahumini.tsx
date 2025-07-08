@@ -13,13 +13,14 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import modal from "antd/es/modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Wahumini = () => {
   const navigate = useNavigate();
   const church = useAppSelector((state: any) => state.sp);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 100 });
   const tableId = "wahumini";
   const userPermissions = useAppSelector(
     (state: any) => state.user.userInfo.role.permissions
@@ -29,10 +30,11 @@ const Wahumini = () => {
     data: wahumini,
     isLoading,
   } = useQuery({
-    queryKey: ["wahumini"],
+    queryKey: ["wahumini",  pagination.current, pagination.pageSize, searchTerm],
     queryFn: async () => {
-      const response: any = await fetchWahumini(`?church_id=${church.id}`);
-      console.log(response);
+      let query = `?church_id=${church.id}&page=${pagination.current}&page_size=${pagination.pageSize}&search=${searchTerm}`;
+      const response: any = await fetchWahumini(query);
+      setFilteredData(response.results);
       return response;
     },
     // {
@@ -190,23 +192,29 @@ const Wahumini = () => {
    
   ];
 
-  useEffect(() => {
-    if (searchTerm) {
-      const lowercasedTerm = searchTerm.toLowerCase();
-      const filtered = wahumini.filter((item: any) => {
-        return (
-          item?.jumuiya_details?.name?.toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.last_name?.toLowerCase()
-            .includes(lowercasedTerm) ||
-          item?.first_name.toLowerCase().includes(lowercasedTerm)
-        );
-      });
-      setFilteredData(filtered);
-    } else {
-      setFilteredData(wahumini);
-    }
-  }, [searchTerm, wahumini]);
+  // useEffect(() => {
+  //   if (searchTerm) {
+  //     const lowercasedTerm = searchTerm.toLowerCase();
+  //     const filtered = wahumini.filter((item: any) => {
+  //       return (
+  //         item?.jumuiya_details?.name?.toLowerCase()
+  //           .includes(lowercasedTerm) ||
+  //         item?.last_name?.toLowerCase()
+  //           .includes(lowercasedTerm) ||
+  //         item?.first_name.toLowerCase().includes(lowercasedTerm)
+  //       );
+  //     });
+  //     setFilteredData(filtered);
+  //   } else {
+  //     setFilteredData(wahumini);
+  //   }
+  // }, [searchTerm, wahumini]);
+
+  const handleTableChange = (pagination: any) => {
+   
+    setPagination((prev) => ({ ...prev, current: pagination }));
+  };
+
   return (
     <div>
       <Card
@@ -217,7 +225,7 @@ const Wahumini = () => {
           <div className="flex justify-between mt-3">
             <div>
               <h3 className="text-left font-bold text-xs">
-                Jumla Wahumini: <span>{wahumini?.length}</span>
+                Jumla Wahumini: <span>{wahumini?.count}</span>
               </h3>
             </div>
             <div>
@@ -264,6 +272,12 @@ const Wahumini = () => {
                 dataSource={filteredData}
                 loading={isLoading}
                 bordered
+                pagination={{
+                  current: pagination.current,
+                  pageSize: pagination.pageSize,
+                  total: wahumini?.count,
+                  onChange: handleTableChange,
+                }}
               />
             </div>
           </Card>

@@ -64,18 +64,29 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
   const dispatch = useAppDispatch();
   const church = useAppSelector((state: any) => state.sp);
   const user = useAppSelector((state: any) => state.user.userInfo);
+  const [searchTerm, setSearchTerm] = useState<string>(''); 
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+  
+  
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        setDebouncedSearchTerm(searchTerm);
+      }, 500); // 500ms debounce
+    
+      return () => clearTimeout(timeout);
+    }, [searchTerm]);
 
   useEffect(() => {
     setIsEditMode(!!editData);
   }, [editData]);
 
-  // Queries
   const { data: wahuminiList, isLoading: isLoadingWahumini } = useQuery({
-    queryKey: ["wahumini", church.id],
+    queryKey: ['wahumini', debouncedSearchTerm],
     queryFn: async () => {
-      const res:any =  await fetchWahumini(`?church_id=${church.id}`);
-      return res;
+      const response: any = await fetchWahumini(`?church_id=${church?.id}&search=${debouncedSearchTerm}`);
+      return response?.results || []; 
     },
+    enabled: !!church?.id,
   });
 
   const { data: mavunoList, isLoading: isLoadingMavuno } = useQuery({
@@ -202,7 +213,8 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
                       {...field}
                       showSearch
                       placeholder="Chagua Muumini"
-                      optionFilterProp="children"
+                      onSearch={(value) => setSearchTerm(value)} 
+                      filterOption={false} 
                       allowClear
                     >
                       {wahuminiList?.map((item: any) => (

@@ -104,21 +104,27 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
   const dispatch = useAppDispatch();
   const user = useAppSelector((state: any) => state.user.userInfo);
   const church = useAppSelector((state: any) => state.sp);
+  const [searchTerm, setSearchTerm] = useState<string>(''); 
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
+  
+  
+    useEffect(() => {
+      const timeout = setTimeout(() => {
+        setDebouncedSearchTerm(searchTerm);
+      }, 500); // 500ms debounce
+    
+      return () => clearTimeout(timeout);
+    }, [searchTerm]);
 
-  const {
-    data: wahumini,
-    isLoading: loadWahumini,
-  } = useQuery({
-    queryKey: ["wahumini"],
-    queryFn: async () => {
-      const response: any = await fetchWahumini(`?church_id=${church.id}`);
-      console.log(response);
-      return response;
-    },
-    // {
-    //   enabled: false,
-    // }
-  });
+    
+    const { data: wahumini, isLoading: loadingWahumini } = useQuery({
+      queryKey: ['wahumini', debouncedSearchTerm],
+      queryFn: async () => {
+        const response: any = await fetchWahumini(`?church_id=${church?.id}&search=${debouncedSearchTerm}`);
+        return response?.results || []; 
+      },
+      enabled: !!church?.id,
+    });
 
   const { data: michango, isLoading: loadingmichango } = useQuery({
     queryKey: ["michango"],
@@ -229,7 +235,7 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
               <label className="block text-sm font-medium text-gray-700">
                 Muumini
               </label>
-              {loadWahumini ? (
+              {loadingWahumini ? (
                 <Spin />
               ) : (
                 <Controller
@@ -240,16 +246,11 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
                     <Select
                       {...field}
                       showSearch
-                      placeholder="Chagua Muumini"
-                      optionFilterProp="children"
-                      className="w-full"
-                      filterOption={(input, option) =>
-                        option?.children
-                          .toString()
-                          .toLowerCase()
-                          .includes(input.toLowerCase())
-                      }
+                      placeholder="Chagua Mhumini"
+                      onSearch={(value) => setSearchTerm(value)} 
+                      filterOption={false} 
                       notFoundContent="Hajapatikana"
+                      className="w-full"
                     >
                       {wahumini?.map((wahumini:any) => (
                         <Option key={wahumini.id} value={wahumini.id}>
@@ -421,7 +422,7 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
               <label className="block text-sm font-medium text-gray-700">
                 Muumini
               </label>
-              {loadWahumini ? (
+              {loadingWahumini ? (
                 <Spin />
               ) : (
                 <Controller
@@ -432,16 +433,11 @@ const OngezaAhadi: React.FC<OngezaAhadiProps> = ({
                     <Select
                       {...field}
                       showSearch
-                      placeholder="Chagua Muumini"
-                       className="w-full"
-                      optionFilterProp="children"
-                      filterOption={(input, option) =>
-                        option?.children
-                          .toString()
-                          .toLowerCase()
-                          .includes(input.toLowerCase())
-                      }
+                      placeholder="Chagua Mhumini"
+                      onSearch={(value) => setSearchTerm(value)} 
+                      filterOption={false} 
                       notFoundContent="Hajapatikana"
+                      className="w-full"
                     >
                       {wahumini?.map((wahumini:any) => (
                         <Option key={wahumini.id} value={wahumini.id}>
