@@ -593,9 +593,14 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
               </Descriptions.Item>
             )}
             {pendingData.bahasha && bahashaData && (
-              <Descriptions.Item label="Jina la Mhumini">
+              <Descriptions.Item label="Jina la Muumini">
                 {bahashaData.mhumini_details?.first_name}{" "}
                 {bahashaData.mhumini_details?.last_name}
+              </Descriptions.Item>
+            )}
+                {pendingData.bahasha && bahashaData && (
+              <Descriptions.Item label="Namba ya Simu ya Muumini">
+                {bahashaData.mhumini_details?.phone_number}
               </Descriptions.Item>
             )}
           </Descriptions>

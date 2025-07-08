@@ -84,7 +84,7 @@ const ViewModal: React.FC<ViewModalProps> = ({ visible, onClose, data }) => {
         <div className="p-4 bg-white odd:bg-gray-100 rounded-lg">
           <Row gutter={16}>
             <Col span={12}>
-              <h4 className="font-semibold text-sm text-gray-600">Collected By</h4>
+              <h4 className="font-semibold text-sm text-gray-600">Description</h4>
               <p className="text-gray-900">{data?.collected_by || 'N/A'}</p>
             </Col>
             <Col span={12}>
