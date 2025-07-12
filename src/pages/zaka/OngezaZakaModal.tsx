@@ -104,7 +104,10 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       const revenueResponse = await postSpRevenue(revenueData);
       return revenueResponse;
     },
-    onSuccess: () => {
+    onSuccess: (data:any) => {
+
+      console.log(data);
+      
       dispatch(
         addAlert({
           title: "Success",
@@ -122,10 +125,12 @@ const OngezaZaka = ({ openModal, handleCancel }: ModalProps) => {
       setBahashaError(null);
     },
     onError: (_error: any) => {
+      console.log(_error);
+      
       dispatch(
         addAlert({
           title: "Error",
-          message: "Failed to add Zaka.",
+          message: "Failed to add Zaka. check the entry might already exist for this month.",
           type: "error",
         })
       );

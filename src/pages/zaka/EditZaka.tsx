@@ -51,8 +51,11 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
     amount: Yup.number()
       .typeError("Amount must be a number")
       .required("Amount is required")
-      .positive("Amount must be positive"),
+      .min(0, "Amount must be zero or more"),
     date: Yup.date().typeError("Date is invalid").required("Date is required"),
+    date_received: Yup.date()
+      .typeError("Date is invalid")
+      .required("Date is required"),
     payment_type: Yup.number()
       .typeError("Payment type must be a number")
       .required("Payment type is required"),
@@ -88,6 +91,8 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
         payment_type: zakaDetails.payment_type,
         remark: zakaDetails.collected_by,
         cardNumber: zakaDetails?.bahasha?.card_no,
+        date_received: zakaDetails.date_received || new Date().toISOString(),
+
       };
 
       formWithCard.reset(formData);
@@ -104,7 +109,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
         church: church?.id,
         payment_type: data.payment_type,
         revenue_type_record: zakaDetails?.id,
-        date_received: data.date,
+         date_received: data.date_received,
         created_by: user?.username,
         updated_by: user?.username,
         revenue_type: "Zaka"
@@ -185,11 +190,13 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
 
   // Unified submit handler for updating Zaka
   const onSubmit = (data: any, hasCard: boolean) => {
-    if (data.date) {
+   if (data.date) {
       const localDate = new Date(data.date);
-      const formattedDate = localDate.toLocaleDateString("en-CA"); 
+      const localDateR = new Date(data.date_received);
+      const formattedDate = localDate.toLocaleDateString("en-CA");
       data.date = formattedDate;
-      }
+      data.date_received = localDateR.toLocaleDateString("en-CA");
+    }
     const finalData = {
       collected_by: data.remark,
       zaka_amount: data.amount,
@@ -197,6 +204,7 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
       church: church?.id,
       payment_type: data.payment_type,
       date: data.date,
+      date_received: data.date_received,
       inserted_by: user?.username,
       updated_by: user?.username,
     };
@@ -240,10 +248,12 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
                   <p className="mt-1 text-sm text-red-600">{bahashaError}</p>
                 )}
                 {bahashaData && (
-                  <p className="mt-1 text-sm text-green-600">
-                    Bahasha imefanikiwa kupatikana.
-                  </p>
-                )}
+                    <p className="mt-1 text-sm text-green-600">
+                      Bahasha imefanikiwa kupatikana. Name:{" "}
+                      {bahashaData?.mhumini_details?.first_name}{" "}
+                      {bahashaData?.mhumini_details?.last_name}
+                    </p>
+                  )}
               </div>
 
               {/* Amount */}
@@ -258,19 +268,56 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
                   {...formWithCard.register("amount")}
                 />
               </div>
+             {/* Date */}
+                <div>
+                  <label
+                    htmlFor="date"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Tarehe ya mwezi wa zaka
+                  </label>
+                  <input
+                    id="date"
+                    type="date"
+                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                      formWithCard.formState.errors.date
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    {...formWithCard.register("date")}
+                  />
+                  {formWithCard.formState.errors.date && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {formWithCard.formState.errors.date.message}
+                    </p>
+                  )}
+                </div>
 
-              {/* Date */}
-              <div>
-                <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-                  Tarehe
-                </label>
-                <input
-                  id="date"
-                  type="date"
-                  className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  {...formWithCard.register("date")}
-                />
-              </div>
+                {/* Date */}
+                <div>
+                  <label
+                    htmlFor="date"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Tarehe
+                  </label>
+                  <input
+                    id="date_received"
+                    type="date"
+                    max={new Date().toISOString().split("T")[0]}
+                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
+                      formWithCard.formState.errors.date_received
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    }`}
+                    {...formWithCard.register("date_received")}
+                  />
+                  {formWithCard.formState.errors.date_received && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {formWithCard.formState.errors.date_received.message}
+                    </p>
+                  )}
+                </div>
 
               {/* Payment Type */}
               <div>
@@ -291,18 +338,21 @@ const EditZaka = ({ openModal, handleCancel, zakaDetails }: ModalProps) => {
                 </select>
               </div>
 
-              {/* Remarks */}
-              <div>
-                <label htmlFor="remark" className="block text-sm font-medium text-gray-700">
-                  Aliyeweka
-                </label>
-                <input
-                  id="remark"
-                  type="text"
-                  className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  {...formWithCard.register("remark")}
-                />
-              </div>
+         {/* Remark */}
+                <div className="col-span-2">
+                  <label
+                    htmlFor="remark"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Maelezo
+                  </label>
+                  <textarea
+                    id="remark"
+                    rows={3}
+                    className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm bg-blue-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    {...formWithCard.register("remark")}
+                  />
+                </div>
             </div>
 
             <div className="mt-4">
