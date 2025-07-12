@@ -13,10 +13,16 @@ const schema = yup.object().shape({
   first_name: yup.string().required("Jina la Kwanza ni lazima"),
   last_name: yup.string().required("Jina la Mwisho ni lazima"),
   email: yup.string().email("Barua pepe sio sahihi"),
-  phone_number: yup.string()
-    .matches(/^[0-9]+$/, "Nambari ya Simu inapaswa kuwa nambari")
-    .required("Nambari ya Simu ni lazima"),
-  gender: yup.string().oneOf(['male', 'female'], "Chagua jinsia sahihi").required("Jinsia ni lazima"),
+  phone_number: yup
+    .string()
+    .matches(
+      /^$|^255\d{9}$/,
+      "Nambari ya Simu inapaswa kuanza na 255 na kuwa na jumla ya tarakimu 12"
+    ),
+  gender: yup
+    .string()
+    .oneOf(["male", "female"], "Chagua jinsia sahihi")
+    .required("Jinsia ni lazima"),
   birthdate: yup.date(),
   address: yup.string(),
   marital_status: yup.string().required("Hali ya ndoa ni lazima"),
@@ -39,60 +45,65 @@ const OngezaMuhumini = () => {
   const { data: jumuiyas, isLoading: loadingJumuiyas } = useQuery({
     queryKey: ["jumuiya"],
     queryFn: async () => {
-        const response:any = await fetchtJumuiya(`?church_id=${church.id}`);
-        console.log(response);
-        
-      return response
+      const response: any = await fetchtJumuiya(`?church_id=${church.id}`);
+      console.log(response);
+
+      return response;
     },
   });
 
-
-
-
-  const { mutate: addMuhuminiMutation , isPending} = useMutation({
-    mutationFn:  async (data: any) => {
-        return await postWahumini(data);
-      },
+  const { mutate: addMuhuminiMutation, isPending } = useMutation({
+    mutationFn: async (data: any) => {
+      return await postWahumini(data);
+    },
     onSuccess: (data) => {
       console.log(data);
-      dispatch(addAlert({
-        title: "Success",
-        message: "Muumini added successfully",
-        type: "success",
-      }));
+      dispatch(
+        addAlert({
+          title: "Success",
+          message: "Muumini added successfully",
+          type: "success",
+        })
+      );
       reset(); // Reset the form on successful submission
     },
     onError: (error) => {
-      dispatch(addAlert({
-        title: "Error adding muumini",
-        message: error.message,
-        type: "error",
-      }));
+      dispatch(
+        addAlert({
+          title: "Error adding muumini",
+          message: error.message,
+          type: "error",
+        })
+      );
     },
   });
 
-    // Form submit handler
-    const onSubmit = async (data: any) => {
-      if (!church) {
-        notification.error({ message: "Church ID is missing. Please ensure you are associated with a church." });
-        return;
-      }
-  
-      if (data.birthdate) {
-        const formattedDate = new Date(data.birthdate).toISOString().split('T')[0];
-        data.birthdate = formattedDate;
-      }
-  
-      const finalData = {
-        ...data,
-        church: church?.id,
-        created_by: user?.username,
-        updated_by: user?.username,
-      };
-  
-      return addMuhuminiMutation(finalData); 
+  // Form submit handler
+  const onSubmit = async (data: any) => {
+    if (!church) {
+      notification.error({
+        message:
+          "Church ID is missing. Please ensure you are associated with a church.",
+      });
+      return;
+    }
+
+    if (data.birthdate) {
+      const formattedDate = new Date(data.birthdate)
+        .toISOString()
+        .split("T")[0];
+      data.birthdate = formattedDate;
+    }
+
+    const finalData = {
+      ...data,
+      church: church?.id,
+      created_by: user?.username,
+      updated_by: user?.username,
     };
-  
+
+    return addMuhuminiMutation(finalData);
+  };
 
   return (
     <div className="mx-auto bg-white p-8 shadow-md rounded-lg">
@@ -191,7 +202,7 @@ const OngezaMuhumini = () => {
             name="marital_status"
             render={({ field }) => (
               <Select {...field} placeholder="Chagua Jinsia">
-                    <Option value="">Chagua Hali ya Ndoa</Option>
+                <Option value="">Chagua Hali ya Ndoa</Option>
                 <Option value="single">Single</Option>
                 <Option value="married">Married</Option>
                 <Option value="divorced">Divorced</Option>
@@ -210,8 +221,12 @@ const OngezaMuhumini = () => {
           <Controller
             control={control}
             name="birthdate"
-            render={({ field }:any) => (
-              <DatePicker {...field} placeholder="Tarehe ya Kuzaliwa"  className="w-full"/>
+            render={({ field }: any) => (
+              <DatePicker
+                {...field}
+                placeholder="Tarehe ya Kuzaliwa"
+                className="w-full"
+              />
             )}
           />
         </Form.Item>
@@ -241,35 +256,42 @@ const OngezaMuhumini = () => {
           <Controller
             control={control}
             name="jumuiya"
-            render={({ field }) => (
+            render={({ field }) =>
               loadingJumuiyas ? (
                 <Select loading placeholder="Loading..." />
               ) : (
-                <Select {...field} placeholder="Chagua Jumuiya"
-                optionFilterProp="children"
-                showSearch
-                filterOption={(input, option) =>
-                  option?.children
-                    .toString()
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                notFoundContent="Hajapatikana"
+                <Select
+                  {...field}
+                  placeholder="Chagua Jumuiya"
+                  optionFilterProp="children"
+                  showSearch
+                  filterOption={(input, option) =>
+                    option?.children
+                      .toString()
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  notFoundContent="Hajapatikana"
                 >
-                  {jumuiyas?.map((jumuiya:any) => (
+                  {jumuiyas?.map((jumuiya: any) => (
                     <Option key={jumuiya.id} value={jumuiya.id}>
                       {jumuiya.name}
                     </Option>
                   ))}
                 </Select>
               )
-            )}
+            }
           />
         </Form.Item>
 
         {/* Submit Button */}
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full bg-[#152033]" loading={isPending}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="w-full bg-[#152033]"
+            loading={isPending}
+          >
             Ongeza Muumini
           </Button>
         </Form.Item>

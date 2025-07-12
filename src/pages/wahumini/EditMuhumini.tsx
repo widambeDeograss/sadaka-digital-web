@@ -18,10 +18,9 @@ const schema = yup.object().shape({
   first_name: yup.string().required("Jina la Kwanza ni lazima"),
   last_name: yup.string().required("Jina la Mwisho ni lazima"),
   email: yup.string().email("Barua pepe sio sahihi"),
-  phone_number: yup
-    .string()
-    .matches(/^[0-9]+$/, "Nambari ya Simu inapaswa kuwa nambari")
-    .required("Nambari ya Simu ni lazima"),
+phone_number: yup
+  .string()
+  .matches(/^$|^255\d{9}$/, "Nambari ya Simu inapaswa kuanza na 255 na kuwa na jumla ya tarakimu 12"),
   gender: yup
     .string()
     .oneOf(["male", "female"], "Chagua jinsia sahihi")
