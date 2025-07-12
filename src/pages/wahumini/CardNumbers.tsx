@@ -241,10 +241,10 @@ const CardNumberList = () => {
             </div>
             <div>
               <Button.Group>
-              {GlobalMethod.hasAnyPermission(
+              {/* {GlobalMethod.hasAnyPermission(
                 ["MANAGE_BAHAASHA"],
                 GlobalMethod.getUserPermissionName(userPermissions)
-              ) && (
+              ) && ( */}
                 <Button
                   type="primary"
                   className="bg-[#152033] text-white text-xs"
@@ -252,7 +252,7 @@ const CardNumberList = () => {
                 >
                   Ongeza Bahasha
                 </Button>
-                   )}
+                   {/* )} */}
                 {/* </Radio.Button> */}
               </Button.Group>
             </div>

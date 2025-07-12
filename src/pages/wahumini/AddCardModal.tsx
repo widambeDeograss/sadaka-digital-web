@@ -127,9 +127,7 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
           validateStatus={errors.mhumini ? "error" : ""}
           help={errors.mhumini?.message}
         >
-          {loadingWahumini ? (
-            <Spin />
-          ) : (
+    
             <Controller
               control={control}
               name="mhumini"
@@ -141,6 +139,7 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
                   onSearch={(value) => setSearchTerm(value)} 
                   filterOption={false} 
                   notFoundContent="Hajapatikana"
+                  loading={loadingWahumini}
                 >
                   {wahumini?.map((item: any) => (
                     <Option key={item.id} value={item.id}>
@@ -150,7 +149,7 @@ const CreateCardNumberModal = ({ visible, onClose }: any) => {
                 </Select>
               )}
             />
-          )}
+      
         </Form.Item>
 
         <Form.Item
