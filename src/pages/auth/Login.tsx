@@ -1,7 +1,7 @@
 import {  Form, Input, Checkbox, Button, Divider } from "antd";
 import { UserOutlined, } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ToastContainer } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
@@ -177,9 +177,7 @@ export default function LoginPage() {
               <Form.Item name="remember" valuePropName="checked" className="mb-0">
                 <Checkbox>Remember me</Checkbox>
               </Form.Item>
-              <Link to="/forgot-password" className="text-blue-600 hover:underline">
-                Forgot Password?
-              </Link>
+          
             </div>
 
             <Form.Item>
