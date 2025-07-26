@@ -23,6 +23,7 @@ type ModalProps = {
   openModal: boolean;
   handleCancel: () => void;
   editData?: any;
+  mavunoType: string; // Optional prop to specify mavuno type
 };
 
 type MavunoPostRequest = {
@@ -35,12 +36,14 @@ type MavunoPostRequest = {
   status: boolean;
   inserted_by: string;
   updated_by: string;
+  mavuno_type: string; 
 };
 
 const OngezaMavuno: React.FC<ModalProps> = ({ 
   openModal, 
   handleCancel, 
-  editData 
+  editData,
+  mavunoType = "MAVUNO_PAROKIA" 
 }) => {
   const [form] = Form.useForm();
   const church = useAppSelector((state: any) => state.sp);
@@ -155,6 +158,7 @@ const OngezaMavuno: React.FC<ModalProps> = ({
       status: true,
       inserted_by: user?.username,
       updated_by: user?.username,
+      mavuno_type: mavunoType
     };
 
     saveMavunoMutation(finalData);

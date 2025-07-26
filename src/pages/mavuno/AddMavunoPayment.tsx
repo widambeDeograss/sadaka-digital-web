@@ -293,7 +293,7 @@ const CommonFormFields = ({
             >
               {mavunoList?.map((item: any) => (
                 <Option key={item.id} value={item.id}>
-                  {item.name}
+                  {item.name} -- {item.mavuno_type}
                 </Option>
               ))}
             </Select>

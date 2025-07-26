@@ -37,6 +37,7 @@ import MavunoDetails from '../pages/mavuno/MavunoDetails.tsx';
 import ExpenseStatementReport from '../pages/reports/expenses-reports.tsx';
 import MuhuminiStatementPage from '../pages/reports/muhumini-statement.tsx';
 import RevenueStatementReport from '../pages/reports/revenue-report.tsx';
+import MavunoParokiaList from '../pages/mavuno/MavunoParokia.tsx';
 
 
 const AppRouter = () => {
@@ -75,7 +76,8 @@ const AppRouter = () => {
                 {path:"users/roles", element:<RolesList/>},
                 {path:"sadaka", element:<Sadaka/>},
                 {path:"sadaka-type", element:<SadakaTypes/>},
-                {path:"mavuno", element:<MavunoList/>},
+                {path:"mavuno/jimbo", element:<MavunoList/>},
+                {path:"mavuno/parokia", element:<MavunoParokiaList/>},
                 {path:"mavuno/:id", element:<MavunoDetails/>},
                 {path:"sadaka-monthly-report", element:<SadakaReportTable/>},
                 {path:"profile", element:<Profile />},

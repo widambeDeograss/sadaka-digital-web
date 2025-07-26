@@ -5,13 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchMavunoStats } from "../../helpers/ApiConnectors";
 import { EqualIcon, Wallet2 } from "lucide-react";
 
-const Widgets = () => {
+const Widgets = ({mavunoType}:{mavunoType:string}) => {
   const church = useAppSelector((state: any) => state.sp);
 
   const { data: mavuno, isLoading } = useQuery({
     queryKey: ["mavuno-stats"],
     queryFn: async () => {
-      let query = `?church_id=${church.id}&&type=totals`;
+      let query = `?church_id=${church.id}&&type=totals&&mavuno_type=${mavunoType}`;
       const response: any = await fetchMavunoStats(query);
       return response;
     },

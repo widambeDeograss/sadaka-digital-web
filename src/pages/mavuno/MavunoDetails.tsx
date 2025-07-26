@@ -227,7 +227,7 @@ const MavunoDetails = () => {
       <Card
         title={
           <h3 className="text-sm font-bold  ">
-            Mavuno wa {mavunoDetails?.name}
+           {mavunoDetails?.mavuno_type?.replace("_", " ")} - {mavunoDetails?.name}
           </h3>
         }
         className="mt-14"
@@ -307,7 +307,7 @@ const MavunoDetails = () => {
 
       <Card
         title={
-          <h3 className="font-bold text-sm text-left ">Mchango payments</h3>
+          <h3 className="font-bold text-sm text-left ">MAVUNO payments</h3>
         }
         className="mt-5"
       >

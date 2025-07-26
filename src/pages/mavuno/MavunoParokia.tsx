@@ -27,7 +27,7 @@ import OngezaMavunoPayments from "./AddMavunoPayment";
 import Widgets from "./Stats";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 
-const MavunoJimboList = () => {
+const MavunoParokiaList = () => {
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
   const church = useAppSelector((state: any) => state.sp);
@@ -42,8 +42,7 @@ const MavunoJimboList = () => {
   const { data: mavuno, isLoading: loadingMavuno } = useQuery({
     queryKey: ["mavuno"],
     queryFn: async () => {
-      const response: any = await fetchMavuno(`?church_id=${church.id}&mavuno_type=MAVUNO_JIMBO`);
-      
+      const response: any = await fetchMavuno(`?church_id=${church.id}&mavuno_type=MAVUNO_PAROKIA`);
       return response;
     },
   });
@@ -210,10 +209,10 @@ const MavunoJimboList = () => {
 
   return (
     <div className="">
-      <Widgets mavunoType="MAVUNO_JIMBO"/>
+      <Widgets mavunoType="MAVUNO_PAROKIA"/>
       <Card
         className="mt-4"
-        title={<h3 className="font-bold text-sm text-left ">Mavuno ya Jimbo</h3>}
+        title={<h3 className="font-bold text-sm text-left ">Mavuno ya Parokia</h3>}
       >
         <div className="text-xs">
           <h3 className="text-left">
@@ -251,7 +250,7 @@ const MavunoJimboList = () => {
         </div>
       </Card>
       <Card
-        title={<h3 className="font-bold text-sm text-left ">Mavuno ya jimbo </h3>}
+        title={<h3 className="font-bold text-sm text-left ">Mavuno ya Parokia</h3>}
         className="mt-5"
       >
         <div className="table-responsive">
@@ -285,4 +284,4 @@ const MavunoJimboList = () => {
   );
 };
 
-export default MavunoJimboList;
+export default MavunoParokiaList;

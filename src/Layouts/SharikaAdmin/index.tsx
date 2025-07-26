@@ -65,12 +65,15 @@ const menuItems:MenuItem[] = [
       path: "/dashboard/zaka",
       permissions:['VIEW_ZAKA']
   },
-  {
+    {
       key: "mavuno",
       label: "Mavuno",
-      icon: <GiSwapBag style={{ fontSize: "14px", fontWeight: "bold",  }} />,
-      path: "/dashboard/mavuno",
-      permissions:['VIEW_ZAKA']
+      icon: <GiSwapBag style={{ fontSize: "14px", fontWeight: "bold" }} />,
+      permissions:['VIEW_ZAKA'],
+      children: [
+          { key: "jimbo", label: "Mavuno jimbo", path: "/dashboard/mavuno/jimbo",  permissions:['VIEW_ZAKA'], },
+          { key: "parokia", label: "Mavuno parokia", path: "/dashboard/mavuno/parokia",  permissions:['VIEW_ZAKA'], },
+      ],
   },
   {
       key: "michango",
