@@ -1,15 +1,28 @@
 import { useState } from "react";
-import { Card, Table, DatePicker, Space, Button, Modal, Form, InputNumber, Select, message, Tabs, Typography } from "antd";
+import {
+  Card,
+  Table,
+  DatePicker,
+  Space,
+  Button,
+  Modal,
+  Form,
+  InputNumber,
+  Select,
+  message,
+  Tabs,
+  Typography,
+} from "antd";
 import type { TableColumnsType } from "antd";
 import dayjs from "dayjs";
 import { useAppSelector } from "../../store/store-hooks";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
+import {
   fetchPaymentTypeTransfer,
   postPaymentTypeTransfer,
   updatePaymentTypeTransfer,
-  deletePaymentTypeTransfer, 
-  fetchPayTypes
+  deletePaymentTypeTransfer,
+  fetchPayTypes,
 } from "../../helpers/ApiConnectors";
 
 const { RangePicker } = DatePicker;
@@ -25,16 +38,28 @@ interface TransferType {
   created_by: string;
 }
 
-const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
+const PaymentTypeTransfers = ({
+  paymentTypeId,
+  initialStartDate,
+  initialEndDate,
+}: {
+  paymentTypeId: number;
+  initialStartDate: string;
+  initialEndDate: string;
+}) => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTransfer, setEditingTransfer] = useState<TransferType | null>(null);
+  const [editingTransfer, setEditingTransfer] = useState<TransferType | null>(
+    null
+  );
   const [dateRange, setDateRange] = useState([
-    dayjs().startOf('year'),
-    dayjs().endOf('year')
+    dayjs(initialStartDate),
+    dayjs(initialEndDate),
   ]);
-  const [selectedToPaymentType, setSelectedToPaymentType] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState('outgoing');
+  const [selectedToPaymentType, setSelectedToPaymentType] = useState<
+    number | null
+  >(null);
+  const [activeTab, setActiveTab] = useState("outgoing");
   const church = useAppSelector((state: any) => state.sp);
   const queryClient = useQueryClient();
 
@@ -49,35 +74,39 @@ const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
 
   // Fetch outgoing transfers (from this payment type)
   const { data: outgoingTransfers, isLoading: isOutgoingLoading } = useQuery({
-    queryKey: ["outgoingTransfers", paymentTypeId, dateRange, selectedToPaymentType],
+    queryKey: [
+      "outgoingTransfers",
+      paymentTypeId,
+      dateRange,
+      selectedToPaymentType,
+    ],
     queryFn: async () => {
-      const params: any = { 
-        start_date: dateRange[0].format('YYYY-MM-DD'),
-        end_date: dateRange[1].format('YYYY-MM-DD')
+      const params: any = {
+        start_date: dateRange[0].format("YYYY-MM-DD"),
+        end_date: dateRange[1].format("YYYY-MM-DD"),
       };
-    //   if (selectedToPaymentType) {
-    //     params.to_payment_type = selectedToPaymentType;
-    //   }
+      //   if (selectedToPaymentType) {
+      //     params.to_payment_type = selectedToPaymentType;
+      //   }
       const urlString = `?from_payment_type=${paymentTypeId}&church_id=${church.id}&start_date=${params.start_date}&end_date=${params.end_date}`;
-      const response = await fetchPaymentTypeTransfer(urlString);
+      const response:any = await fetchPaymentTypeTransfer(urlString);
       return response;
     },
   });
 
   console.log("Outgoing Transfers:", outgoingTransfers);
-  
 
   // Fetch incoming transfers (to this payment type)
   const { data: incomingTransfers, isLoading: isIncomingLoading } = useQuery({
     queryKey: ["incomingTransfers", paymentTypeId, dateRange],
     queryFn: async () => {
-           const params: any = { 
-        start_date: dateRange[0].format('YYYY-MM-DD'),
-        end_date: dateRange[1].format('YYYY-MM-DD')
+      const params: any = {
+        start_date: dateRange[0].format("YYYY-MM-DD"),
+        end_date: dateRange[1].format("YYYY-MM-DD"),
       };
       const urlString = `?to_payment_type=${paymentTypeId}&church_id=${church.id}&start_date=${params.start_date}&end_date=${params.end_date}`;
 
-      const response = await fetchPaymentTypeTransfer(urlString);
+      const response:any = await fetchPaymentTypeTransfer(urlString);
       return response;
     },
   });
@@ -86,44 +115,44 @@ const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
   const createTransferMutation = useMutation({
     mutationFn: postPaymentTypeTransfer,
     onSuccess: () => {
-      message.success('Transfer created successfully');
-      queryClient.invalidateQueries({ queryKey: ['outgoingTransfers'] });
-      queryClient.invalidateQueries({ queryKey: ['incomingTransfers'] });
+      message.success("Transfer created successfully");
+      queryClient.invalidateQueries({ queryKey: ["outgoingTransfers"] });
+      queryClient.invalidateQueries({ queryKey: ["incomingTransfers"] });
       setIsModalOpen(false);
       form.resetFields();
     },
     onError: () => {
-      message.error('Error creating transfer');
-    }
+      message.error("Error creating transfer");
+    },
   });
 
   // Update transfer mutation
   const updateTransferMutation = useMutation({
-    mutationFn: updatePaymentTypeTransfer,
+    mutationFn: () => updatePaymentTypeTransfer(editingTransfer?.id, form.getFieldsValue()),
     onSuccess: () => {
-      message.success('Transfer updated successfully');
-      queryClient.invalidateQueries({ queryKey: ['outgoingTransfers'] });
-      queryClient.invalidateQueries({ queryKey: ['incomingTransfers'] });
+      message.success("Transfer updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["outgoingTransfers"] });
+      queryClient.invalidateQueries({ queryKey: ["incomingTransfers"] });
       setIsModalOpen(false);
       setEditingTransfer(null);
       form.resetFields();
     },
     onError: () => {
-      message.error('Error updating transfer');
-    }
+      message.error("Error updating transfer");
+    },
   });
 
   // Delete transfer mutation
   const deleteTransferMutation = useMutation({
     mutationFn: deletePaymentTypeTransfer,
     onSuccess: () => {
-      message.success('Transfer deleted successfully');
-      queryClient.invalidateQueries({ queryKey: ['outgoingTransfers'] });
-      queryClient.invalidateQueries({ queryKey: ['incomingTransfers'] });
+      message.success("Transfer deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["outgoingTransfers"] });
+      queryClient.invalidateQueries({ queryKey: ["incomingTransfers"] });
     },
     onError: () => {
-      message.error('Error deleting transfer');
-    }
+      message.error("Error deleting transfer");
+    },
   });
 
   const handleDateChange = (dates: any) => {
@@ -146,33 +175,33 @@ const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
     setEditingTransfer(record);
     form.setFieldsValue({
       to_payment_type: record.to_payment_type.id,
-      amount: record.amount
+      amount: record.amount,
     });
     setIsModalOpen(true);
   };
 
   const handleDeleteTransfer = (id: number) => {
     Modal.confirm({
-      title: 'Are you sure you want to delete this transfer?',
-      onOk: () => deleteTransferMutation.mutate(id)
+      title: "Are you sure you want to delete this transfer?",
+      onOk: () => deleteTransferMutation.mutate(id),
     });
   };
 
   const handleSubmit = () => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       const data = {
         ...values,
         church: church.id,
-        created_by: "Current User", 
-        updated_by: "Current User" 
+        created_by: "Current User",
+        updated_by: "Current User",
       };
 
       if (editingTransfer) {
         updateTransferMutation.mutate({ id: editingTransfer.id, data });
       } else {
-        createTransferMutation.mutate({ 
-          ...data, 
-          from_payment_type: paymentTypeId 
+        createTransferMutation.mutate({
+          ...data,
+          from_payment_type: paymentTypeId,
         });
       }
     });
@@ -180,29 +209,37 @@ const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
 
   const commonColumns: TableColumnsType<TransferType> = [
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
       render: (amount) => `Tsh ${amount.toLocaleString()}`,
     },
     {
-      title: 'Date',
-      dataIndex: 'transfer_date',
-      key: 'transfer_date',
-      render: (date) => dayjs(date).format('YYYY-MM-DD HH:mm'),
+      title: "Date",
+      dataIndex: "transfer_date",
+      key: "transfer_date",
+      render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm"),
     },
     {
-      title: 'Created By',
-      dataIndex: 'created_by',
-      key: 'created_by',
+      title: "Created By",
+      dataIndex: "created_by",
+      key: "created_by",
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => handleEditTransfer(record)}>Edit</Button>
-          <Button type="link" danger onClick={() => handleDeleteTransfer(record.id)}>Delete</Button>
+          <Button type="link" onClick={() => handleEditTransfer(record)}>
+            Edit
+          </Button>
+          <Button
+            type="link"
+            danger
+            onClick={() => handleDeleteTransfer(record.id)}
+          >
+            Delete
+          </Button>
         </Space>
       ),
     },
@@ -210,34 +247,48 @@ const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
 
   const outgoingColumns: TableColumnsType<TransferType> = [
     {
-      title: 'To Payment Type',
-      dataIndex: ['to_payment_type', 'name'],
-      key: 'to_payment_type',
+      title: "To Payment Type",
+      dataIndex: ["to_payment_type", "name"],
+      key: "to_payment_type",
+      render: (_, record) => {
+        const paymentType = payTypes?.find(
+          (type: any) => type.id == record.to_payment_type
+        );
+        return paymentType ? paymentType.name : "Unknown";
+      },
     },
-    ...commonColumns
+    ...commonColumns,
   ];
 
   const incomingColumns: TableColumnsType<TransferType> = [
     {
-      title: 'From Payment Type',
-      dataIndex: ['from_payment_type', 'name'],
-      key: 'from_payment_type',
+      title: "From Payment Type",
+      dataIndex: ["from_payment_type", "name"],
+      key: "from_payment_type",
+      render: (_, record) => {
+        const paymentType = payTypes?.find(
+          (type: any) => type.id == record.from_payment_type
+        );
+        return paymentType ? paymentType.name : "Unknown";
+      },
     },
-    ...commonColumns
+    ...commonColumns,
   ];
 
   return (
-    <Card 
-      title={`Transfers for ${outgoingTransfers?.from_payment_type?.name || 'Payment Type'}`} 
+    <Card
+      title={`Transfers for ${
+        outgoingTransfers?.from_payment_type?.name || "Payment Type"
+      }`}
       className="mt-4"
       loading={isOutgoingLoading || isIncomingLoading}
       extra={
         <Space>
-          <RangePicker 
+          <RangePicker
             defaultValue={[dateRange[0], dateRange[1]]}
             onChange={handleDateChange}
           />
-          {activeTab === 'outgoing' && (
+          {activeTab === "outgoing" && (
             <Select
               placeholder="Filter by recipient"
               style={{ width: 200 }}
@@ -259,17 +310,17 @@ const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
     >
       <Tabs activeKey={activeTab} onChange={setActiveTab}>
         <TabPane tab="Outgoing Transfers" key="outgoing">
-          <Table 
-            columns={outgoingColumns} 
-            dataSource={outgoingTransfers || []} 
+          <Table
+            columns={outgoingColumns}
+            dataSource={outgoingTransfers || []}
             rowKey="id"
             pagination={{ pageSize: 10 }}
           />
         </TabPane>
         <TabPane tab="Incoming Transfers" key="incoming">
-          <Table 
-            columns={incomingColumns} 
-            dataSource={incomingTransfers || []} 
+          <Table
+            columns={incomingColumns}
+            dataSource={incomingTransfers || []}
             rowKey="id"
             pagination={{ pageSize: 10 }}
           />
@@ -277,39 +328,45 @@ const PaymentTypeTransfers = ({ paymentTypeId }: { paymentTypeId: number }) => {
       </Tabs>
 
       <Modal
-        title={editingTransfer ? 'Edit Transfer' : 'Create Transfer'}
+        title={editingTransfer ? "Edit Transfer" : "Create Transfer"}
         open={isModalOpen}
         onOk={handleSubmit}
         onCancel={() => {
           setIsModalOpen(false);
           form.resetFields();
         }}
-        confirmLoading={createTransferMutation.isPending || updateTransferMutation.isPending}
+        confirmLoading={
+          createTransferMutation.isPending || updateTransferMutation.isPending
+        }
       >
         <Form form={form} layout="vertical">
           <Form.Item
             name="to_payment_type"
             label="To Payment Type"
-            rules={[{ required: true, message: 'Please select payment type' }]}
+            rules={[{ required: true, message: "Please select payment type" }]}
           >
             <Select placeholder="Select payment type">
-              {payTypes?.filter((type: any) => type.id !== paymentTypeId).map((type: any) => (
-                <Select.Option key={type.id} value={type.id}>
-                  {type.name}
-                </Select.Option>
-              ))}
+              {payTypes
+                ?.filter((type: any) => type.id !== paymentTypeId)
+                .map((type: any) => (
+                  <Select.Option key={type.id} value={type.id}>
+                    {type.name}
+                  </Select.Option>
+                ))}
             </Select>
           </Form.Item>
           <Form.Item
             name="amount"
             label="Amount"
-            rules={[{ required: true, message: 'Please enter amount' }]}
+            rules={[{ required: true, message: "Please enter amount" }]}
           >
-            <InputNumber 
-              style={{ width: '100%' }} 
-              min={0} 
-              step={1000} 
-              formatter={value => `Tsh ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            <InputNumber
+              style={{ width: "100%" }}
+              min={0}
+              step={1000}
+            //   formatter={(value) =>
+            //     `Tsh ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            //   }
             />
           </Form.Item>
         </Form>

@@ -13,6 +13,7 @@ const RevenueByPaymentType = () => {
   const [period, setPeriod] = useState("monthly");
   const church = useAppSelector((state: any) => state.sp);
  const [selectedPaymentType, setSelectedPaymentType] = useState<number | null>(null);
+
   const { data:revenueData, isLoading} =  useQuery({
     queryKey: ["revenue", church.id, period],
     queryFn: async () => {
@@ -85,7 +86,10 @@ const RevenueByPaymentType = () => {
       )}
 
          {selectedPaymentType && (
-        <PaymentTypeTransfers paymentTypeId={selectedPaymentType} />
+        <PaymentTypeTransfers paymentTypeId={selectedPaymentType}
+         initialStartDate={revenueData.start_date}
+    initialEndDate={revenueData.end_date}
+        />
       )}
     </Card>
   );
