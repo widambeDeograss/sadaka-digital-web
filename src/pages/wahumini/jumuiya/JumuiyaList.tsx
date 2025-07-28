@@ -309,7 +309,7 @@ const KandaJumuiya = () => {
                 onSearch={(term: string) => setSearchTerm(term)}
                 togglefilter={() => {}}
                 searchTerm={searchTerm}
-                data={tableId}
+                data={"kanda"}
               />
 
               <Table

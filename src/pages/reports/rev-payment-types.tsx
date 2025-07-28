@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { useAppSelector } from "../../store/store-hooks";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPaymentTypeRev } from "../../helpers/ApiConnectors";
+import PaymentTypeTransfers from "./payment-type-transfers";
 
 const { Text, Title } = Typography;
 const { Option } = Select;
@@ -11,7 +12,7 @@ const { Option } = Select;
 const RevenueByPaymentType = () => {
   const [period, setPeriod] = useState("monthly");
   const church = useAppSelector((state: any) => state.sp);
-
+ const [selectedPaymentType, setSelectedPaymentType] = useState<number | null>(null);
   const { data:revenueData, isLoading} =  useQuery({
     queryKey: ["revenue", church.id, period],
     queryFn: async () => {
@@ -22,9 +23,15 @@ const RevenueByPaymentType = () => {
     },
   });
 
-  console.log(revenueData);
-  
+    const handlePaymentTypeClick = (paymentTypeId: number) => {
+      console.log("Selected Payment Type ID:", paymentTypeId);
+      
+    setSelectedPaymentType(paymentTypeId);
 
+  };
+
+  console.log("Revenue Data:", revenueData);
+  
 
   // Handle period change
   const handlePeriodChange = (value:any) => {
@@ -62,6 +69,7 @@ const RevenueByPaymentType = () => {
                   hoverable
                   className="text-center"
                   style={{ borderRadius: 10 }}
+                  onClick={() => handlePaymentTypeClick(item.payment_type__id)}
                 >
                   <Title level={4} style={{ marginBottom: 0 }}>
                     {item.payment_type__name}
@@ -74,6 +82,10 @@ const RevenueByPaymentType = () => {
             ))}
           </Row>
         </>
+      )}
+
+         {selectedPaymentType && (
+        <PaymentTypeTransfers paymentTypeId={selectedPaymentType} />
       )}
     </Card>
   );

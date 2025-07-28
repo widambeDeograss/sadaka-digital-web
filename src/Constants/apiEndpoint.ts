@@ -86,6 +86,8 @@ export const WAHUMINI_STATEMENT = `${DataBaseUrl}/service-providers/reports/wahu
 export const REVENUE_STATEMENT = `${DataBaseUrl}/service-providers/reports/revenue-statement`;
 export const EXPENSE_STATEMENT = `${DataBaseUrl}/service-providers/reports/expenses-statement`;
 export const PAYMENT_LIST_REPORT = `${DataBaseUrl}/service-providers/revenue/`;
+export const PAYMENT_TYPE_TRANSFER_CREATE = `${DataBaseUrl}/service-providers/payment-type-transfer-list-create`;
+export const PAYMENT_TYPE_TRANSFER_UPDATE = `${DataBaseUrl}/service-providers/payment-type-transfer-retrieve-update-destroy/`;
 
 //SMS
 export const SEND_CUSTOM_SMS = `${DataBaseUrl}/service-providers/sms/send-custom`;

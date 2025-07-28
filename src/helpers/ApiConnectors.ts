@@ -19,7 +19,8 @@ export const putPermissionEdit = (data: any, _id: number) =>
 export const fetchAllUsers = (params: any) => api.get(url.USERS + params);
 export const fetchRoles = () => api.get(url.ALL_ROLES);
 export const fetchPermissions = () => api.get(url.ALL_PERMISSIONS);
-export const deactivateActivateUsers = (data: any) => api.get(url.ACTIVATE_DEACTIVATE_STAFF + data);
+export const deactivateActivateUsers = (data: any) =>
+  api.get(url.ACTIVATE_DEACTIVATE_STAFF + data);
 
 //PACKAGES
 export const postSystemPackage = (data: any) =>
@@ -30,7 +31,7 @@ export const postSystemPackageOffer = (data: any) =>
 export const fetchSystemPackageOffer = () => api.get(url.SYSTEM_PACKAGES_OFFER);
 export const postSpPackage = (data: any) =>
   api.create(url.ALL_SP_PACKAGES, data);
-export const fetchSpPackage = (id:any) => api.get(url.ALL_SP_PACKAGES + id);
+export const fetchSpPackage = (id: any) => api.get(url.ALL_SP_PACKAGES + id);
 
 //SPS
 export const postSpSetup = (data: any) => api.create(url.LIST_CREATE_SPS, data);
@@ -67,14 +68,15 @@ export const updateSpManager = (id: any, data: any) =>
   api.put(url.SP_MANAGERS + `${id}`, data);
 export const deleteSpManager = (id: any) =>
   api.delete(url.SP_MANAGERS + `${id}`);
-export const postSpManagers = (data: any) => api.create(url.CREATE_SP_MANAGER, data);
+export const postSpManagers = (data: any) =>
+  api.create(url.CREATE_SP_MANAGER, data);
 export const postSpRevenue = (data: any) => api.create(url.SP_REVENUES, data);
 export const postSpRevenueUpdate = (data: any) =>
   api.put(url.SP_REVENUES_UPDATE, data);
 
 //WAHUMUNI
-export const fetchWahumini = (id: any, type?:any) =>
-  api.get(url.WAHUMINI_LIST_CREATE + `${id}`,{}, type );
+export const fetchWahumini = (id: any, type?: any) =>
+  api.get(url.WAHUMINI_LIST_CREATE + `${id}`, {}, type);
 export const postWahumini = (data: any) =>
   api.create(url.WAHUMINI_LIST_CREATE, data);
 export const updateMuhumini = (id: any, data: any) =>
@@ -86,8 +88,8 @@ export const deleteMuhumini = (id: any) =>
   api.delete(url.WAHUMINI_UPDATE_DISTROY + id);
 export const postBahasha = (data: any) =>
   api.create(url.CARDS_LIST_CREATE, data);
-export const fetchBahasha = (id: any) =>
-  api.get(url.CARDS_LIST_CREATE + `${id}`);
+export const fetchBahasha = (id: any, type?: any) =>
+  api.get(url.CARDS_LIST_CREATE + `${id}`, {}, type);
 export const updateBahasha = (id: any, data: any) =>
   api.put(url.CARDS_UPDATE + `${id}/`, data);
 export const deleteBahasha = (id: any) =>
@@ -100,19 +102,20 @@ export const updateJumuiya = (id: any, data: any) =>
   api.put(url.JUMUIYA_UPDATE + `${id}`, data);
 export const deleteJumuiya = (id: any) =>
   api.delete(url.JUMUIYA_UPDATE + `${id}`);
-export const fetchtKanda = (id: any) =>
-  api.get(url.KANDA_LIST_CREATE + `${id}`);
+export const fetchtKanda = (id: any, type?: "blob" | "json") =>
+  api.get(url.KANDA_LIST_CREATE + `${id}`, {}, type);
 export const postKanda = (data: any) => api.create(url.KANDA_LIST_CREATE, data);
 export const updateKanda = (id: any, data: any) =>
   api.put(url.KANDA_UPDATE + `${id}`, data);
 export const deleteKanda = (id: any) => api.delete(url.KANDA_UPDATE + `${id}`);
 
 //SADAKA ZAKA
-export const fetchSadaka = (id: any, type?:any) =>
+export const fetchSadaka = (id: any, type?: any) =>
   api.get(url.SADAKA_LIST_CREATE + `${id}`, {}, type);
 export const fetchSadakaType = (id: any) =>
   api.get(url.SADAKA_TYPE_LIST_CREATE + `${id}`);
-export const fetchZaka = (id: any, type?:any) => api.get(url.ZAKA_LIST_CREATE + `${id}`, {}, type);
+export const fetchZaka = (id: any, type?: any) =>
+  api.get(url.ZAKA_LIST_CREATE + `${id}`, {}, type);
 // export const fetchAhadi = (id:any) =>  api.get(url.ZAKA_LIST_CREATE + `${id}`);
 export const postSadaka = (data: any) =>
   api.create(url.SADAKA_LIST_CREATE, data);
@@ -201,12 +204,24 @@ export const updateMavunoPayment = (id: any, data: any) =>
 export const deleteMavunoPayment = (id: any) =>
   api.delete(url.MAVUNO_PAYMENT_RETRIEVE_UPDATE_DESTROY + `${id}`);
 
+//REPORTS
+export const fetchWahuminiStatement = (id: any) =>
+  api.get(url.WAHUMINI_STATEMENT, id);
+export const fetchRevenueStatement = (id: any) =>
+  api.get(url.REVENUE_STATEMENT, id);
+export const fetchExpenseStatement = (id: any) =>
+  api.get(url.EXPENSE_STATEMENT, id);
+export const fetchPaymentTypeRev = (id: any, data: any) =>
+  api.get(url.PAYMENT_LIST_REPORT + id, data);
+export const fetchPaymentTypeTransfer = (id: any, data?: any) =>
+  api.get(url.PAYMENT_TYPE_TRANSFER_CREATE + id, {}, data);
+export const postPaymentTypeTransfer = (data: any) =>
+  api.create(url.PAYMENT_TYPE_TRANSFER_CREATE, data);
+export const updatePaymentTypeTransfer = (id: any, data: any) =>
+  api.put(url.PAYMENT_TYPE_TRANSFER_UPDATE + `${id}`, data);
+export const deletePaymentTypeTransfer = (id: any) =>
+  api.delete(url.PAYMENT_TYPE_TRANSFER_UPDATE + `${id}`);
 
-  //REPORTS
-  export const fetchWahuminiStatement = (id: any) => api.get(url.WAHUMINI_STATEMENT, id);
-  export const fetchRevenueStatement = (id: any) => api.get(url.REVENUE_STATEMENT, id);
-  export const fetchExpenseStatement = (id: any) => api.get(url.EXPENSE_STATEMENT, id);
-  export const fetchPaymentTypeRev =  (id: any, data:any) => api.get(url.PAYMENT_LIST_REPORT + id, data);
-
-  //SMS
-  export const sendCustomSms = (data: any) => api.create(url.SEND_CUSTOM_SMS, data);
+//SMS
+export const sendCustomSms = (data: any) =>
+  api.create(url.SEND_CUSTOM_SMS, data);

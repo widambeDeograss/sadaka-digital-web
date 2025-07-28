@@ -275,6 +275,7 @@ const CardNumberList = () => {
             togglefilter={() =>  {}}
             searchTerm={searchTerm}
             data={tableId}
+          
               />
 
               <Table

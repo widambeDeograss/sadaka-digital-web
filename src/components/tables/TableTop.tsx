@@ -1,17 +1,20 @@
-import React from "react";
-import { FilterIcon, X, SearchCheckIcon, FileSpreadsheet } from "lucide-react";
+import React, { useState } from "react";
+import { FilterIcon, X, SearchCheckIcon, FileSpreadsheet, DownloadCloud } from "lucide-react";
 import { Input, Tooltip } from "antd";
 import { motion } from "framer-motion";
 import { useDownloadExcel } from "react-export-table-to-excel";
 import {
   fetchAhadi,
+  fetchBahasha,
   fetchMavuno,
   fetchMichango,
   fetchSadaka,
+  fetchtKanda,
   fetchWahumini,
   fetchZaka,
 } from "../../helpers/ApiConnectors";
 import { useAppSelector } from "../../store/store-hooks";
+import { toast } from "react-toastify";
 
 interface TabletopProps {
   inputfilter: boolean;
@@ -21,6 +24,7 @@ interface TabletopProps {
   onSearch: (value: string) => void;
   docName?: string;
   data: string;
+    exportExcel?: string;
 }
 
 const Tabletop: React.FC<TabletopProps> = ({
@@ -34,6 +38,9 @@ const Tabletop: React.FC<TabletopProps> = ({
 }) => {
   // Export functionality using react-export-table-to-excel
   const church = useAppSelector((state: any) => state.sp);
+  const [isExporting, setIsExporting] = useState(false);
+
+
   const { onDownload } = useDownloadExcel({
     currentTableRef: document.getElementById(data),
     filename: docName,
@@ -42,6 +49,7 @@ const Tabletop: React.FC<TabletopProps> = ({
 
   const handleExport = async () => {
     const id = `?export=excel&church_id=${church.id}`;
+     setIsExporting(true);
     try {
       let response;
       switch (data) {
@@ -55,6 +63,12 @@ const Tabletop: React.FC<TabletopProps> = ({
           break;
         case "zaka":
           response = await fetchZaka(id, "blob");
+          break;
+        case "bahasha":
+          response = await fetchBahasha(id, "blob");
+          break;
+        case "kanda":
+          response = await fetchtKanda(id, "blob");
           break;
         case "michango":
           response = await fetchMichango(id);
@@ -83,6 +97,9 @@ const Tabletop: React.FC<TabletopProps> = ({
       }
     } catch (error) {
       console.error("Error exporting data:", error);
+      toast.error("Failed to export data. Please try again.");
+    }finally {
+      setIsExporting(false);
     }
   };
 
@@ -135,8 +152,15 @@ const Tabletop: React.FC<TabletopProps> = ({
           </motion.button>
         </Tooltip>
       </div>
+       {isExporting && (
+        <div className="mt-2 flex items-center gap-2 text-blue-600">
+          <DownloadCloud className="h-4 w-4 animate-pulse" />
+          <span className="text-sm">Preparing export...</span>
+        </div>
+      )}
     </div>
   );
 };
 
 export default Tabletop;
+

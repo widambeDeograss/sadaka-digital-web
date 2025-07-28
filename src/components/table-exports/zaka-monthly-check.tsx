@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { Link } from "react-router-dom";
-import { 
-  CloseOutlined, 
-  FilterOutlined, 
-  SearchOutlined, 
-  FilePdfOutlined, 
-  FileExcelOutlined, 
-  PrinterOutlined 
-} from '@ant-design/icons';
+import {
+  CloseOutlined,
+  FilterOutlined,
+  SearchOutlined,
+  FilePdfOutlined,
+  FileExcelOutlined,
+  PrinterOutlined,
+} from "@ant-design/icons";
 import { ExportAsExcel, ExportAsPdf, PrintDocument } from "react-export-table";
+import { useAppSelector } from "../../store/store-hooks";
+import { fetchBahasha } from "../../helpers/ApiConnectors";
 
 interface TabletopProps {
   inputfilter?: boolean;
@@ -21,6 +23,7 @@ interface TabletopProps {
   header: any[];
   docTitle: string;
   topFilter?: boolean;
+
 }
 
 const Tabletop: React.FC<TabletopProps> = ({
@@ -30,16 +33,16 @@ const Tabletop: React.FC<TabletopProps> = ({
   onChangeSearch,
   data,
   docTitle = "",
-  topFilter = false
+  topFilter = false,
+
 }) => {
-  // Function to transform data for export based on its structure
   const transformDataForExport = (originalData: any[]) => {
-    return originalData?.map(item => {
+    return originalData?.map((item) => {
       const transformedItem: any = {
         "Card No": item.card_no,
         "Muumini Name": item.mhumini_name,
-        "Jumuiya": item.jumuiya,
-        "Kanda": item.kanda
+        Jumuiya: item.jumuiya,
+        Kanda: item.kanda,
       };
 
       // Handle both data structures
@@ -58,20 +61,15 @@ const Tabletop: React.FC<TabletopProps> = ({
   };
 
   const transformHeadersForExport = () => {
-    const baseHeaders = [
-      "Card No",
-      "Muumini Name",
-      "Jumuiya",
-      "Kanda"
-    ];
-  
+    const baseHeaders = ["Card No", "Muumini Name", "Jumuiya", "Kanda"];
+
     // Check if we have monthly presence data
     if (data?.length > 0 && data[0]?.monthly_presence) {
       const months = Object.keys(data[0].monthly_presence);
-      const monthHeaders = months.map(month => `Mwezi ${month}`);
+      const monthHeaders = months.map((month) => `Mwezi ${month}`);
       return [...baseHeaders, ...monthHeaders];
     }
-  
+
     return [...baseHeaders, "Hali"];
   };
 
@@ -92,9 +90,7 @@ const Tabletop: React.FC<TabletopProps> = ({
             aria-label={inputfilter ? "Close filter" : "Open filter"}
           >
             <FilterOutlined className="text-gray-600" />
-            {inputfilter && (
-              <CloseOutlined className="text-gray-600 ml-1" />
-            )}
+            {inputfilter && <CloseOutlined className="text-gray-600 ml-1" />}
           </button>
         )}
 
@@ -120,7 +116,7 @@ const Tabletop: React.FC<TabletopProps> = ({
       {/* Export Buttons Section */}
       <div className="flex gap-2 w-full md:w-auto justify-end">
         <ReactTooltip place="top" />
-        
+
         {/* PDF Export */}
         <ExportAsPdf
           data={exportData}
