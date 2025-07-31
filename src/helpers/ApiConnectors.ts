@@ -91,7 +91,7 @@ export const postBahasha = (data: any) =>
 export const fetchBahasha = (id: any, type?: any) =>
   api.get(url.CARDS_LIST_CREATE + `${id}`, {}, type);
 export const updateBahasha = (id: any, data: any) =>
-  api.put(url.CARDS_UPDATE + `${id}/`, data);
+  api.put(url.CARDS_UPDATE + `${id}`, data);
 export const deleteBahasha = (id: any) =>
   api.delete(url.CARDS_UPDATE + `${id}/`);
 export const fetchtJumuiya = (id: any) =>

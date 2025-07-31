@@ -279,6 +279,7 @@ const MavunoParokiaList = () => {
       <OngezaMavunoPayments
       onCancel={() => setOngezaMavunoModal(false)}
       visible={ongezaMavunoModal}
+          mavunoType="MAVUNO_PAROKIA" 
       />
     </div>
   );

@@ -280,6 +280,7 @@ const MavunoJimboList = () => {
       <OngezaMavunoPayments
       onCancel={() => setOngezaMavunoModal(false)}
       visible={ongezaMavunoModal}
+        mavunoType="MAVUNO_JIMBO" 
       />
     </div>
   );

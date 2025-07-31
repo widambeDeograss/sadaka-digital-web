@@ -38,14 +38,25 @@ interface TransferType {
   created_by: string;
 }
 
+const toNumber = (value: any): number => {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const num = parseFloat(value.replace(/[^0-9.-]/g, ""));
+    return isNaN(num) ? 0 : num;
+  }
+  return 0;
+};
+
 const PaymentTypeTransfers = ({
   paymentTypeId,
   initialStartDate,
   initialEndDate,
+  revenueData,
 }: {
   paymentTypeId: number;
   initialStartDate: string;
   initialEndDate: string;
+  revenueData?: any; // Optional prop for revenue data
 }) => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -89,7 +100,7 @@ const PaymentTypeTransfers = ({
       //     params.to_payment_type = selectedToPaymentType;
       //   }
       const urlString = `?from_payment_type=${paymentTypeId}&church_id=${church.id}&start_date=${params.start_date}&end_date=${params.end_date}`;
-      const response:any = await fetchPaymentTypeTransfer(urlString);
+      const response: any = await fetchPaymentTypeTransfer(urlString);
       return response;
     },
   });
@@ -106,7 +117,7 @@ const PaymentTypeTransfers = ({
       };
       const urlString = `?to_payment_type=${paymentTypeId}&church_id=${church.id}&start_date=${params.start_date}&end_date=${params.end_date}`;
 
-      const response:any = await fetchPaymentTypeTransfer(urlString);
+      const response: any = await fetchPaymentTypeTransfer(urlString);
       return response;
     },
   });
@@ -128,7 +139,8 @@ const PaymentTypeTransfers = ({
 
   // Update transfer mutation
   const updateTransferMutation = useMutation({
-    mutationFn: () => updatePaymentTypeTransfer(editingTransfer?.id, form.getFieldsValue()),
+    mutationFn: () =>
+      updatePaymentTypeTransfer(editingTransfer?.id, form.getFieldsValue()),
     onSuccess: () => {
       message.success("Transfer updated successfully");
       queryClient.invalidateQueries({ queryKey: ["outgoingTransfers"] });
@@ -205,6 +217,51 @@ const PaymentTypeTransfers = ({
         });
       }
     });
+  };
+
+  const calculateRemainingAmount = (paymentTypeId: number) => {
+    if (!revenueData || !revenueData.revenue_summary) return 0;
+    console.log("Revenue Data:", revenueData);
+
+    const paymentType = revenueData.revenue_summary.find(
+      (item: any) => item.payment_type__id == paymentTypeId
+    );
+    if (!paymentType) return 0;
+    console.log("Payment Type:", paymentType);
+
+    // Get outgoing transfers total (money sent from this payment type)
+    const outgoingTotal =
+      outgoingTransfers?.reduce((sum: number, transfer: any) => {
+        const amount = toNumber(transfer.amount);
+        console.log(
+          `Adding outgoing amount: ${amount} (type: ${typeof transfer.amount})`
+        );
+        return sum + amount;
+      }, 0) || 0;
+    console.log("Outgoing Total:", outgoingTotal);
+
+    // Get incoming transfers total (money received to this payment type)
+    const incomingTotal =
+      incomingTransfers?.reduce((sum: number, transfer: any) => {
+        const amount = toNumber(transfer.amount);
+        console.log(
+          `Adding incoming amount: ${amount} (type: ${typeof transfer.amount})`
+        );
+        return sum + amount;
+      }, 0) || 0;
+
+    const originalAmount = toNumber(paymentType.total_amount);
+    const outgoing = toNumber(outgoingTotal);
+    const incoming = toNumber(incomingTotal);
+
+    console.log(
+      `Calculation for ${paymentTypeId}: ${originalAmount} + ${incoming} - ${outgoing}`
+    );
+
+    const remaining = originalAmount + incoming - outgoing;
+
+    // Ensure we return a number (handle any potential NaN cases)
+    return isNaN(remaining) ? 0 : remaining;
   };
 
   const commonColumns: TableColumnsType<TransferType> = [
@@ -326,6 +383,10 @@ const PaymentTypeTransfers = ({
           />
         </TabPane>
       </Tabs>
+      <Text className="mt-4 font-bold text-xl">
+        JUMLA KUU: {calculateRemainingAmount(paymentTypeId).toLocaleString()}{" "}
+        Tsh
+      </Text>
 
       <Modal
         title={editingTransfer ? "Edit Transfer" : "Create Transfer"}
@@ -364,9 +425,9 @@ const PaymentTypeTransfers = ({
               style={{ width: "100%" }}
               min={0}
               step={1000}
-            //   formatter={(value) =>
-            //     `Tsh ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            //   }
+              //   formatter={(value) =>
+              //     `Tsh ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              //   }
             />
           </Form.Item>
         </Form>

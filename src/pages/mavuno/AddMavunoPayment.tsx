@@ -41,6 +41,7 @@ interface OngezaMavunoPaymentsProps {
   visible: boolean;
   onCancel: () => void;
   editData?: any; 
+  mavunoType?: string; 
 }
 
 type RevenuePostRequest = {
@@ -59,6 +60,7 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
   visible,
   onCancel,
   editData,
+  mavunoType,
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const dispatch = useAppDispatch();
@@ -92,7 +94,7 @@ const OngezaMavunoPayments: React.FC<OngezaMavunoPaymentsProps> = ({
   const { data: mavunoList, isLoading: isLoadingMavuno } = useQuery({
     queryKey: ["mavuno", church.id],
     queryFn: async () => {
-      return await fetchMavuno(`?church_id=${church.id}`);
+      return await fetchMavuno(`?church_id=${church.id}&mavuno_type=${mavunoType}`);
     },
   });
 
