@@ -1,29 +1,30 @@
 import { useState } from "react";
-import { Card, Typography, Select, Row, Col } from "antd";
+import { Card, Typography, Row, Col, DatePicker } from "antd";
 import dayjs from "dayjs";
 import { useAppSelector } from "../../store/store-hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPaymentTypeRev } from "../../helpers/ApiConnectors";
-import PaymentTypeTransfers from "./payment-type-transfers";
 
 const { Text, Title } = Typography;
-const { Option } = Select;
-
-
+const { RangePicker } = DatePicker;
 
 const RevenueByPaymentType = () => {
-  const [period, setPeriod] = useState("monthly");
+  const [dateRange, setDateRange] = useState([
+    dayjs().startOf('week'),
+    dayjs().endOf('week')
+  ]);
   const church = useAppSelector((state: any) => state.sp);
   const queryClient = useQueryClient();
   const [selectedPaymentType, setSelectedPaymentType] = useState<number | null>(
     null
   );
 
-  const { data: revenueData, isLoading } = useQuery({
-    queryKey: ["revenue", church.id, period],
+ const { data: revenueData, isLoading: isRevenueLoading } = useQuery({
+    queryKey: ["revenue", church.id, dateRange[0].format("YYYY-MM-DD"), dateRange[1].format("YYYY-MM-DD")],
     queryFn: async () => {
       const response: any = await fetchPaymentTypeRev(`${church.id}`, {
-        period,
+        start_date: dateRange[0].format("YYYY-MM-DD"),
+        end_date: dateRange[1].format("YYYY-MM-DD"),
       });
       return response;
     },
@@ -33,34 +34,34 @@ const RevenueByPaymentType = () => {
     console.log("Selected Payment Type ID:", paymentTypeId);
 
     setSelectedPaymentType(paymentTypeId);
+    queryClient.invalidateQueries({ queryKey: ["revenue"] });
+    console.log("Selected Payment Type:", selectedPaymentType);
+    
   };
 
   console.log("Revenue Data:", revenueData);
 
-  // Handle period change
-  const handlePeriodChange = (value: any) => {
-    setPeriod(value);
+ const handleDateChange = (dates: any) => {
+    if (dates && dates.length === 2) {
+      setDateRange(dates);
+    }
   };
 
   return (
     <Card
       title="Mapato kwa aina ya makusanyo"
       className="mt-14"
-      loading={isLoading}
+      loading={isRevenueLoading}
+        extra={
+          <RangePicker
+            defaultValue={[dateRange[0], dateRange[1]]}
+            onChange={handleDateChange}
+          />
+        }
     >
-      <div className="mb-6">
-        <Text strong>Select Period:</Text>
-        <Select
-          defaultValue="monthly"
-          style={{ width: 120, marginLeft: 10 }}
-          onChange={handlePeriodChange}
-        >
-          <Option value="daily">Daily</Option>
-          <Option value="weekly">Weekly</Option>
-          <Option value="monthly">Monthly</Option>
-          <Option value="yearly">Yearly</Option>
-        </Select>
-      </div>
+      {/* <div className="mb-6">
+       
+      </div> */}
 
       {revenueData && (
         <>
@@ -92,7 +93,7 @@ const RevenueByPaymentType = () => {
         </>
       )}
 
-      {selectedPaymentType && (
+      {/* {selectedPaymentType && (
         <PaymentTypeTransfers
           paymentTypeId={selectedPaymentType}
           initialStartDate={revenueData.start_date}
@@ -104,7 +105,7 @@ const RevenueByPaymentType = () => {
 
         revenueData={revenueData}
         />
-      )}
+      )} */}
     </Card>
   );
 };

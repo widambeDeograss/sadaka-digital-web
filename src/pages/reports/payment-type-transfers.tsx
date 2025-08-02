@@ -63,6 +63,8 @@ const PaymentTypeTransfers = ({
   const [editingTransfer, setEditingTransfer] = useState<TransferType | null>(
     null
   );
+  const user = useAppSelector((state: any) => state.user.userInfo);
+
   const [dateRange, setDateRange] = useState([
     dayjs(initialStartDate),
     dayjs(initialEndDate),
@@ -188,6 +190,10 @@ const PaymentTypeTransfers = ({
     form.setFieldsValue({
       to_payment_type: record.to_payment_type.id,
       amount: record.amount,
+        church: church.id,
+         inserted_by: user?.username,
+      updated_by: user?.username,
+      from_payment_type: record.from_payment_type.id,
     });
     setIsModalOpen(true);
   };
@@ -204,11 +210,12 @@ const PaymentTypeTransfers = ({
       const data = {
         ...values,
         church: church.id,
-        created_by: "Current User",
-        updated_by: "Current User",
+         inserted_by: user?.username,
+      updated_by: user?.username,
       };
 
       if (editingTransfer) {
+        //@ts-ignore
         updateTransferMutation.mutate({ id: editingTransfer.id, data });
       } else {
         createTransferMutation.mutate({

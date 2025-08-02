@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Card, Table, Typography, DatePicker, Select, Button, Form } from 'antd';
+import { Card, Table, Typography, DatePicker, Select, Button, Form, Divider, Radio } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '../../store/store-hooks';
-import { fetchWahumini,fetchWahuminiStatement, retrieveMuumini, sendCustomSms } from '../../helpers/ApiConnectors';
+import { fetchtJumuiya, fetchWahumini,fetchWahuminiStatement, retrieveMuumini, sendCustomSms } from '../../helpers/ApiConnectors';
 import { addAlert } from '../../store/slices/alert/alertSlice';
 
 const { Title } = Typography;
@@ -33,9 +33,11 @@ interface MuhuminiStatement {
 const MuhuminiStatementPage = () => {
   const church = useAppSelector((state:any) => state.sp);
   const [selectedMuhumini, setSelectedMuhumini] = useState<number | null>(null);
+  const [selectedJumuiya, setSelectedJumuiya] = useState<number | null>(null);
   const [dates, setDates] = useState<[Dayjs, Dayjs]>([dayjs().subtract(1, 'month'), dayjs()]);
   const [statementData, setStatementData] = useState<MuhuminiStatement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+   const [messageType, setMessageType] = useState<'single' | 'jumuiya' | 'all'>('single');
   const dispatch = useAppDispatch();
   const [searchTerm, setSearchTerm] = useState<string>(''); 
 const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
@@ -60,6 +62,16 @@ const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
     enabled: !!church?.id,
   });
 
+
+  const { data: jumuiyas, isLoading: loadingJumuiyas } = useQuery({
+    queryKey: ["jumuiya"],
+    queryFn: async () => {
+      const response: any = await fetchtJumuiya(`?church_id=${church.id}`);
+      return response;
+    }
+  });
+
+
   const { data: record } = useQuery({
     queryKey: ['record', selectedMuhumini],
     queryFn: async () => {
@@ -72,40 +84,49 @@ const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
 
   console.log(record);
 
-   const sendPushMessage = async (message:string) => {
-     console.log(record);
-    
-  
-      try {
-      
-        setIsLoading(true);
+ const sendPushMessage = async (message: string, phone?: string, jumuiyaId?: number, sendToAll?: boolean) => {
+    try {
+      setIsLoading(true);
 
-        const postMessage: any = await sendCustomSms({
-          phone: record?.phone_number,
+      let postMessage: any;
+      if (sendToAll) {
+        postMessage = await sendCustomSms({
+          all: true,
           message: message,
         });
-  
-        if (postMessage?.message === "Message sent successfully") {
-          dispatch(
-            addAlert({
-              title: "Ujumbe umetumwa kwa usahihi",
-              message: "Ujumbe umetumwa kwa usahihi",
-              type: "success",
-            })
-          );
-        }
-      } catch (error) {
+      } else if (jumuiyaId) {
+        postMessage = await sendCustomSms({
+          jumuiya_id: jumuiyaId,
+          message: message,
+        });
+      } else {
+        postMessage = await sendCustomSms({
+          phone: phone,
+          message: message,
+        });
+      }
+
+      if (postMessage?.message?.includes("Message sent successfully")) {
         dispatch(
           addAlert({
-            title: "Ujumbe  haujatuma, jaribu tena baaadaye",
-            message: "Ujumbe haujatuma, jaribu tena baaadaye",
-            type: "error",
+            title: "Ujumbe umetumwa kwa usahihi",
+            message: `Ujumbe umetumwa kwa ${sendToAll ? 'wahumini wote' : jumuiyaId ? 'jumuiya nzima' : 'muumini'}`,
+            type: "success",
           })
         );
-      } finally {
-       setIsLoading(false);
       }
-    };
+    } catch (error) {
+      dispatch(
+        addAlert({
+          title: "Ujumbe haujatuma, jaribu tena baadaye",
+          message: "Ujumbe haujatuma, jaribu tena baadaye",
+          type: "error",
+        })
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   // Fetch statement handler
   const handleGetStatement = async () => {
@@ -166,10 +187,35 @@ const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
     },
   ];
 
-  const handleSendMuuminiMessage = async (values:{message:string}) => {
-   console.log(values);
-    sendPushMessage(values.message);
-  }
+const handleSendMessage = async (values: { message: string }) => {
+    if (messageType === 'all') {
+      await sendPushMessage(values.message, undefined, undefined, true);
+    } else if (messageType === 'jumuiya') {
+      if (!selectedJumuiya) {
+        dispatch(
+          addAlert({
+            title: "Tafadhali chagua jumuiya",
+            message: "Unahitaji kuchagua jumuiya kabla ya kutuma ujumbe",
+            type: "error",
+          })
+        );
+        return;
+      }
+      await sendPushMessage(values.message, undefined, selectedJumuiya);
+    } else {
+      if (!record?.phone_number) {
+        dispatch(
+          addAlert({
+            title: "Namba ya simu haipo",
+            message: "Hakuna namba ya simu ya muumini huyu",
+            type: "error",
+          })
+        );
+        return;
+      }
+      await sendPushMessage(values.message, record.phone_number);
+    }
+  };
 
   return (
     <Card className="mt-14">
@@ -276,41 +322,77 @@ const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>('');
          
         </div>
       )}
-{
-  record && (
-    <div>
-    <p className='p-8'>
-     <strong>Tuma ujumbe kwa muumini: {record?.first_name} {record?.last_name}</strong>
-     <br />
-     Phone: {record?.phone_number}
-     </p>
-     <Form
-    onFinish={(values) => {
-      handleSendMuuminiMessage(values);
-    }}
-    layout="vertical"
-    className="mt-4"
-     >
 
-        <Form.Item
-        label="Ujumbe"
-        name="message"
-        rules={[{ required: true, message: 'Ujumbe ni lazima!' }]}
+
+      <Divider />
+           <Divider />
+
+      <div className="mt-8">
+        <Title level={5}>Tuma Ujumbe</Title>
+        
+        <Radio.Group 
+          onChange={(e) => setMessageType(e.target.value)} 
+          value={messageType}
+          className="mb-4"
         >
-          <textarea className="w-full h-32 p-2 border rounded-lg" placeholder="Ujumbe" />
-    
-        </Form.Item>
+          <Radio value="single">Muumini mmoja</Radio>
+          <Radio value="jumuiya">Jumuiya</Radio>
+          <Radio value="all">Wauumini wote</Radio>
+        </Radio.Group>
 
-        <Button type="primary" htmlType="submit" className='bg-[#152033] text-white'
-        loading={isLoading}
-        disabled={isLoading}
-        >Tuma Ujumbe</Button>
+        {messageType === 'single' && record && (
+          <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+            <p><strong>Muumini:</strong> {record?.first_name} {record?.last_name}</p>
+            <p><strong>Simu:</strong> {record?.phone_number}</p>
+          </div>
+        )}
 
-     </Form>
- 
-  </div>
-  )
-}
+        {messageType === 'jumuiya' && (
+          <div className="mb-4">
+            <Select
+              placeholder="Chagua Jumuiya"
+              className="w-full"
+              loading={loadingJumuiyas}
+              onChange={(value) => setSelectedJumuiya(value)}
+              showSearch
+              optionFilterProp="children"
+              filterOption={(input, option) =>
+                (option?.children?.toString() ?? '').toLowerCase().includes(input.toLowerCase())
+              }
+            >
+           {jumuiyas?.map((jumuiya: any) => (
+                    <Option key={jumuiya.id} value={jumuiya.id}>
+                      {jumuiya.name}
+                    </Option>
+                  ))}
+            </Select>
+          </div>
+        )}
+
+        <Form
+          onFinish={handleSendMessage}
+          layout="vertical"
+          className="mt-4"
+        >
+          <Form.Item
+            label="Ujumbe"
+            name="message"
+            rules={[{ required: true, message: 'Ujumbe ni lazima!' }]}
+          >
+            <textarea className="w-full h-32 p-2 border rounded-lg" placeholder="Andika ujumbe hapa..." />
+          </Form.Item>
+
+          <Button 
+            type="primary" 
+            htmlType="submit" 
+            className="bg-[#152033] text-white"
+            loading={isLoading}
+            disabled={isLoading}
+          >
+            Tuma Ujumbe
+          </Button>
+        </Form>
+      </div>
 
 
     </Card>

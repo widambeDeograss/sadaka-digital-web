@@ -1,7 +1,7 @@
 import { Button, Card, Col, Dropdown, Menu, message, Row, Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import Tabletop from "../../components/tables/TableTop";
-import { deleteMuhumini, fetchWahumini } from "../../helpers/ApiConnectors";
+import { deleteMuhumini, fetchWahumini, updateMuhumini } from "../../helpers/ApiConnectors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GlobalMethod } from "../../helpers/GlobalMethods";
 import { useAppSelector } from "../../store/store-hooks";
@@ -26,6 +26,7 @@ const Wahumini = () => {
     (state: any) => state.user.userInfo.role.permissions
   );
   const queryClient = useQueryClient();
+
   const {
     data: wahumini,
     isLoading,
@@ -68,6 +69,29 @@ const Wahumini = () => {
       message.error("Failed to delete muumini.");
     },
   });
+
+  const {mutate: activateDeactivateMutation} = useMutation({
+    mutationFn: async (record:any) => {
+      console.log(record);
+      
+      const is_active = record?.is_active ? false : true;
+      record.is_active = is_active;
+      console.log(record);
+      const response: any = await updateMuhumini(record.id, { is_active:is_active, ...record });
+      return response;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["wahumini"] });    
+      message.success(
+        data?.message === "Staff activated successfully"
+          ? "User activated successfully"
+          : "User deactivated successfully"
+      );
+    },
+    onError: () => {
+      message.error("Action failed");
+    },
+  })
 
   const columns = [
     {
@@ -118,15 +142,15 @@ const Wahumini = () => {
     {
       title: <strong>Active</strong>,
       dataIndex: "has_loin_account",
-      render: (text: any, _record: any) => (
+      render: (_text: any, record: any) => (
         <>
-          {text === true && (
+          {record?.is_active === false && (
             <span className="bg-red-300 rounded-lg p-1 text-white">
               In active
             </span>
           )}
-          {text === false && (
-            <span className="bg-green-300  rounded-lg p-1 text-white">
+          {record?.is_active === true && (
+            <span className="bg-green-300 rounded-lg p-1 text-white">
               Active
             </span>
           )}
@@ -164,6 +188,23 @@ const Wahumini = () => {
                   }
                 >
                   Edit
+                </Menu.Item>
+              )}
+              {GlobalMethod.hasAnyPermission(
+                ["MANAGE_WAHUMINI"],
+                GlobalMethod.getUserPermissionName(userPermissions)
+              ) && (
+                <Menu.Item
+                  onClick={() => activateDeactivateMutation(record)}
+                  icon={
+                    record?.is_active ? (
+                      <DeleteOutlined />
+                    ) : (
+                      <EditOutlined />
+                    )
+                  }
+                >
+                  {record?.is_active ? "Deactivate" : "Activate"}
                 </Menu.Item>
               )}
               {GlobalMethod.hasAnyPermission(
