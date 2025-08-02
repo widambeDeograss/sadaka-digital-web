@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { Link } from "react-router-dom";
@@ -11,8 +11,6 @@ import {
   PrinterOutlined,
 } from "@ant-design/icons";
 import { ExportAsExcel, ExportAsPdf, PrintDocument } from "react-export-table";
-import { useAppSelector } from "../../store/store-hooks";
-import { fetchBahasha } from "../../helpers/ApiConnectors";
 
 interface TabletopProps {
   inputfilter?: boolean;
